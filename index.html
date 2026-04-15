@@ -78,7 +78,7 @@ async function login() {
   const data = await res.json();
 
   if (data.length > 0) {
-    alert("Acesso liberado 🚀");
+    window.location.href = "admin.html";
   } else {
     document.getElementById("msg").innerText = "Dados inválidos ou sem acesso";
   }
