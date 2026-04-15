@@ -3,7 +3,7 @@
    ─────────────────────────────────────────────────────────────── */
 
 // CONFIGURAÇÃO — apontar para o Worker em produção
-const API_BASE = 'https://direciona-api.SEU-SUBDOMINIO.workers.dev';
+const API_BASE = 'https://direciona-api.sanchaikraemer3.workers.dev';
 //                   ↑ troque pelo URL do seu Worker depois do deploy
 
 const LS_LICENSE = 'direciona_license_key';
