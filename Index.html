@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeveCRM - Login</title>
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#0b1f3a;
+  margin:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box{
+  background:#fff;
+  padding:30px;
+  border-radius:12px;
+  width:360px;
+  box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+h2{
+  margin:0 0 18px 0;
+}
+input{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:1px solid #cfd5df;
+  border-radius:10px;
+  box-sizing:border-box;
+  font-size:15px;
+}
+button{
+  width:100%;
+  padding:12px;
+  background:#3b5cff;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:700;
+}
+button:hover{
+  filter:brightness(1.05);
+}
+#msg{
+  margin-top:12px;
+  font-size:14px;
+  min-height:18px;
+}
+.ok{color:#0a7d32}
+.err{color:#b00020}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>Acesso ao sistema</h2>
+  <input id="user" placeholder="Usuário ou email">
+  <input id="pass" type="password" placeholder="Senha">
+  <input id="key" placeholder="Chave de acesso">
+  <button onclick="login()">Entrar</button>
+  <p id="msg"></p>
+</div>
+
+<script>
+const SB_URL = "https://lnrbpiklzymblpyrobwx.supabase.co";
+const SB_KEY = "sb_publishable_KXVbF3c7RGFXVTtfYmrzzg_dMK04Q9q";
+
+async function login() {
+  const user = document.getElementById("user").value.trim();
+  const pass = document.getElementById("pass").value.trim();
+  const key  = document.getElementById("key").value.trim();
+  const msg  = document.getElementById("msg");
+
+  msg.className = "";
+  msg.innerText = "";
+
+  if (!user || !pass || !key) {
+    msg.className = "err";
+    msg.innerText = "Preencha usuário, senha e chave.";
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `${SB_URL}/rest/v1/crm_access_users?select=id,usuario,chave,status&usuario=eq.${encodeURIComponent(user)}&senha=eq.${encodeURIComponent(pass)}&chave=eq.${encodeURIComponent(key)}`,
+      {
+        headers: {
+          "apikey": SB_KEY,
+          "Authorization": `Bearer ${SB_KEY}`
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    if (Array.isArray(data) && data.length > 0) {
+      msg.className = "ok";
+      msg.innerText = "Login OK";
+      alert("Login OK");
+    } else {
+      msg.className = "err";
+      msg.innerText = "Dados inválidos";
+    }
+
+  } catch (e) {
+    msg.className = "err";
+    msg.innerText = "Erro de conexão";
+  }
+}
+</script>
+</body>
+</html>
