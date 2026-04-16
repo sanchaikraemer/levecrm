@@ -2987,16 +2987,19 @@ const AG_TBL='agenda_eventos';
 /* ══════════════════════════════════════
    AUTENTICAÇÃO MULTI-TENANT
 ══════════════════════════════════════ */
-let supabase = null;
 let currentUser = null;
 let userProfile = null;
 
 async function initAuth() {
-  supabase = window.supabase.createClient(SB_URL, SB_KEY);
+  const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+  window.sbClient = supabase;
   await checkAuth();
 }
 
 async function checkAuth() {
+  const supabase = window.sbClient;
+  if (!supabase) return;
+  
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) {
@@ -3029,7 +3032,7 @@ function showLoginScreen() {
       <div style="width:100%;max-width:420px;background:#fff;border-radius:20px;padding:40px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
         <div style="width:80px;height:80px;background:linear-gradient(135deg,#1E3A6B,#4A90D9);border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:42px;font-weight:900">L</div>
         <h1 style="font-size:28px;font-weight:800;color:#1B2E4B;margin:0 0 8px;text-align:center">LeveCRM</h1>
-        <p style="color:#64748B;font-size:14px;margin:0 0 24px;text-align:center">Sistema multi-tenant</p>
+        <p style="color:#64748B;font-size:14px;margin:0 0 24px;text-align:center">Multi-tenant CRM</p>
         
         <div style="display:flex;gap:8px;margin-bottom:24px;border-bottom:2px solid #E2E8F0">
           <button class="auth-tab active" onclick="switchTab('login')" style="background:transparent;border:0;border-bottom:2px solid #4A90D9;padding:10px 16px;color:#4A90D9;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:-2px;font-family:inherit">Entrar</button>
@@ -3046,7 +3049,7 @@ function showLoginScreen() {
         </form>
         
         <form id="signupForm" onsubmit="handleSignup(event)" style="display:none">
-          <label style="display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:6px">Nome Completo</label>
+          <label style="display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:6px">Nome</label>
           <input type="text" id="signupNome" required style="width:100%;padding:12px;border:1.5px solid #D1D5DB;border-radius:10px;font-size:14px;margin-bottom:14px;font-family:inherit" placeholder="João Silva">
           <label style="display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:6px">Email</label>
           <input type="email" id="signupEmail" required style="width:100%;padding:12px;border:1.5px solid #D1D5DB;border-radius:10px;font-size:14px;margin-bottom:14px;font-family:inherit" placeholder="seu@email.com">
@@ -3054,8 +3057,8 @@ function showLoginScreen() {
           <input type="tel" id="signupTelefone" style="width:100%;padding:12px;border:1.5px solid #D1D5DB;border-radius:10px;font-size:14px;margin-bottom:14px;font-family:inherit" placeholder="(00) 00000-0000">
           <label style="display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:6px">Senha</label>
           <input type="password" id="signupPassword" required minlength="6" style="width:100%;padding:12px;border:1.5px solid #D1D5DB;border-radius:10px;font-size:14px;margin-bottom:20px;font-family:inherit" placeholder="Mínimo 6 caracteres">
-          <button type="submit" style="width:100%;padding:14px;background:linear-gradient(135deg,#16A34A,#0F7A32);color:#fff;border:0;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Criar Conta Grátis</button>
-          <p style="margin-top:12px;font-size:12px;color:#64748B;text-align:center">Após criar, aguarde aprovação</p>
+          <button type="submit" style="width:100%;padding:14px;background:linear-gradient(135deg,#16A34A,#0F7A32);color:#fff;border:0;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">Criar Conta</button>
+          <p style="margin-top:12px;font-size:12px;color:#64748B;text-align:center">Aguarde aprovação</p>
           <div id="signupError" style="display:none;margin-top:12px;padding:10px;background:#FEE2E2;border:1px solid #FCA5A5;border-radius:8px;color:#991B1B;font-size:13px"></div>
         </form>
       </div>
@@ -3064,8 +3067,7 @@ function showLoginScreen() {
 }
 
 function switchTab(tab) {
-  const loginForm = document.getElementById('loginForm');
-  const signupForm = document.getElementById('signupForm');
+  const forms = [document.getElementById('loginForm'), document.getElementById('signupForm')];
   const tabs = document.querySelectorAll('.auth-tab');
   
   tabs.forEach(t => {
@@ -3074,13 +3076,13 @@ function switchTab(tab) {
   });
   
   if (tab === 'login') {
-    loginForm.style.display = 'block';
-    signupForm.style.display = 'none';
+    forms[0].style.display = 'block';
+    forms[1].style.display = 'none';
     tabs[0].style.borderBottomColor = '#4A90D9';
     tabs[0].style.color = '#4A90D9';
   } else {
-    loginForm.style.display = 'none';
-    signupForm.style.display = 'block';
+    forms[0].style.display = 'none';
+    forms[1].style.display = 'block';
     tabs[1].style.borderBottomColor = '#4A90D9';
     tabs[1].style.color = '#4A90D9';
   }
@@ -3092,7 +3094,7 @@ function showPendingApproval() {
       <div style="width:100%;max-width:480px;background:#fff;border-radius:20px;padding:40px;text-align:center">
         <div style="width:80px;height:80px;background:#FEF3C7;border-radius:50%;margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:40px">⏳</div>
         <h2 style="font-size:24px;font-weight:800;color:#1B2E4B;margin:0 0 12px">Aguardando Aprovação</h2>
-        <p style="color:#64748B;font-size:15px;line-height:1.6;margin:0 0 24px">Sua conta foi criada! Aguarde aprovação por email.</p>
+        <p style="color:#64748B;font-size:15px;line-height:1.6;margin:0 0 24px">Sua conta foi criada! Aguarde aprovação.</p>
         <div style="background:#F0F9FF;border:1px solid #BAE6FD;border-radius:12px;padding:16px;margin-bottom:20px">
           <p style="margin:0;font-size:13px;color:#0369A1"><strong>Email:</strong> ${currentUser?.email}</p>
         </div>
@@ -3104,6 +3106,7 @@ function showPendingApproval() {
 
 async function handleLogin(e) {
   e.preventDefault();
+  const supabase = window.sbClient;
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
   const errorEl = document.getElementById('loginError');
@@ -3123,6 +3126,7 @@ async function handleLogin(e) {
 
 async function handleSignup(e) {
   e.preventDefault();
+  const supabase = window.sbClient;
   const nome = document.getElementById('signupNome').value.trim();
   const email = document.getElementById('signupEmail').value;
   const telefone = document.getElementById('signupTelefone').value.trim();
@@ -3150,11 +3154,12 @@ async function handleSignup(e) {
       .eq('id', data.user.id);
   }
   
-  alert('Conta criada! Aguarde aprovação por email.');
+  alert('Conta criada! Aguarde aprovação.');
   location.reload();
 }
 
 async function logout() {
+  const supabase = window.sbClient;
   await supabase.auth.signOut();
   location.reload();
 }
@@ -3303,7 +3308,7 @@ async function uploadFiles(leadId,files){
   const uploaded=[];
   for(const file of files){
     const safe=file.name.replace(/[^a-zA-Z0-9._-]+/g,'_');
-    const fp=`${currentUser.id}/${leadId}/${Date.now()}_${Math.random().toString(36).slice(2,7)}_${safe}`;
+    const fp=`${leadId}/${Date.now()}_${Math.random().toString(36).slice(2,7)}_${safe}`;
     const ur=`${SB_URL}/storage/v1/object/${ATT_BKT}/${fp}`;
     const res=await fetch(ur,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'x-upsert':'false','Content-Type':file.type||'application/octet-stream'},body:file});
     if(!res.ok){const d=await res.text().catch(()=>'');throw new Error(`${file.name}: ${d||res.statusText}`);}
