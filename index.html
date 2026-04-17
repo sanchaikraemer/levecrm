@@ -686,6 +686,11 @@ body.access-locked{overflow:hidden}
   .access-title{font-size:24px}
 }
 
+
+/* Ajustes solicitados */
+#statusbar{display:none!important;}
+#fResp,#mfResp,.f-resp,[for="fResp"],[for="mfResp"]{display:none!important;}
+
 </style>
 </head>
 <body class="t-navy">
@@ -4355,8 +4360,8 @@ document.getElementById('csvInput').addEventListener('change',async e=>{const f=
 // Search
 document.getElementById('searchQ').addEventListener('input',e=>{document.getElementById('searchClear').classList.toggle('show',!!e.target.value.trim());render();});
 document.getElementById('searchClear').addEventListener('click',()=>{document.getElementById('searchQ').value='';document.getElementById('searchClear').classList.remove('show');render();});
-['fEmp','fOrig','fResp','fPri'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{syncMobileFiltersFromDesktop();render();}));
-['mfEmp','mfOrig','mfResp','mfPri'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{syncDesktopFiltersFromMobile();render();}));
+['fEmp','fOrig','fResp','fPri'].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener('change',()=>{syncMobileFiltersFromDesktop();render();});});
+['mfEmp','mfOrig','mfResp','mfPri'].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener('change',()=>{syncDesktopFiltersFromMobile();render();});});
 window.addEventListener('resize',()=>{const mob=document.getElementById('mobileActions');if(mob)mob.style.display=currentView==='kanban'&&window.innerWidth<=640?'grid':'none';if(window.innerWidth>640)closeMobileFilters();});
 
 // New lead
@@ -4457,6 +4462,16 @@ const btnSalvarAcesso=document.getElementById('btnSalvarAcesso'); if(btnSalvarAc
 /* ══════════════════════════════════════
    INIT
 ══════════════════════════════════════ */
+
+try{
+  const statusbar=document.getElementById('statusbar');
+  if(statusbar) statusbar.style.display='none';
+  const fResp=document.getElementById('fResp');
+  if(fResp) fResp.style.display='none';
+  const mfResp=document.getElementById('mfResp');
+  if(mfResp) mfResp.style.display='none';
+}catch(e){}
+
 function initApp(){
   if(appBooted)return;
   appBooted=true;
