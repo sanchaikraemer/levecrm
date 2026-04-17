@@ -3202,8 +3202,8 @@ async function loadAccessAdmin(){
           </div>
         </div>
         <div class="access-tools">
-          <button class="btn" onclick="copyAccessUser('${String(r.usuario||'').replace(/'/g,\"&#039;\")}')">Copiar usuário</button>
-          <button class="btn" onclick="changeAccessPassword('${r.id}','${String(r.senha||'').replace(/'/g,\"&#039;\")}')">Nova senha</button>
+          <button class="btn" onclick="copyAccessUser('${String(r.usuario||'').replace(/'/g,"&#039;")}')">Copiar usuário</button>
+          <button class="btn" onclick="changeAccessPassword('${r.id}','${String(r.senha||'').replace(/'/g,"&#039;")}')">Nova senha</button>
           <button class="btn" onclick="extendAccessDays('${r.id}',7)">+7d</button>
           <button class="btn" onclick="extendAccessDays('${r.id}',30)">+30d</button>
           <button class="btn" onclick="setAccessStatus('${r.id}','${(st==='ativo'||st==='teste')?'pausado':'ativo'}')">${(st==='ativo'||st==='teste')?'Pausar':'Ativar'}</button>
