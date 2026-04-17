@@ -613,7 +613,7 @@ body.t-light .ag-day.sel{background:#1B2E4B}
 /* ═══ QUICK LEAD ═══ */
 #qlModal{display:none;position:fixed;inset:0;z-index:60;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(3px)}
 #qlModal.open{display:flex}
-.ql-box{background:#FFFFFF;border-radius:20px 20px 0 0;width:100%;max-width:520px;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 40px rgba(0,0,0,.2);animation:slideUp .2s ease}
+.ql-box{background:#FFFFFF;border-radius:20px 20px 0 0;width:100%;max-width:380px;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 40px rgba(0,0,0,.2);animation:slideUp .2s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .ql-handle{width:36px;height:4px;background:#D1D5DB;border-radius:999px;margin:0 auto 16px}
 .ql-title{font-family:Montserrat,sans-serif;font-size:17px;font-weight:800;color:#0F172A;margin-bottom:3px}
@@ -660,7 +660,7 @@ body.access-locked{overflow:hidden}
 #btnLogoutAccess{display:none}
 #accessOverlay{position:fixed;inset:0;z-index:120;background:linear-gradient(180deg,#08111E,#0D1B2E);display:none;align-items:center;justify-content:center;padding:20px}
 #accessOverlay.show{display:flex}
-.access-card{width:min(440px,100%);background:rgba(255,255,255,.97);border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,.45);padding:28px 24px;color:#0F172A}
+.access-card{width:min(440px,100%);background:rgba(255,255,255,.97);border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.45);padding:28px 24px;color:#0F172A}
 .access-logo{display:flex;align-items:center;gap:12px;margin-bottom:12px}
 .access-logo-mark{width:52px;height:52px;border-radius:16px;background:linear-gradient(180deg,#1B4E9B,#0F2D5C);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:22px;box-shadow:0 8px 20px rgba(15,45,92,.25)}
 .access-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#64748B}
@@ -690,6 +690,204 @@ body.access-locked{overflow:hidden}
 /* Ajustes solicitados */
 #statusbar{display:none!important;}
 #fResp,#mfResp,.f-resp,[for="fResp"],[for="mfResp"]{display:none!important;}
+
+
+/* ===== AJUSTE FINO DO LOGIN / ACCESS ===== */
+#accessOverlay{
+  padding:20px !important;
+  overflow-y:auto !important;
+}
+#accessOverlay .access-card,
+#accessOverlay .login-box,
+#accessOverlay .auth-card{
+  width:100% !important;
+  max-width:380px !important;
+  padding:20px !important;
+  border-radius:16px !important;
+  margin:20px auto !important;
+}
+#accessOverlay input,
+#accessOverlay button,
+#accessOverlay .btn{
+  min-height:46px !important;
+  font-size:14px !important;
+}
+@media (max-height: 760px){
+  #accessOverlay .access-card,
+  #accessOverlay .login-box,
+  #accessOverlay .auth-card{
+    transform:scale(.94);
+    transform-origin:center center;
+  }
+}
+@media (max-height: 680px){
+  #accessOverlay .access-card,
+  #accessOverlay .login-box,
+  #accessOverlay .auth-card{
+    transform:scale(.88);
+  }
+}
+
+
+
+/* ===== DINÂMICA DE ACESSO — VISUAL CORRIGIDO ===== */
+#accessOverlay{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:120 !important;
+  background:linear-gradient(180deg,#08111E,#0D1B2E) !important;
+  display:none;
+  align-items:center !important;
+  justify-content:center !important;
+  padding:16px !important;
+  overflow-y:auto !important;
+}
+#accessOverlay.show{display:flex !important;}
+#accessOverlay .access-card{
+  width:min(360px,100%) !important;
+  max-width:360px !important;
+  background:rgba(255,255,255,.98) !important;
+  border-radius:20px !important;
+  box-shadow:0 24px 80px rgba(0,0,0,.45) !important;
+  padding:18px 18px 16px !important;
+  color:#0F172A !important;
+  margin:0 auto !important;
+}
+#accessOverlay .access-logo{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+#accessOverlay .access-logo-mark{
+  width:38px;height:38px;border-radius:12px;
+  background:linear-gradient(180deg,#1B4E9B,#0F2D5C);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:18px;
+  box-shadow:0 8px 20px rgba(15,45,92,.25);
+}
+#accessOverlay .access-kicker{
+  font-size:10px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:#64748B;
+}
+#accessOverlay .access-title{
+  font-size:18px;font-weight:800;line-height:1.05;
+  color:#0F172A;letter-spacing:-.02em;
+}
+#accessOverlay .access-sub{
+  font-size:11px !important;
+  color:#64748B !important;
+  line-height:1.45 !important;
+  margin:8px 0 10px !important;
+}
+#accessOverlay .access-tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:6px;
+  margin:0 0 10px 0;
+  background:#EEF2F7;
+  padding:4px;
+  border-radius:14px;
+}
+#accessOverlay .access-tab{
+  appearance:none;
+  border:0;
+  background:transparent;
+  color:#334155;
+  border-radius:10px;
+  min-height:36px;
+  padding:8px 8px;
+  font:inherit;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.15s;
+  white-space:nowrap;
+}
+#accessOverlay .access-tab.active{
+  background:linear-gradient(180deg,#1E4FA0,#2B6CB0);
+  color:#fff;
+  box-shadow:0 6px 16px rgba(43,108,176,.20);
+}
+#accessOverlay .access-panel{display:none;}
+#accessOverlay .access-panel.show{display:block;}
+#accessOverlay .access-field{margin-bottom:10px;}
+#accessOverlay .access-label{
+  display:block;
+  font-size:11px;
+  font-weight:700;
+  color:#334155;
+  margin:0 0 5px 2px;
+}
+#accessOverlay .access-input{
+  width:100%;
+  padding:11px 12px;
+  border-radius:13px;
+  border:1.5px solid #D9E2EC;
+  background:#F8FAFC;
+  color:#0F172A;
+  font:inherit;
+  font-size:14px;
+  outline:none;
+}
+#accessOverlay .access-input:focus{
+  border-color:#4A90D9;
+  background:#fff;
+  box-shadow:0 0 0 4px rgba(74,144,217,.12);
+}
+#accessOverlay .access-actions{
+  display:flex;
+  gap:8px;
+  margin-top:4px;
+}
+#accessOverlay .access-btn{
+  flex:1;
+  border:0;
+  border-radius:13px;
+  padding:11px 12px;
+  font:inherit;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.12s;
+}
+#accessOverlay .access-btn.primary{
+  background:linear-gradient(180deg,#1E4FA0,#2B6CB0);
+  color:#fff;
+}
+#accessOverlay .access-btn.secondary{
+  background:#EEF2F7;
+  color:#334155;
+}
+#accessOverlay .access-mini{
+  margin-top:8px;
+  font-size:9px !important;
+  line-height:1.35 !important;
+  color:#64748B !important;
+}
+#accessOverlay .access-foot{
+  margin-top:10px;
+  font-size:10px !important;
+  color:#64748B !important;
+  line-height:1.35 !important;
+}
+#accessOverlay .access-alert{
+  display:none;
+  border-radius:12px;
+  padding:9px 10px;
+  font-size:11px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+#accessOverlay .access-alert.show{display:block;}
+#accessOverlay .access-alert.error{background:#FEF2F2;color:#B91C1C;border:1px solid #FECACA}
+#accessOverlay .access-alert.ok{background:#ECFDF3;color:#166534;border:1px solid #BBF7D0}
+@media (max-height: 740px){
+  #accessOverlay .access-card{
+    transform:scale(.94);
+    transform-origin:center center;
+  }
+}
+@media (max-height: 680px){
+  #accessOverlay .access-card{
+    transform:scale(.88);
+  }
+}
 
 </style>
 </head>
@@ -807,22 +1005,64 @@ body.access-locked{overflow:hidden}
         <div class="access-title">Entrar</div>
       </div>
     </div>
-    <div class="access-sub">Acesse seu CRM online com usuário e senha. Se o acesso estiver vencido, o sistema bloqueia a entrada automaticamente.</div>
+    <div class="access-sub">Cadastro por e-mail com teste grátis de 7 dias. Depois, a chave libera a continuidade do acesso.</div>
     <div class="access-alert error" id="accessError"></div>
     <div class="access-alert ok" id="accessOk"></div>
-    <div class="access-field">
-      <label class="access-label">Usuário ou e-mail</label>
-      <input class="access-input" id="gateUsuario" placeholder="Digite seu usuário" autocomplete="username"/>
+
+    <div class="access-tabs">
+      <button class="access-tab active" id="tabLogin" type="button">Entrar</button>
+      <button class="access-tab" id="tabCadastro" type="button">Criar conta</button>
+      <button class="access-tab" id="tabLicenca" type="button">Ativar chave</button>
     </div>
-    <div class="access-field">
-      <label class="access-label">Senha</label>
-      <input class="access-input" id="gateSenha" type="password" placeholder="Digite sua senha" autocomplete="current-password"/>
+
+    <div class="access-panel show" id="panelLogin">
+      <div class="access-field">
+        <label class="access-label">E-mail</label>
+        <input class="access-input" id="gateUsuario" placeholder="Digite seu e-mail" autocomplete="username"/>
+      </div>
+      <div class="access-field">
+        <label class="access-label">Senha</label>
+        <input class="access-input" id="gateSenha" type="password" placeholder="Digite sua senha" autocomplete="current-password"/>
+      </div>
+      <div class="access-actions">
+        <button class="access-btn primary" id="gateEntrar" type="button">Entrar no LeveCRM</button>
+        <button class="access-btn secondary" id="gateLimpar" type="button">Limpar</button>
+      </div>
+      <div class="access-mini">Cada conta acessa apenas os próprios leads.</div>
     </div>
-    <div class="access-actions">
-      <button class="access-btn primary" id="gateEntrar" type="button">Entrar no LeveCRM</button>
-      <button class="access-btn secondary" id="gateLimpar" type="button">Limpar</button>
+
+    <div class="access-panel" id="panelCadastro">
+      <div class="access-field">
+        <label class="access-label">Nome</label>
+        <input class="access-input" id="gateNome" placeholder="Seu nome" autocomplete="name"/>
+      </div>
+      <div class="access-field">
+        <label class="access-label">E-mail</label>
+        <input class="access-input" id="gateCadastroEmail" placeholder="Seu melhor e-mail" autocomplete="email"/>
+      </div>
+      <div class="access-field">
+        <label class="access-label">Senha</label>
+        <input class="access-input" id="gateCadastroSenha" type="password" placeholder="Crie uma senha" autocomplete="new-password"/>
+      </div>
+      <div class="access-actions">
+        <button class="access-btn primary" id="gateCadastrar" type="button">Criar conta e iniciar teste</button>
+      </div>
+      <div class="access-mini">Teste grátis criado automaticamente. Em alguns casos, o Supabase pode pedir confirmação por e-mail.</div>
     </div>
-    <div class="access-foot">Teste local: o sistema libera apenas usuários ativos e dentro do prazo de vencimento cadastrado no Supabase.</div>
+
+    <div class="access-panel" id="panelLicenca">
+      <div class="access-field">
+        <label class="access-label">Chave de acesso</label>
+        <input class="access-input" id="gateChave" placeholder="Ex: LEVECRM-TESTE-30" autocomplete="off"/>
+      </div>
+      <div class="access-actions">
+        <button class="access-btn primary" id="gateAtivarChave" type="button">Ativar chave</button>
+        <button class="access-btn secondary" id="gateWhats" type="button">Solicitar licença</button>
+      </div>
+      <div class="access-mini">Entre na conta e depois ative a chave recebida.</div>
+    </div>
+
+    <div class="access-foot">Gestão de perfis e chaves centralizada no Supabase.</div>
   </div>
 </div>
 
@@ -3098,6 +3338,7 @@ updatePrintCounters(); renderTabs(); renderLibrary();
 
 <input id="csvInput" type="file" accept=".csv" style="display:none"/>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ══════════════════════════════════════
    CONFIG SUPABASE
@@ -3165,6 +3406,8 @@ function setStatus(type,msg){const el=document.getElementById('statusbar');if(!e
 ══════════════════════════════════════ */
 let ACCESS_USER=null;
 let appBooted=false;
+const ADMIN_EMAILS=['sanchaikraemer3@gmail.com'];
+const AUTH_CLIENT=window.supabase.createClient(SB_URL, SB_KEY);
 function lsKey(k){return ACCESS_USER?.id?`${k}_${ACCESS_USER.id}`:k;}
 function lsGet(k){return localStorage.getItem(lsKey(k));}
 function lsSet(k,v){localStorage.setItem(lsKey(k),v);}
@@ -3176,169 +3419,238 @@ function showAccessOk(msg){const el=document.getElementById('accessOk');const er
 function clearAccessMessages(){document.getElementById('accessError')?.classList.remove('show');document.getElementById('accessOk')?.classList.remove('show');}
 function lockAccess(msg=''){document.body.classList.add('access-locked');document.getElementById('accessOverlay')?.classList.add('show');if(msg)showAccessError(msg);}
 function unlockAccess(){document.body.classList.remove('access-locked');document.getElementById('accessOverlay')?.classList.remove('show');}
-function accessRowExpired(row){const v=parseDate(row?.vencimento_em||'');return !v||v.getTime()<Date.now();}
-function validateAccessRow(row){if(!row)return{ok:false,msg:'Usuário ou senha não conferem.'};const st=String(row.status||'ativo').toLowerCase();if(st==='pausado')return{ok:false,msg:'Seu acesso está pausado.'};if(st==='cancelado')return{ok:false,msg:'Seu acesso foi cancelado.'};if(accessRowExpired(row))return{ok:false,msg:'Seu acesso venceu. Renove para continuar.'};return{ok:true,msg:''};}
-function saveAccessSession(row){localStorage.setItem(ACCESS_SESSION_KEY,JSON.stringify({id:row.id,usuario:accessNormUser(row.usuario),senha:String(row.senha||'')}));}
-function clearAccessSession(){localStorage.removeItem(ACCESS_SESSION_KEY);ACCESS_USER=null;}
-function applyAccessUser(row){ACCESS_USER={id:row.id,usuario:accessNormUser(row.usuario),nome:row.nome||row.usuario||'',is_admin:!!row.is_admin,status:row.status||'ativo',vencimento_em:row.vencimento_em||''};const who=document.getElementById('whoPill');if(who){who.innerHTML=`<span class="dot ok"></span>${escH(ACCESS_USER.nome)}${ACCESS_USER.is_admin?' • admin':''}`;who.style.display='inline-flex';}const out=document.getElementById('btnLogoutAccess');if(out)out.style.display='inline-flex';const adminTab=document.querySelector('.nav-tab[data-view="admin"]');if(adminTab)adminTab.style.display=ACCESS_USER.is_admin?'inline-flex':'none';}
-async function fetchAccessByCredentials(usuario,senha){const u=accessNormUser(usuario), s=String(senha||'').trim();const path=`${ACCESS_TBL}?select=*&usuario=eq.${encodeURIComponent(u)}&senha=eq.${encodeURIComponent(s)}&limit=1`;const rows=await sbFetch(path);return Array.isArray(rows)&&rows[0]?rows[0]:null;}
-async function fetchAccessBySession(session){const path=`${ACCESS_TBL}?select=*&id=eq.${encodeURIComponent(session.id)}&usuario=eq.${encodeURIComponent(accessNormUser(session.usuario))}&senha=eq.${encodeURIComponent(String(session.senha||''))}&limit=1`;const rows=await sbFetch(path);return Array.isArray(rows)&&rows[0]?rows[0]:null;}
-async function accessLogin(){clearAccessMessages();const usuario=document.getElementById('gateUsuario').value.trim();const senha=document.getElementById('gateSenha').value.trim();if(!usuario||!senha){showAccessError('Preencha usuário e senha.');return;}const btn=document.getElementById('gateEntrar');btn.disabled=true;btn.textContent='Entrando...';try{const row=await fetchAccessByCredentials(usuario,senha);const check=validateAccessRow(row);if(!check.ok){showAccessError(check.msg);return;}const prevId=ACCESS_USER?.id||null;saveAccessSession(row);applyAccessUser(row);unlockAccess();showAccessOk(`Acesso liberado até ${accessFmt(row.vencimento_em)}.`);if(!appBooted)initApp();else if(prevId!==ACCESS_USER?.id){ALL=[];ATTACHES=[];refreshAttMap();render();await loadAll();}else{await loadAll();}setTimeout(clearAccessMessages,1200);}catch(e){console.error(e);showAccessError('Não consegui validar seu acesso agora.');}finally{btn.disabled=false;btn.textContent='Entrar no LeveCRM';}}
-async function accessResumeSession(){lockAccess();clearAccessMessages();const raw=localStorage.getItem(ACCESS_SESSION_KEY);if(!raw)return;try{const session=JSON.parse(raw);const row=await fetchAccessBySession(session);const check=validateAccessRow(row);if(!check.ok){clearAccessSession();showAccessError(check.msg);ALL=[];ATTACHES=[];refreshAttMap();render();return;}applyAccessUser(row);unlockAccess();if(!appBooted)initApp();else await loadAll();}catch(e){clearAccessSession();ALL=[];ATTACHES=[];refreshAttMap();render();console.error(e);}}
-function logoutAccess(){clearAccessSession();document.getElementById('gateSenha').value='';document.getElementById('gateUsuario').value='';const who=document.getElementById('whoPill');if(who)who.style.display='none';const out=document.getElementById('btnLogoutAccess');if(out)out.style.display='none';ALL=[];ATTACHES=[];refreshAttMap();render();lockAccess();showAccessOk('Sessão encerrada.');}
-
-
-
+function setAccessMode(mode='login'){
+  const map={login:'panelLogin',cadastro:'panelCadastro',licenca:'panelLicenca'};
+  ['tabLogin','tabCadastro','tabLicenca'].forEach(id=>document.getElementById(id)?.classList.remove('active'));
+  ['panelLogin','panelCadastro','panelLicenca'].forEach(id=>document.getElementById(id)?.classList.remove('show'));
+  if(mode==='cadastro'){document.getElementById('tabCadastro')?.classList.add('active');document.getElementById('panelCadastro')?.classList.add('show');}
+  else if(mode==='licenca'){document.getElementById('tabLicenca')?.classList.add('active');document.getElementById('panelLicenca')?.classList.add('show');}
+  else {document.getElementById('tabLogin')?.classList.add('active');document.getElementById('panelLogin')?.classList.add('show');}
+}
+function accessPlanMessage(profile){
+  const now=Date.now();
+  const status=String(profile?.account_status||'trial').toLowerCase();
+  const trialEnd=parseDate(profile?.trial_end||'');
+  const licenseEnd=parseDate(profile?.license_end||'');
+  if(status==='blocked')return{ok:false,msg:'Seu acesso está bloqueado.'};
+  if(status==='paused' || status==='pausado')return{ok:false,msg:'Seu acesso está pausado.'};
+  if(status==='cancelled' || status==='cancelado')return{ok:false,msg:'Seu acesso foi cancelado.'};
+  if(licenseEnd && licenseEnd.getTime()>=now)return{ok:true,msg:`Licença ativa até ${accessFmt(profile.license_end)}.`,kind:'license'};
+  if(trialEnd && trialEnd.getTime()>=now)return{ok:true,msg:`Teste grátis ativo até ${accessFmt(profile.trial_end)}.`,kind:'trial'};
+  return{ok:false,msg:'Seu teste/licença expirou. Entre e ative uma chave para continuar.'};
+}
+function saveAccessSession(){/* sessão agora é mantida pelo Supabase Auth */}
+function clearAccessSession(){ACCESS_USER=null;}
+function applyAccessUser(profile,session){
+  const email=accessNormUser(session?.user?.email||profile?.email||'');
+  ACCESS_USER={
+    id:session?.user?.id||profile?.id||null,
+    usuario:email,
+    email,
+    nome:profile?.nome||session?.user?.user_metadata?.nome||email.split('@')[0]||'Conta',
+    is_admin:ADMIN_EMAILS.includes(email),
+    status:profile?.account_status||'trial',
+    trial_end:profile?.trial_end||'',
+    license_end:profile?.license_end||''
+  };
+  const who=document.getElementById('whoPill');
+  if(who){who.innerHTML=`<span class="dot ok"></span>${escH(ACCESS_USER.nome)}${ACCESS_USER.is_admin?' • admin':''}`;who.style.display='inline-flex';}
+  const out=document.getElementById('btnLogoutAccess');if(out)out.style.display='inline-flex';
+  const adminTab=document.querySelector('.nav-tab[data-view="admin"]');if(adminTab)adminTab.style.display=ACCESS_USER.is_admin?'inline-flex':'none';
+}
+async function fetchMyProfile(userId){
+  const rows=await sbFetch(`profiles?select=*&id=eq.${encodeURIComponent(userId)}&limit=1`);
+  return Array.isArray(rows)&&rows[0]?rows[0]:null;
+}
+async function ensureProfile(session){
+  if(!session?.user?.id)return null;
+  let profile=await fetchMyProfile(session.user.id);
+  if(profile)return profile;
+  showAccessError('Seu cadastro foi criado, mas o perfil ainda não apareceu no banco. Aguarde alguns segundos e tente entrar de novo.');
+  return null;
+}
+async function fetchAccessByCredentials(usuario,senha){
+  const email=accessNormUser(usuario), pass=String(senha||'').trim();
+  const {data,error}=await AUTH_CLIENT.auth.signInWithPassword({email,password:pass});
+  if(error)throw error;
+  if(!data?.session)throw new Error('Sessão não retornada no login.');
+  const profile=await ensureProfile(data.session);
+  return {session:data.session,profile};
+}
+async function fetchAccessBySession(){
+  const {data,error}=await AUTH_CLIENT.auth.getSession();
+  if(error)throw error;
+  if(!data?.session)return null;
+  const profile=await ensureProfile(data.session);
+  if(!profile)return null;
+  return {session:data.session,profile};
+}
+async function accessLogin(){
+  clearAccessMessages();
+  const usuario=document.getElementById('gateUsuario').value.trim();
+  const senha=document.getElementById('gateSenha').value.trim();
+  if(!usuario||!senha){showAccessError('Preencha e-mail e senha.');return;}
+  const btn=document.getElementById('gateEntrar');btn.disabled=true;btn.textContent='Entrando...';
+  try{
+    const payload=await fetchAccessByCredentials(usuario,senha);
+    if(!payload?.profile){showAccessError('Perfil ainda não disponível. Tente novamente em instantes.');return;}
+    applyAccessUser(payload.profile,payload.session);
+    const check=accessPlanMessage(payload.profile);
+    if(!check.ok){lockAccess(check.msg);setAccessMode('licenca');return;}
+    unlockAccess();showAccessOk(check.msg);
+    if(!appBooted)initApp();else await loadAll();
+    setTimeout(clearAccessMessages,1400);
+  }catch(e){console.error(e);showAccessError(e?.message?.includes('Invalid login credentials')?'E-mail ou senha não conferem.':'Não consegui validar seu acesso agora.');}
+  finally{btn.disabled=false;btn.textContent='Entrar no LeveCRM';}
+}
+async function accessRegister(){
+  clearAccessMessages();
+  const nome=(document.getElementById('gateNome').value||'').trim();
+  const email=accessNormUser(document.getElementById('gateCadastroEmail').value);
+  const senha=(document.getElementById('gateCadastroSenha').value||'').trim();
+  if(!nome||!email||!senha){showAccessError('Preencha nome, e-mail e senha para criar a conta.');setAccessMode('cadastro');return;}
+  const btn=document.getElementById('gateCadastrar');btn.disabled=true;btn.textContent='Criando conta...';
+  try{
+    const {data,error}=await AUTH_CLIENT.auth.signUp({email,password:senha,options:{data:{nome}}});
+    if(error)throw error;
+    const session=data?.session||null;
+    if(!session){
+      showAccessOk('Conta criada. Verifique seu e-mail para confirmar o cadastro e depois entre no sistema.');
+      setAccessMode('login');
+      document.getElementById('gateUsuario').value=email;
+      return;
+    }
+    const profile=await ensureProfile(session);
+    if(!profile){showAccessOk('Conta criada. Aguarde alguns segundos e faça login.');setAccessMode('login');document.getElementById('gateUsuario').value=email;return;}
+    applyAccessUser(profile,session);
+    const check=accessPlanMessage(profile);
+    if(!check.ok){lockAccess(check.msg);setAccessMode('licenca');return;}
+    unlockAccess();showAccessOk(check.msg||'Conta criada com sucesso.');
+    if(!appBooted)initApp();else await loadAll();
+    setTimeout(clearAccessMessages,1800);
+  }catch(e){console.error(e);showAccessError(e?.message||'Não consegui criar sua conta agora.');}
+  finally{btn.disabled=false;btn.textContent='Criar conta e iniciar teste';}
+}
+async function activateLicenseFromInput(){
+  clearAccessMessages();
+  const code=(document.getElementById('gateChave').value||'').trim();
+  if(!code){showAccessError('Digite a chave de acesso.');setAccessMode('licenca');return;}
+  const sessionData=await AUTH_CLIENT.auth.getSession();
+  if(!sessionData?.data?.session){showAccessError('Entre com sua conta antes de ativar a chave.');setAccessMode('login');return;}
+  const btn=document.getElementById('gateAtivarChave');btn.disabled=true;btn.textContent='Ativando...';
+  try{
+    const {data,error}=await AUTH_CLIENT.rpc('redeem_license_key',{input_code:code});
+    if(error)throw error;
+    if(!data?.ok)throw new Error(data?.message||'Não consegui ativar a chave.');
+    const payload=await fetchAccessBySession();
+    if(!payload?.profile){throw new Error('Licença ativada, mas o perfil não pôde ser recarregado.');}
+    applyAccessUser(payload.profile,payload.session);
+    unlockAccess();
+    showAccessOk(data?.message || 'Licença ativada com sucesso.');
+    if(!appBooted)initApp();else await loadAll();
+    setTimeout(clearAccessMessages,1600);
+  }catch(e){console.error(e);showAccessError(e?.message||'Não consegui ativar a chave agora.');}
+  finally{btn.disabled=false;btn.textContent='Ativar chave';}
+}
+function openAccessWhats(){
+  const email=ACCESS_USER?.email||accessNormUser(document.getElementById('gateUsuario')?.value||document.getElementById('gateCadastroEmail')?.value||'');
+  const msg=`Olá, meu teste do LeveCRM expirou e quero ativar meu acesso.${email?` Meu e-mail é ${email}.`:''}`;
+  window.open(`https://wa.me/5554999013331?text=${encodeURIComponent(msg)}`,'_blank');
+}
+async function accessResumeSession(){
+  lockAccess();clearAccessMessages();
+  try{
+    const payload=await fetchAccessBySession();
+    if(!payload){return;}
+    applyAccessUser(payload.profile,payload.session);
+    const check=accessPlanMessage(payload.profile);
+    if(!check.ok){lockAccess(check.msg);setAccessMode('licenca');return;}
+    unlockAccess();
+    if(!appBooted)initApp();else await loadAll();
+    showAccessOk(check.msg);
+    setTimeout(clearAccessMessages,1200);
+  }catch(e){console.error(e);}
+}
+async function logoutAccess(){
+  try{await AUTH_CLIENT.auth.signOut();}catch(e){console.error(e);}
+  clearAccessSession();
+  ['gateSenha','gateCadastroSenha','gateChave'].forEach(id=>{const el=document.getElementById(id); if(el)el.value='';});
+  const who=document.getElementById('whoPill');if(who)who.style.display='none';
+  const out=document.getElementById('btnLogoutAccess');if(out)out.style.display='none';
+  const adminTab=document.querySelector('.nav-tab[data-view="admin"]');if(adminTab)adminTab.style.display='none';
+  ALL=[];ATTACHES=[];refreshAttMap();render();lockAccess();setAccessMode('login');showAccessOk('Sessão encerrada.');
+}
 async function loadAccessAdmin(){
   const msg=document.getElementById('accessAdminMsg');
   const block=document.getElementById('accessAdminBlock');
   const list=document.getElementById('accessList');
-  if(!msg||!block||!list)return;
+  if(!msg||!block)return;
   if(!ACCESS_USER?.is_admin){
     msg.textContent='Somente o administrador visualiza esta aba.';
     block.style.display='none';
     return;
   }
-  msg.textContent='Carregando usuários e licenças...';
-  block.style.display='none';
+  msg.innerHTML='Agora o acesso usa <b>Supabase Auth</b>. O usuário cria a própria conta na tela inicial. Nesta fase, a gestão avançada de perfis e licenças segue centralizada no Supabase para manter segurança real.';
+  block.style.display='block';
+  block.innerHTML=`
+    <div class="api-info" style="margin-bottom:14px">
+      <strong style="color:var(--accent)">Fluxo novo de acesso</strong><br>
+      1. O cliente cria a própria conta por e-mail na tela de acesso.<br>
+      2. O banco cria automaticamente o profile com <b>7 dias de teste</b>.<br>
+      3. Após o pagamento, você gera ou ajusta a licença no Supabase.<br>
+      4. O cliente entra e ativa a chave pelo próprio CRM.
+    </div>
+    <div class="adm-list" id="accessList"></div>
+  `;
+  const listNow=document.getElementById('accessList');
+  if(!listNow)return;
   try{
-    const rows=await sbFetch(`${ACCESS_TBL}?select=*&order=nome.asc`);
-    msg.textContent='Aqui você cria, renova, bloqueia e ajusta acessos.';
-    block.style.display='block';
-    list.innerHTML=(rows||[]).map(r=>{
-      const expired=accessRowExpired(r);
-      const st=String(r.status||'ativo').toLowerCase();
-      const tag=expired?'Vencido':(st==='pausado'?'Pausado':st==='cancelado'?'Cancelado':st==='bloqueado'?'Bloqueado':st==='teste'?'Teste':'Ativo');
-      const cor=expired?'#DC2626':st==='pausado'?'#D97706':st==='cancelado'?'#7F1D1D':st==='bloqueado'?'#B91C1C':st==='teste'?'#2563EB':'#16A34A';
-      return `<div class="adm-item">
+    const myProfile=await fetchMyProfile(ACCESS_USER.id);
+    const check=myProfile?accessPlanMessage(myProfile):null;
+    listNow.innerHTML=`
+      <div class="adm-item">
         <div style="flex:1;min-width:0">
-          <div class="adm-item-name">${escH(r.nome||'Sem nome')} ${r.is_admin?'<span class="chip" style="background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE">ADMIN</span>':''}</div>
+          <div class="adm-item-name">${escH(ACCESS_USER.nome)} <span class="chip" style="background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE">ADMIN</span></div>
           <div class="adm-item-detail">
-            Usuário: <b>${escH(r.usuario||'')}</b><br>
-            Senha: <b>${escH(r.senha||'')}</b><br>
-            Status: <b style="color:${cor}">${tag}</b><br>
-            Início: <b>${escH((r.data_inicio||'').slice(0,10) || '—')}</b><br>
-            Vence em: <b>${accessFmt(r.vencimento_em)}</b>
+            E-mail: <b>${escH(ACCESS_USER.email||'')}</b><br>
+            Status atual: <b>${escH(check?.ok ? (check.kind==='trial'?'Teste ativo':'Licença ativa') : 'Bloqueado/expirado')}</b><br>
+            Trial até: <b>${accessFmt(myProfile?.trial_end)}</b><br>
+            Licença até: <b>${accessFmt(myProfile?.license_end)}</b>
           </div>
         </div>
         <div class="access-tools">
-          <button class="btn" onclick="copyAccessUser('${String(r.usuario||'').replace(/'/g,"&#039;")}')">Copiar usuário</button>
-          <button class="btn" onclick="changeAccessPassword('${r.id}','${String(r.senha||'').replace(/'/g,"&#039;")}')">Nova senha</button>
-          <button class="btn" onclick="extendAccessDays('${r.id}',7)">+7d</button>
-          <button class="btn" onclick="extendAccessDays('${r.id}',30)">+30d</button>
-          <button class="btn" onclick="setAccessStatus('${r.id}','${(st==='ativo'||st==='teste')?'pausado':'ativo'}')">${(st==='ativo'||st==='teste')?'Pausar':'Ativar'}</button>
-          <button class="btn" onclick="deleteAccessUser('${r.id}')" style="color:#EF4444;border-color:rgba(239,68,68,.3)">Excluir</button>
+          <button class="btn" type="button" onclick="switchView('kanban')">Voltar para leads</button>
+          <button class="btn" type="button" onclick="window.open('${SB_URL.replace('.supabase.co','')? '' : ''}','_blank')" style="display:none"></button>
+        </div>
+      </div>
+      <div class="adm-item">
+        <div class="adm-item-name">Licenças agora ficam no Supabase</div>
+        <div class="adm-item-detail">
+          Para este momento, a parte sensível de criação/renovação de chaves ficou fora do HTML para não expor permissões administrativas no navegador.<br>
+          Quando quisermos, eu monto a próxima etapa com painel seguro via função/rota administrativa.
         </div>
       </div>`;
-    }).join('') || '<div class="adm-item"><div class="adm-item-name">Nenhum acesso cadastrado ainda.</div></div>';
+    const btn=document.getElementById('btnSalvarAcesso');
+    if(btn)btn.style.display='none';
   }catch(e){
     console.error(e);
-    msg.textContent='Não consegui ler a tabela de acessos.';
-    block.style.display='none';
+    listNow.innerHTML='<div class="adm-item"><div class="adm-item-name">Não consegui carregar o resumo do acesso agora.</div></div>';
   }
 }
-async function saveAccessUser(){
-  if(!ACCESS_USER?.is_admin)return;
-  const nome=(document.getElementById('accNome').value||'').trim();
-  const usuario=accessNormUser(document.getElementById('accUsuario').value);
-  const senha=(document.getElementById('accSenha').value||'').trim();
-  const dias=Math.max(1,Number(document.getElementById('accDias').value||30));
-  const status=document.getElementById('accStatus').value || 'ativo';
-  const is_admin=document.getElementById('accAdmin').checked;
-  if(!nome||!usuario||!senha){showToast('Preencha nome, usuário e senha.');return;}
-  const venc=new Date(); venc.setDate(venc.getDate()+dias);
-  const payload={id:cid(),nome,usuario,senha,status,is_admin,data_inicio:todayISO(),vencimento_em:venc.toISOString()};
-  try{
-    await sbFetch(ACCESS_TBL,{method:'POST',body:payload});
-    ['accNome','accUsuario','accSenha'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('accDias').value='30';
-    document.getElementById('accStatus').value='ativo';
-    document.getElementById('accAdmin').checked=false;
-    showToast('Acesso criado ✓');
-    loadAccessAdmin();
-  }catch(e){
-    console.error(e);
-    alert('Não consegui salvar o acesso. Veja se os campos da tabela existem como esperado.');
-  }
-}
-async function extendAccessDays(id,dias){
-  try{
-    const rows=await sbFetch(`${ACCESS_TBL}?select=*&id=eq.${encodeURIComponent(id)}&limit=1`);
-    const row=rows?.[0]; if(!row)return;
-    const base=parseDate(row.vencimento_em);
-    const start=base&&base.getTime()>Date.now()?base:new Date();
-    start.setDate(start.getDate()+dias);
-    await sbFetch(`${ACCESS_TBL}?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:{vencimento_em:start.toISOString(),status:'ativo'}});
-    showToast(`Licença ampliada +${dias}d ✓`);
-    loadAccessAdmin();
-  }catch(e){
-    console.error(e);
-    alert('Falha ao ampliar dias.');
-  }
-}
-async function setAccessStatus(id,status){
-  try{
-    await sbFetch(`${ACCESS_TBL}?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:{status}});
-    showToast('Status atualizado ✓');
-    loadAccessAdmin();
-  }catch(e){
-    console.error(e);
-    alert('Falha ao atualizar status.');
-  }
-}
-async function changeAccessPassword(id,currentPwd){
-  const atual=String(currentPwd||'').replace(/&#039;/g,"'");
-  const nova=(prompt('Digite a nova senha:', atual)||'').trim();
-  if(!nova || nova===atual)return;
-  try{
-    await sbFetch(`${ACCESS_TBL}?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:{senha:nova}});
-    showToast('Senha alterada ✓');
-    loadAccessAdmin();
-  }catch(e){
-    console.error(e);
-    alert('Falha ao trocar senha.');
-  }
-}
-async function deleteAccessUser(id){
-  if(!confirm('Excluir este acesso?'))return;
-  try{
-    await sbFetch(`${ACCESS_TBL}?id=eq.${encodeURIComponent(id)}`,{method:'DELETE',prefer:'return=minimal'});
-    showToast('Acesso excluído ✓');
-    loadAccessAdmin();
-  }catch(e){
-    console.error(e);
-    alert('Falha ao excluir.');
-  }
-}
-function copyAccessUser(txt){
-  const clean=String(txt||'').replace(/&#039;/g,"'");
-  navigator.clipboard.writeText(clean).then(()=>showToast('Usuário copiado ✓')).catch(()=>alert(clean));
-}
+async function saveAccessUser(){showToast('Nesta versão, os usuários criam a própria conta na tela inicial. A gestão de chaves ficou no Supabase para manter segurança real.');}
+function copyAccessUser(v){navigator.clipboard?.writeText(String(v||''));showToast('Copiado.');}
+function changeAccessPassword(){showToast('A troca de senha agora é pelo próprio login do usuário no Auth.');}
+function extendAccessDays(){showToast('Nesta versão, a renovação fica centralizada no Supabase.');}
+function setAccessStatus(){showToast('Nesta versão, o bloqueio/ativação fica centralizado no Supabase.');}
+function deleteAccessUser(){showToast('Nesta versão, a gestão de contas fica centralizada no Supabase.');}
 
-
-/* ══════════════════════════════════════
-   ESTADO GLOBAL
-══════════════════════════════════════ */
-let ALL=[];
-let ATTACHES=[];
-let ATTACHES_BY_LEAD={};
-let editingId=null;
-let origSnap=null;
-let SHOW_LOST=false;
-let SHOW_SB=false;
-let isDragging=false;
-let currentView='kanban';
-
-// F = form elements
-const dlg=document.getElementById('dlg');
-const leadForm=document.getElementById('leadForm');
-function F(n){return leadForm.elements[n];}
-
-/* ══════════════════════════════════════
-   SUPABASE
-══════════════════════════════════════ */
 async function sbFetch(path,{method='GET',body=null,prefer='return=representation'}={}){
-  const r=await fetch(`${SB_URL}/rest/v1/${path}`,{method,headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':prefer},body:body?JSON.stringify(body):null});
+  let bearer=SB_KEY;
+  try{
+    const sess=await AUTH_CLIENT.auth.getSession();
+    if(sess?.data?.session?.access_token)bearer=sess.data.session.access_token;
+  }catch(e){}
+  const r=await fetch(`${SB_URL}/rest/v1/${path}`,{method,headers:{'apikey':SB_KEY,'Authorization':`Bearer ${bearer}`,'Content-Type':'application/json','Prefer':prefer},body:body?JSON.stringify(body):null});
   if(!r.ok){const t=await r.text().catch(()=>'');throw new Error(`${r.status} ${r.statusText} — ${t}`);}
   if(r.status===204)return null;
   return r.json();
@@ -4523,177 +4835,23 @@ function initApp(){
 }
 
 document.getElementById('gateEntrar').addEventListener('click',accessLogin);
-document.getElementById('gateLimpar').addEventListener('click',()=>{document.getElementById('gateUsuario').value='';document.getElementById('gateSenha').value='';clearAccessMessages();});
+document.getElementById('gateCadastrar').addEventListener('click',accessRegister);
+document.getElementById('gateAtivarChave').addEventListener('click',activateLicenseFromInput);
+document.getElementById('gateWhats').addEventListener('click',openAccessWhats);
+document.getElementById('gateLimpar').addEventListener('click',()=>{
+  ['gateUsuario','gateSenha','gateNome','gateCadastroEmail','gateCadastroSenha','gateChave'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  clearAccessMessages();
+});
 document.getElementById('btnLogoutAccess').addEventListener('click',logoutAccess);
 document.getElementById('gateSenha').addEventListener('keydown',e=>{if(e.key==='Enter')accessLogin();});
 document.getElementById('gateUsuario').addEventListener('keydown',e=>{if(e.key==='Enter')accessLogin();});
+document.getElementById('gateCadastroSenha').addEventListener('keydown',e=>{if(e.key==='Enter')accessRegister();});
+document.getElementById('gateChave').addEventListener('keydown',e=>{if(e.key==='Enter')activateLicenseFromInput();});
+document.getElementById('tabLogin').addEventListener('click',()=>{clearAccessMessages();setAccessMode('login');});
+document.getElementById('tabCadastro').addEventListener('click',()=>{clearAccessMessages();setAccessMode('cadastro');});
+document.getElementById('tabLicenca').addEventListener('click',()=>{clearAccessMessages();setAccessMode('licenca');});
+setAccessMode('login');
 accessResumeSession();
 </script>
-
-
-<style>
-#licenseOverlay{
-  position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;
-  background:rgba(4,10,20,.72);backdrop-filter:blur(6px);padding:18px;
-}
-#licenseOverlay.show{display:flex}
-.license-modal{
-  width:min(460px,100%);background:linear-gradient(180deg,#0E2E5F,#0A2144);
-  border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:24px;
-  box-shadow:0 24px 60px rgba(0,0,0,.35);color:#EDF3FB;text-align:center;
-}
-.license-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);padding:7px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin-bottom:14px}
-.license-title{font-size:28px;font-weight:800;line-height:1.05;margin-bottom:10px}
-.license-text{font-size:14px;line-height:1.55;color:#D7E2F2;margin-bottom:18px}
-.license-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px;text-align:left;margin-bottom:14px}
-.license-label{font-size:11px;font-weight:800;color:#D7E2F2;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
-.license-input{width:100%;padding:14px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#F7FAFF;color:#0F274B;font:inherit;font-size:14px;outline:none}
-.license-actions{display:flex;flex-direction:column;gap:10px;margin-top:14px}
-.license-btn{width:100%;min-height:46px;border:0;border-radius:14px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:.15s}
-.license-btn:hover{filter:brightness(1.04)}
-.license-btn.primary{background:linear-gradient(180deg,#D7AF42,#B78A1F);color:#fff}
-.license-btn.wa{background:linear-gradient(180deg,#25D366,#159947);color:#fff}
-.license-note{font-size:12px;color:#BFD0E6;margin-top:12px;line-height:1.45}
-.license-error,.license-ok{display:none;margin-top:10px;padding:10px 12px;border-radius:12px;font-size:12px;font-weight:700}
-.license-error{background:rgba(214,69,69,.14);border:1px solid rgba(214,69,69,.35);color:#FFD7D7}
-.license-ok{background:rgba(22,163,74,.14);border:1px solid rgba(22,163,74,.35);color:#D9FFE6}
-body.license-locked{overflow:hidden!important}
-@media(max-width:640px){
- .license-modal{padding:20px 16px;border-radius:18px}
- .license-title{font-size:24px}
-}
-</style>
-
-<div id="licenseOverlay" aria-hidden="true">
-  <div class="license-modal" role="dialog" aria-modal="true" aria-labelledby="licenseTitle">
-    <div class="license-badge">LeveCRM • acesso necessário</div>
-    <div class="license-title" id="licenseTitle">Seu período de teste expirou</div>
-    <div class="license-text">Para continuar usando o CRM, solicite sua liberação e insira a chave de acesso recebida.</div>
-
-    <div class="license-box">
-      <div class="license-label">Digite sua chave</div>
-      <input id="licenseInput" class="license-input" type="text" placeholder="Ex.: CRM-TESTE-30DIAS" autocomplete="off"/>
-      <div id="licenseError" class="license-error">Chave inválida. Confira o código e tente novamente.</div>
-      <div id="licenseOk" class="license-ok">Licença ativada com sucesso. Recarregando…</div>
-    </div>
-
-    <div class="license-actions">
-      <button class="license-btn primary" id="licenseActivateBtn" type="button">Ativar chave</button>
-      <button class="license-btn wa" id="licenseWhatsappBtn" type="button">Solicitar acesso pelo WhatsApp</button>
-    </div>
-
-    <div class="license-note">Teste grátis de 7 dias. Nesta versão inicial, a licença está gravada no navegador. Depois a gente conecta isso no Supabase para bloquear por usuário de forma definitiva.</div>
-  </div>
-</div>
-
-<script>
-(function(){
-  const TRIAL_DAYS = 7;
-  const TEST_KEYS = {
-    'CRM-TESTE-30DIAS': 30,
-    'LEVECRM-30DIAS': 30,
-    'LEVECRM-ANUAL': 365
-  };
-
-  function storageKey(base){
-    return 'levecrm_license_' + base;
-  }
-  function getISODatePlus(days){
-    const d = new Date();
-    d.setHours(0,0,0,0);
-    d.setDate(d.getDate() + days);
-    return d.toISOString();
-  }
-  function parseDate(v){
-    const d = new Date(v);
-    return Number.isNaN(d.getTime()) ? null : d;
-  }
-  function getTrialStart(){
-    let v = localStorage.getItem(storageKey('trial_start'));
-    if(!v){
-      v = new Date().toISOString();
-      localStorage.setItem(storageKey('trial_start'), v);
-    }
-    return parseDate(v);
-  }
-  function getLicenseEnd(){
-    return parseDate(localStorage.getItem(storageKey('license_end')));
-  }
-  function isLicenseValid(){
-    const end = getLicenseEnd();
-    if(!end) return false;
-    return new Date() <= end;
-  }
-  function isTrialValid(){
-    const start = getTrialStart();
-    if(!start) return false;
-    const end = new Date(start);
-    end.setDate(end.getDate() + TRIAL_DAYS);
-    return new Date() <= end;
-  }
-  function showLicenseOverlay(){
-    const overlay = document.getElementById('licenseOverlay');
-    if(!overlay) return;
-    overlay.classList.add('show');
-    overlay.setAttribute('aria-hidden','false');
-    document.body.classList.add('license-locked');
-  }
-  function hideLicenseOverlay(){
-    const overlay = document.getElementById('licenseOverlay');
-    if(!overlay) return;
-    overlay.classList.remove('show');
-    overlay.setAttribute('aria-hidden','true');
-    document.body.classList.remove('license-locked');
-  }
-  function clearLicenseMessages(){
-    const err = document.getElementById('licenseError');
-    const ok = document.getElementById('licenseOk');
-    if(err) err.style.display = 'none';
-    if(ok) ok.style.display = 'none';
-  }
-  function openWhatsForLicense(){
-    const text = 'Olá, meu teste do LeveCRM expirou e quero ativar meu acesso.';
-    window.open('https://wa.me/5554999013331?text=' + encodeURIComponent(text), '_blank');
-  }
-  function activateLicense(){
-    clearLicenseMessages();
-    const input = document.getElementById('licenseInput');
-    const code = (input?.value || '').trim().toUpperCase();
-    if(!TEST_KEYS[code]){
-      const err = document.getElementById('licenseError');
-      if(err) err.style.display = 'block';
-      return;
-    }
-    const end = new Date();
-    end.setDate(end.getDate() + TEST_KEYS[code]);
-    localStorage.setItem(storageKey('license_end'), end.toISOString());
-    localStorage.setItem(storageKey('license_code'), code);
-    const ok = document.getElementById('licenseOk');
-    if(ok) ok.style.display = 'block';
-    setTimeout(()=>window.location.reload(), 700);
-  }
-  function bindLicenseUI(){
-    document.getElementById('licenseActivateBtn')?.addEventListener('click', activateLicense);
-    document.getElementById('licenseWhatsappBtn')?.addEventListener('click', openWhatsForLicense);
-    document.getElementById('licenseInput')?.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter') activateLicense();
-    });
-  }
-  function enforceLicense(){
-    bindLicenseUI();
-    if(isLicenseValid() || isTrialValid()){
-      hideLicenseOverlay();
-      return;
-    }
-    showLicenseOverlay();
-  }
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', enforceLicense);
-  } else {
-    enforceLicense();
-  }
-})();
-</script>
-
 </body>
 </html>
