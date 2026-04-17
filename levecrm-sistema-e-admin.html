@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeveCRM — Sistema + Admin</title>
+  <style>
+    :root{
+      --bg:#eef3f9;
+      --panel:#ffffff;
+      --line:#d9e3ef;
+      --text:#18324d;
+      --muted:#6d8197;
+      --primary:#2f6fb3;
+      --primary2:#1f5d9f;
+      --dark:#12304d;
+      --radius:18px;
+      --shadow:0 18px 38px rgba(16,39,66,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--text);
+      background:linear-gradient(180deg,#eef3f9 0%,#e8eff8 100%);
+    }
+    .app{
+      min-height:100%;
+      display:grid;
+      grid-template-rows:auto 1fr;
+    }
+    .topbar{
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      box-shadow:0 8px 24px rgba(17,40,66,.05);
+      position:sticky;
+      top:0;
+      z-index:20;
+    }
+    .topbar-inner{
+      max-width:1440px;
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .brand-badge{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      background:linear-gradient(180deg,#2f6fb3,#1f5d9f);
+      color:#fff;
+      display:grid;
+      place-items:center;
+      font-size:22px;
+      font-weight:800;
+      flex-shrink:0;
+      box-shadow:0 10px 20px rgba(47,111,179,.25);
+    }
+    .brand h1{
+      margin:0;
+      font-size:22px;
+      line-height:1;
+    }
+    .brand p{
+      margin:4px 0 0;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .tab-btn,.top-btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      min-height:44px;
+      padding:10px 16px;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+    .tab-btn:hover,.top-btn:hover{transform:translateY(-1px)}
+    .tab-btn.active{
+      background:linear-gradient(180deg,var(--primary),var(--primary2));
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 10px 20px rgba(47,111,179,.22);
+    }
+    .top-btn.primary{
+      background:linear-gradient(180deg,var(--primary),var(--primary2));
+      color:#fff;
+      border-color:transparent;
+    }
+    .stage{
+      padding:18px;
+      max-width:1440px;
+      margin:0 auto;
+      width:100%;
+      display:grid;
+      grid-template-rows:auto 1fr;
+      gap:14px;
+      min-height:calc(100vh - 82px);
+    }
+    .notice{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:14px 16px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .notice strong{display:block;font-size:14px}
+    .notice span{display:block;font-size:13px;color:var(--muted);margin-top:4px}
+    .panel{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      min-height:0;
+      display:none;
+    }
+    .panel.active{display:block}
+    iframe{
+      width:100%;
+      height:calc(100vh - 180px);
+      border:0;
+      display:block;
+      background:#f5f8fc;
+    }
+    .empty{
+      padding:30px;
+      display:grid;
+      place-items:center;
+      min-height:420px;
+      background:linear-gradient(180deg,#fbfdff,#f3f7fc);
+    }
+    .empty-card{
+      width:min(760px,100%);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+    .empty-card h2{
+      margin:0 0 10px;
+      font-size:28px;
+      line-height:1.1;
+    }
+    .empty-card p{
+      margin:0 0 14px;
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.55;
+    }
+    .steps{
+      margin:18px 0;
+      padding:16px;
+      border:1px dashed #bfd2e8;
+      border-radius:16px;
+      background:#f8fbff;
+    }
+    .steps div{
+      margin:8px 0;
+      font-size:14px;
+    }
+    .steps b{color:var(--dark)}
+    .inline{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+    .status-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#eef6ff;
+      color:#225b9a;
+      border:1px solid #c9dff6;
+      font-weight:800;
+      font-size:12px;
+    }
+    .dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#2f6fb3;
+    }
+    @media (max-width:760px){
+      .topbar-inner{padding:12px}
+      .stage{padding:12px}
+      .brand h1{font-size:20px}
+      .notice{padding:12px}
+      iframe{height:calc(100vh - 210px)}
+      .empty-card{padding:20px}
+      .empty-card h2{font-size:24px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-badge">L</div>
+          <div>
+            <h1>LeveCRM</h1>
+            <p>Sistema principal + painel administrativo de usuários</p>
+          </div>
+        </div>
+
+        <div class="nav">
+          <button class="tab-btn active" data-tab="crm">Leads / CRM</button>
+          <button class="tab-btn" data-tab="admin">Admin usuários</button>
+          <button class="top-btn" id="btnReload">Recarregar aba</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="notice">
+        <div>
+          <strong>Integração pronta</strong>
+          <span>Esta página centraliza o CRM e o painel administrativo no mesmo lugar.</span>
+        </div>
+        <div class="status-chip"><span class="dot"></span><span id="statusText">Aba ativa: Leads / CRM</span></div>
+      </div>
+
+      <section class="panel active" id="panel-crm">
+        <div class="empty" id="crmFallback">
+          <div class="empty-card">
+            <h2>Falta apenas o arquivo principal do CRM nesta mesma pasta</h2>
+            <p>O painel administrativo já está pronto. Para esta aba abrir o sistema principal, o arquivo do teu CRM precisa estar junto deste HTML no GitHub com o nome <b>app.html</b>.</p>
+
+            <div class="steps">
+              <div><b>1.</b> Suba este arquivo como <b>index.html</b></div>
+              <div><b>2.</b> Suba o teu CRM principal como <b>app.html</b></div>
+              <div><b>3.</b> Suba o painel administrativo como <b>admin-usuarios-levecrm.html</b></div>
+            </div>
+
+            <p>Assim que o <b>app.html</b> existir, esta aba vai abrir o teu Kanban normalmente e a outra aba vai abrir o painel de usuários.</p>
+
+            <div class="inline">
+              <button class="top-btn primary" onclick="window.open('admin-usuarios-levecrm.html','_blank')">Abrir admin agora</button>
+              <button class="top-btn" onclick="location.reload()">Atualizar página</button>
+            </div>
+          </div>
+        </div>
+        <iframe id="crmFrame" src="app.html" style="display:none" title="LeveCRM principal"></iframe>
+      </section>
+
+      <section class="panel" id="panel-admin">
+        <iframe id="adminFrame" src="admin-usuarios-levecrm.html" title="Painel administrativo"></iframe>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panels = {
+      crm: document.getElementById('panel-crm'),
+      admin: document.getElementById('panel-admin')
+    };
+    const statusText = document.getElementById('statusText');
+    const crmFrame = document.getElementById('crmFrame');
+    const adminFrame = document.getElementById('adminFrame');
+    const crmFallback = document.getElementById('crmFallback');
+
+    function setTab(tab){
+      tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+      panels.crm.classList.toggle('active', tab === 'crm');
+      panels.admin.classList.toggle('active', tab === 'admin');
+      statusText.textContent = 'Aba ativa: ' + (tab === 'crm' ? 'Leads / CRM' : 'Admin usuários');
+      localStorage.setItem('levecrm_tab_ativa', tab);
+    }
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => setTab(btn.dataset.tab));
+    });
+
+    document.getElementById('btnReload').addEventListener('click', () => {
+      const active = localStorage.getItem('levecrm_tab_ativa') || 'crm';
+      if (active === 'crm') crmFrame.src = crmFrame.src;
+      else adminFrame.src = adminFrame.src;
+    });
+
+    crmFrame.addEventListener('load', () => {
+      try{
+        crmFallback.style.display = 'none';
+        crmFrame.style.display = 'block';
+      }catch(e){}
+    });
+
+    crmFrame.addEventListener('error', () => {
+      crmFallback.style.display = 'grid';
+      crmFrame.style.display = 'none';
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('levecrm_tab_ativa') || 'crm';
+      setTab(saved);
+      // fallback adicional: se não existir app.html, mantém o aviso
+      setTimeout(() => {
+        try{
+          const currentSrc = crmFrame.contentWindow.location.href || '';
+          if (currentSrc.includes('app.html')) {
+            crmFallback.style.display = 'none';
+            crmFrame.style.display = 'block';
+          }
+        }catch(e){
+          // em caso de bloqueio ou ausência do arquivo, mantém fallback visível
+        }
+      }, 1200);
+    });
+  </script>
+</body>
+</html>
