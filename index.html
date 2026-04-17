@@ -421,6 +421,17 @@ body.t-light .adm-input{background:#FFFFFF;border-color:#D0DAE8;color:#1B2E4B}
 body.t-light .api-info{background:#EFF6FF;border-color:#BFDBFE;color:#334155}
 
 
+/* ═══ ADMIN ACESSOS ═══ */
+.access-admin-note{padding:11px 13px;background:rgba(74,144,217,.08);border:1px solid rgba(74,144,217,.2);border-radius:10px;font-size:12px;color:var(--muted);line-height:1.6}
+body.t-light .access-admin-note{background:#EFF6FF;border-color:#BFDBFE;color:#334155}
+.access-tools{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.access-tools .btn{min-height:32px;padding:6px 10px}
+#accessList .adm-item{align-items:flex-start}
+#accessList .adm-item-name{font-size:13px}
+#accessList .adm-item-detail{line-height:1.55}
+
+
+
 /* ═══ ECOSSISTEMA LEVECRM ═══ */
 .module-wrap{max-width:1700px;margin:0 auto;padding:18px 14px 26px}
 .module-hero{background:linear-gradient(135deg,var(--col),var(--col2));border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;margin-bottom:14px}
@@ -618,6 +629,40 @@ body.t-light .h-row2 > select{background:#FFFFFF!important;border-color:#D0DAE8!
 #kanbanBar{align-items:center;gap:8px}
 #btnQuick svg{display:block}
 
+
+
+/* ═══ ACESSO LEVECRM ═══ */
+body.access-locked{overflow:hidden}
+.user-pill{display:none;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--bg3);border:1px solid var(--line);font-size:11px;font-weight:700;color:var(--text);white-space:nowrap}
+#btnLogoutAccess{display:none}
+#accessOverlay{position:fixed;inset:0;z-index:120;background:linear-gradient(180deg,#08111E,#0D1B2E);display:none;align-items:center;justify-content:center;padding:20px}
+#accessOverlay.show{display:flex}
+.access-card{width:min(440px,100%);background:rgba(255,255,255,.97);border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,.45);padding:28px 24px;color:#0F172A}
+.access-logo{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.access-logo-mark{width:52px;height:52px;border-radius:16px;background:linear-gradient(180deg,#1B4E9B,#0F2D5C);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:22px;box-shadow:0 8px 20px rgba(15,45,92,.25)}
+.access-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#64748B}
+.access-title{font-size:28px;font-weight:800;line-height:1.05;color:#0F172A;letter-spacing:-.02em}
+.access-sub{font-size:13px;color:#64748B;line-height:1.6;margin:10px 0 18px}
+.access-field{margin-bottom:12px}
+.access-label{display:block;font-size:12px;font-weight:700;color:#334155;margin:0 0 6px 2px}
+.access-input{width:100%;padding:13px 14px;border-radius:14px;border:1.5px solid #D9E2EC;background:#F8FAFC;color:#0F172A;font:inherit;font-size:15px;outline:none}
+.access-input:focus{border-color:#4A90D9;background:#fff;box-shadow:0 0 0 4px rgba(74,144,217,.12)}
+.access-actions{display:flex;gap:8px;margin-top:8px}
+.access-btn{flex:1;border:0;border-radius:14px;padding:13px 14px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:.12s}
+.access-btn.primary{background:linear-gradient(180deg,#1E4FA0,#2B6CB0);color:#fff}
+.access-btn.secondary{background:#EEF2F7;color:#334155}
+.access-btn:disabled{opacity:.65;cursor:not-allowed}
+.access-alert{display:none;border-radius:12px;padding:11px 12px;font-size:12px;font-weight:700;margin-bottom:12px}
+.access-alert.show{display:block}
+.access-alert.error{background:#FEF2F2;color:#B91C1C;border:1px solid #FECACA}
+.access-alert.ok{background:#ECFDF3;color:#166534;border:1px solid #BBF7D0}
+.access-foot{margin-top:14px;font-size:11px;color:#64748B;line-height:1.55}
+@media(max-width:560px){
+  #accessOverlay{padding:14px}
+  .access-card{padding:22px 18px;border-radius:20px}
+  .access-title{font-size:24px}
+}
+
 </style>
 </head>
 <body class="t-navy">
@@ -697,6 +742,8 @@ body.t-light .h-row2 > select{background:#FFFFFF!important;border-color:#D0DAE8!
 
         <button class="btn" id="btnAiImport">🤖 Importar Print</button>
         <button class="btn btn-gold" id="btnInstallApp" title="Instalar app" style="display:none">📱 Instalar app</button>
+        <span class="user-pill" id="whoPill"><span class="dot ok"></span>Conta</span>
+        <button class="btn" id="btnLogoutAccess" type="button">Sair</button>
       </div>
     </div>
 
@@ -751,6 +798,34 @@ body.t-light .h-row2 > select{background:#FFFFFF!important;border-color:#D0DAE8!
       <button class="btn" id="mfAiImport" style="grid-column:1/-1;background:linear-gradient(180deg,#1B2E4B,#0D1E32);color:#4A90D9;border-color:rgba(74,144,217,.3)">🤖 Importar Print</button>
     </div>
     <button class="btn mf-close" id="mobileFilterClose">Fechar</button>
+  </div>
+</div>
+
+<div id="accessOverlay" class="show">
+  <div class="access-card">
+    <div class="access-logo">
+      <div class="access-logo-mark">L</div>
+      <div>
+        <div class="access-kicker">LeveCRM • acesso</div>
+        <div class="access-title">Entrar</div>
+      </div>
+    </div>
+    <div class="access-sub">Acesse seu CRM online com usuário e senha. Se o acesso estiver vencido, o sistema bloqueia a entrada automaticamente.</div>
+    <div class="access-alert error" id="accessError"></div>
+    <div class="access-alert ok" id="accessOk"></div>
+    <div class="access-field">
+      <label class="access-label">Usuário ou e-mail</label>
+      <input class="access-input" id="gateUsuario" placeholder="Digite seu usuário" autocomplete="username"/>
+    </div>
+    <div class="access-field">
+      <label class="access-label">Senha</label>
+      <input class="access-input" id="gateSenha" type="password" placeholder="Digite sua senha" autocomplete="current-password"/>
+    </div>
+    <div class="access-actions">
+      <button class="access-btn primary" id="gateEntrar" type="button">Entrar no LeveCRM</button>
+      <button class="access-btn secondary" id="gateLimpar" type="button">Limpar</button>
+    </div>
+    <div class="access-foot">Teste local: o sistema libera apenas usuários ativos e dentro do prazo de vencimento cadastrado no Supabase.</div>
   </div>
 </div>
 
@@ -2751,6 +2826,7 @@ updatePrintCounters(); renderTabs(); renderLibrary();
       <button class="adm-tab active" data-tab="responsaveis">👤 Responsáveis</button>
       <button class="adm-tab" data-tab="imoveis">🏠 Imóveis</button>
       <button class="adm-tab" data-tab="origens">📍 Origens</button>
+      <button class="adm-tab" data-tab="access" id="admAccessTab" style="display:none">🔐 Acessos</button>
       <button class="adm-tab" data-tab="apikey">🔑 API Key (IA)</button>
     </div>
 
@@ -2792,6 +2868,36 @@ updatePrintCounters(); renderTabs(); renderLibrary();
           <button class="btn btn-accent" onclick="addOrig()">+ Adicionar</button>
         </div>
         <div class="adm-list" id="listOrig"></div>
+      </div>
+    </div>
+
+
+    <div class="adm-sec" id="adm-access">
+      <div class="adm-panel">
+        <h3>🔐 Usuários e licenças</h3>
+        <p class="adm-desc">Área rápida para criar acessos, renovar vencimentos, bloquear e trocar senhas sem entrar no Supabase.</p>
+        <div class="access-admin-note" id="accessAdminMsg">Carregando acessos…</div>
+        <div id="accessAdminBlock" style="display:none;margin-top:14px">
+          <div class="adm-add-row" style="align-items:flex-end">
+            <input class="adm-input" id="accNome" placeholder="Nome do usuário" style="flex:1.4"/>
+            <input class="adm-input" id="accUsuario" placeholder="Usuário ou e-mail" style="flex:1.1"/>
+            <input class="adm-input" id="accSenha" placeholder="Senha" style="max-width:160px"/>
+            <input class="adm-input" id="accDias" type="number" min="1" step="1" value="30" placeholder="Dias" style="max-width:90px"/>
+            <select class="adm-input" id="accStatus" style="max-width:130px">
+              <option value="ativo">Ativo</option>
+              <option value="teste">Teste</option>
+              <option value="pausado">Pausado</option>
+              <option value="cancelado">Cancelado</option>
+              <option value="bloqueado">Bloqueado</option>
+            </select>
+            <label class="adm-input" style="display:flex;align-items:center;gap:8px;max-width:120px;background:var(--bg3)">
+              <input id="accAdmin" type="checkbox"/>
+              Admin
+            </label>
+            <button class="btn btn-accent" type="button" id="btnSalvarAcesso">+ Salvar acesso</button>
+          </div>
+          <div class="adm-list" id="accessList"></div>
+        </div>
       </div>
     </div>
 
@@ -2982,6 +3088,8 @@ const TBL='leads';
 const ATT_TBL='lead_attachments';
 const ATT_BKT='lead-attachments';
 const AG_TBL='agenda_eventos';
+const ACCESS_TBL='crm_access_users';
+const ACCESS_SESSION_KEY='levecrm_access_session_v1';
 
 /* ══════════════════════════════════════
    LISTAS
@@ -2999,10 +3107,10 @@ const ETAPA_MAP={'Novo':'NOVO / INICIAL','Em atendimento':'ATENDIMENTO','Evoluin
 const MOTIVO_MAP={'Preço':'Investimento baixo','Parcelamento':'Parcelamento direto','Financiamento':'Parcelamento direto','Nunca respondeu':'Após valor some','Lead espírita':'Curiosidade','Escolheu outro':'Comprou outro','Comprou outro':'Comprou outro','Sumiu':'Após valor some'};
 
 function loadAdminData(){
-  try{const r=localStorage.getItem('crm_resp');const e=localStorage.getItem('crm_emp');const o=localStorage.getItem('crm_orig');if(r){const a=JSON.parse(r);if(a.length)LISTS.responsavel=a.map(x=>x.nome||x);}if(e){const a=JSON.parse(e);if(a.length)LISTS.empreendimento=a.map(x=>x.nome||x);}if(o){const a=JSON.parse(o);if(a.length)LISTS.origem=a;}}catch(e){}}
-function getAdminResp(){try{const r=localStorage.getItem('crm_resp');return r?JSON.parse(r):LISTS.responsavel.map(n=>({id:cid(),nome:n,fone:'',creci:''}));}catch{return[];}}
-function getAdminEmps(){try{const e=localStorage.getItem('crm_emp');return e?JSON.parse(e):LISTS.empreendimento.map(n=>({id:cid(),nome:n,tipo:'',valor:'',status:'Disponível'}));}catch{return[];}}
-function getAdminOrigs(){try{const o=localStorage.getItem('crm_orig');return o?JSON.parse(o):[...LISTS.origem];}catch{return[];}}
+  try{const r=lsGet('crm_resp');const e=lsGet('crm_emp');const o=lsGet('crm_orig');if(r){const a=JSON.parse(r);if(a.length)LISTS.responsavel=a.map(x=>x.nome||x);}if(e){const a=JSON.parse(e);if(a.length)LISTS.empreendimento=a.map(x=>x.nome||x);}if(o){const a=JSON.parse(o);if(a.length)LISTS.origem=a;}}catch(e){}}
+function getAdminResp(){try{const r=lsGet('crm_resp');return r?JSON.parse(r):LISTS.responsavel.map(n=>({id:cid(),nome:n,fone:'',creci:''}));}catch{return[];}}
+function getAdminEmps(){try{const e=lsGet('crm_emp');return e?JSON.parse(e):LISTS.empreendimento.map(n=>({id:cid(),nome:n,tipo:'',valor:'',status:'Disponível'}));}catch{return[];}}
+function getAdminOrigs(){try{const o=lsGet('crm_orig');return o?JSON.parse(o):[...LISTS.origem];}catch{return[];}}
 
 /* ══════════════════════════════════════
    NORMALIZAÇÃO
@@ -3031,6 +3139,162 @@ function fileIcon(fn,ft){const n=String(fn||'').toLowerCase();const t=String(ft|
 
 function showToast(msg,dur=1600){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),dur);}
 function setStatus(type,msg){const dc=type==='ok'?'ok':type==='bad'?'bad':'warn';document.getElementById('statusbar').innerHTML=`<span class="pill"><span class="dot ${dc}"></span>${msg}</span>`;}
+
+/* ══════════════════════════════════════
+   ACESSO
+══════════════════════════════════════ */
+let ACCESS_USER=null;
+let appBooted=false;
+function lsKey(k){return ACCESS_USER?.id?`${k}_${ACCESS_USER.id}`:k;}
+function lsGet(k){return localStorage.getItem(lsKey(k));}
+function lsSet(k,v){localStorage.setItem(lsKey(k),v);}
+function lsRemove(k){localStorage.removeItem(lsKey(k));}
+function accessNormUser(v){return String(v||'').trim().toLowerCase();}
+function accessFmt(dt){const d=parseDate(dt);return d?`${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`:'—';}
+function showAccessError(msg){const el=document.getElementById('accessError');const ok=document.getElementById('accessOk');if(ok)ok.classList.remove('show');if(el){el.textContent=msg;el.classList.add('show');}}
+function showAccessOk(msg){const el=document.getElementById('accessOk');const err=document.getElementById('accessError');if(err)err.classList.remove('show');if(el){el.textContent=msg;el.classList.add('show');}}
+function clearAccessMessages(){document.getElementById('accessError')?.classList.remove('show');document.getElementById('accessOk')?.classList.remove('show');}
+function lockAccess(msg=''){document.body.classList.add('access-locked');document.getElementById('accessOverlay')?.classList.add('show');if(msg)showAccessError(msg);}
+function unlockAccess(){document.body.classList.remove('access-locked');document.getElementById('accessOverlay')?.classList.remove('show');}
+function accessRowExpired(row){const v=parseDate(row?.vencimento_em||'');return !v||v.getTime()<Date.now();}
+function validateAccessRow(row){if(!row)return{ok:false,msg:'Usuário ou senha não conferem.'};const st=String(row.status||'ativo').toLowerCase();if(st==='pausado')return{ok:false,msg:'Seu acesso está pausado.'};if(st==='cancelado')return{ok:false,msg:'Seu acesso foi cancelado.'};if(accessRowExpired(row))return{ok:false,msg:'Seu acesso venceu. Renove para continuar.'};return{ok:true,msg:''};}
+function saveAccessSession(row){localStorage.setItem(ACCESS_SESSION_KEY,JSON.stringify({id:row.id,usuario:accessNormUser(row.usuario),senha:String(row.senha||'')}));}
+function clearAccessSession(){localStorage.removeItem(ACCESS_SESSION_KEY);ACCESS_USER=null;}
+function applyAccessUser(row){ACCESS_USER={id:row.id,usuario:accessNormUser(row.usuario),nome:row.nome||row.usuario||'',is_admin:!!row.is_admin,status:row.status||'ativo',vencimento_em:row.vencimento_em||''};const who=document.getElementById('whoPill');if(who){who.innerHTML=`<span class="dot ok"></span>${escH(ACCESS_USER.nome)}${ACCESS_USER.is_admin?' • admin':''}`;who.style.display='inline-flex';}const out=document.getElementById('btnLogoutAccess');if(out)out.style.display='inline-flex';const adminTab=document.querySelector('.nav-tab[data-view="admin"]');if(adminTab)adminTab.style.display=ACCESS_USER.is_admin?'inline-flex':'none';}
+async function fetchAccessByCredentials(usuario,senha){const u=accessNormUser(usuario), s=String(senha||'').trim();const path=`${ACCESS_TBL}?select=*&usuario=eq.${encodeURIComponent(u)}&senha=eq.${encodeURIComponent(s)}&limit=1`;const rows=await sbFetch(path);return Array.isArray(rows)&&rows[0]?rows[0]:null;}
+async function fetchAccessBySession(session){const path=`${ACCESS_TBL}?select=*&id=eq.${encodeURIComponent(session.id)}&usuario=eq.${encodeURIComponent(accessNormUser(session.usuario))}&senha=eq.${encodeURIComponent(String(session.senha||''))}&limit=1`;const rows=await sbFetch(path);return Array.isArray(rows)&&rows[0]?rows[0]:null;}
+async function accessLogin(){clearAccessMessages();const usuario=document.getElementById('gateUsuario').value.trim();const senha=document.getElementById('gateSenha').value.trim();if(!usuario||!senha){showAccessError('Preencha usuário e senha.');return;}const btn=document.getElementById('gateEntrar');btn.disabled=true;btn.textContent='Entrando...';try{const row=await fetchAccessByCredentials(usuario,senha);const check=validateAccessRow(row);if(!check.ok){showAccessError(check.msg);return;}saveAccessSession(row);applyAccessUser(row);unlockAccess();showAccessOk(`Acesso liberado até ${accessFmt(row.vencimento_em)}.`);if(!appBooted)initApp();setTimeout(clearAccessMessages,1200);}catch(e){console.error(e);showAccessError('Não consegui validar seu acesso agora.');}finally{btn.disabled=false;btn.textContent='Entrar no LeveCRM';}}
+async function accessResumeSession(){lockAccess();clearAccessMessages();const raw=localStorage.getItem(ACCESS_SESSION_KEY);if(!raw)return;try{const session=JSON.parse(raw);const row=await fetchAccessBySession(session);const check=validateAccessRow(row);if(!check.ok){clearAccessSession();showAccessError(check.msg);return;}applyAccessUser(row);unlockAccess();if(!appBooted)initApp();}catch(e){clearAccessSession();console.error(e);}}
+function logoutAccess(){clearAccessSession();document.getElementById('gateSenha').value='';document.getElementById('gateUsuario').value='';const who=document.getElementById('whoPill');if(who)who.style.display='none';const out=document.getElementById('btnLogoutAccess');if(out)out.style.display='none';lockAccess();showAccessOk('Sessão encerrada.');}
+
+
+
+async function loadAccessAdmin(){
+  const msg=document.getElementById('accessAdminMsg');
+  const block=document.getElementById('accessAdminBlock');
+  const list=document.getElementById('accessList');
+  if(!msg||!block||!list)return;
+  if(!ACCESS_USER?.is_admin){
+    msg.textContent='Somente o administrador visualiza esta aba.';
+    block.style.display='none';
+    return;
+  }
+  msg.textContent='Carregando usuários e licenças...';
+  block.style.display='none';
+  try{
+    const rows=await sbFetch(`${ACCESS_TBL}?select=*&order=nome.asc`);
+    msg.textContent='Aqui você cria, renova, bloqueia e ajusta acessos.';
+    block.style.display='block';
+    list.innerHTML=(rows||[]).map(r=>{
+      const expired=accessRowExpired(r);
+      const st=String(r.status||'ativo').toLowerCase();
+      const tag=expired?'Vencido':(st==='pausado'?'Pausado':st==='cancelado'?'Cancelado':st==='bloqueado'?'Bloqueado':st==='teste'?'Teste':'Ativo');
+      const cor=expired?'#DC2626':st==='pausado'?'#D97706':st==='cancelado'?'#7F1D1D':st==='bloqueado'?'#B91C1C':st==='teste'?'#2563EB':'#16A34A';
+      return `<div class="adm-item">
+        <div style="flex:1;min-width:0">
+          <div class="adm-item-name">${escH(r.nome||'Sem nome')} ${r.is_admin?'<span class="chip" style="background:#EFF6FF;color:#1D4ED8;border-color:#BFDBFE">ADMIN</span>':''}</div>
+          <div class="adm-item-detail">
+            Usuário: <b>${escH(r.usuario||'')}</b><br>
+            Senha: <b>${escH(r.senha||'')}</b><br>
+            Status: <b style="color:${cor}">${tag}</b><br>
+            Início: <b>${escH((r.data_inicio||'').slice(0,10) || '—')}</b><br>
+            Vence em: <b>${accessFmt(r.vencimento_em)}</b>
+          </div>
+        </div>
+        <div class="access-tools">
+          <button class="btn" onclick="copyAccessUser('${String(r.usuario||'').replace(/'/g,\"&#039;\")}')">Copiar usuário</button>
+          <button class="btn" onclick="changeAccessPassword('${r.id}','${String(r.senha||'').replace(/'/g,\"&#039;\")}')">Nova senha</button>
+          <button class="btn" onclick="extendAccessDays('${r.id}',7)">+7d</button>
+          <button class="btn" onclick="extendAccessDays('${r.id}',30)">+30d</button>
+          <button class="btn" onclick="setAccessStatus('${r.id}','${(st==='ativo'||st==='teste')?'pausado':'ativo'}')">${(st==='ativo'||st==='teste')?'Pausar':'Ativar'}</button>
+          <button class="btn" onclick="deleteAccessUser('${r.id}')" style="color:#EF4444;border-color:rgba(239,68,68,.3)">Excluir</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="adm-item"><div class="adm-item-name">Nenhum acesso cadastrado ainda.</div></div>';
+  }catch(e){
+    console.error(e);
+    msg.textContent='Não consegui ler a tabela de acessos.';
+    block.style.display='none';
+  }
+}
+async function saveAccessUser(){
+  if(!ACCESS_USER?.is_admin)return;
+  const nome=(document.getElementById('accNome').value||'').trim();
+  const usuario=accessNormUser(document.getElementById('accUsuario').value);
+  const senha=(document.getElementById('accSenha').value||'').trim();
+  const dias=Math.max(1,Number(document.getElementById('accDias').value||30));
+  const status=document.getElementById('accStatus').value || 'ativo';
+  const is_admin=document.getElementById('accAdmin').checked;
+  if(!nome||!usuario||!senha){showToast('Preencha nome, usuário e senha.');return;}
+  const venc=new Date(); venc.setDate(venc.getDate()+dias);
+  const payload={id:cid(),nome,usuario,senha,status,is_admin,data_inicio:todayISO(),vencimento_em:venc.toISOString()};
+  try{
+    await sbFetch(ACCESS_TBL,{method:'POST',body:payload});
+    ['accNome','accUsuario','accSenha'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('accDias').value='30';
+    document.getElementById('accStatus').value='ativo';
+    document.getElementById('accAdmin').checked=false;
+    showToast('Acesso criado ✓');
+    loadAccessAdmin();
+  }catch(e){
+    console.error(e);
+    alert('Não consegui salvar o acesso. Veja se os campos da tabela existem como esperado.');
+  }
+}
+async function extendAccessDays(id,dias){
+  try{
+    const rows=await sbFetch(`${ACCESS_TBL}?select=*&id=eq.${encodeURIComponent(id)}&limit=1`);
+    const row=rows?.[0]; if(!row)return;
+    const base=parseDate(row.vencimento_em);
+    const start=base&&base.getTime()>Date.now()?base:new Date();
+    start.setDate(start.getDate()+dias);
+    await sbFetch(`${ACCESS_TBL}?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:{vencimento_em:start.toISOString(),status:'ativo'}});
+    showToast(`Licença ampliada +${dias}d ✓`);
+    loadAccessAdmin();
+  }catch(e){
+    console.error(e);
+    alert('Falha ao ampliar dias.');
+  }
+}
+async function setAccessStatus(id,status){
+  try{
+    await sbFetch(`${ACCESS_TBL}?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:{status}});
+    showToast('Status atualizado ✓');
+    loadAccessAdmin();
+  }catch(e){
+    console.error(e);
+    alert('Falha ao atualizar status.');
+  }
+}
+async function changeAccessPassword(id,currentPwd){
+  const atual=String(currentPwd||'').replace(/&#039;/g,"'");
+  const nova=(prompt('Digite a nova senha:', atual)||'').trim();
+  if(!nova || nova===atual)return;
+  try{
+    await sbFetch(`${ACCESS_TBL}?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',body:{senha:nova}});
+    showToast('Senha alterada ✓');
+    loadAccessAdmin();
+  }catch(e){
+    console.error(e);
+    alert('Falha ao trocar senha.');
+  }
+}
+async function deleteAccessUser(id){
+  if(!confirm('Excluir este acesso?'))return;
+  try{
+    await sbFetch(`${ACCESS_TBL}?id=eq.${encodeURIComponent(id)}`,{method:'DELETE',prefer:'return=minimal'});
+    showToast('Acesso excluído ✓');
+    loadAccessAdmin();
+  }catch(e){
+    console.error(e);
+    alert('Falha ao excluir.');
+  }
+}
+function copyAccessUser(txt){
+  const clean=String(txt||'').replace(/&#039;/g,"'");
+  navigator.clipboard.writeText(clean).then(()=>showToast('Usuário copiado ✓')).catch(()=>alert(clean));
+}
+
 
 /* ══════════════════════════════════════
    ESTADO GLOBAL
@@ -3062,7 +3326,8 @@ async function sbFetch(path,{method='GET',body=null,prefer='return=representatio
 async function loadAll(){
   try{
     setStatus('warn','Conectando…');
-    const data=await sbFetch(`${TBL}?select=*`);
+    const path=ACCESS_USER?.is_admin?`${TBL}?select=*`:`${TBL}?select=*&access_user_id=eq.${encodeURIComponent(ACCESS_USER.id)}`;
+    const data=await sbFetch(path);
     ALL=(Array.isArray(data)?data:[]).map(l=>({...l,etapa:normEtapa(l.etapa),motivo_perda:normMotivo(l.motivo_perda),visita:normVisita(l.visita),ordem:Number(l.ordem)||Date.now(),proximo_contato:normProx(l.proximo_contato)}));
     await loadAttaches();
     setStatus('ok','Online • Sincronizado');
@@ -3070,8 +3335,14 @@ async function loadAll(){
   }catch(e){setStatus('bad','Sem conexão');console.error(e);render();}
 }
 async function loadAttaches(){
-  try{const d=await sbFetch(`${ATT_TBL}?select=id,lead_id,file_name,file_path,file_type,created_at&order=created_at.desc`);ATTACHES=(Array.isArray(d)?d:[]).map(i=>({...i,public_url:toPublicUrl(i.file_path)}));}
-  catch(e){ATTACHES=[];console.warn(e);}
+  try{
+    if(!ALL.length){ATTACHES=[];refreshAttMap();return;}
+    const ids=ALL.map(x=>x.id).filter(Boolean);
+    if(!ids.length){ATTACHES=[];refreshAttMap();return;}
+    const inList=ids.map(id=>`"${String(id).replace(/"/g,'')}"`).join(',');
+    const d=await sbFetch(`${ATT_TBL}?select=id,lead_id,file_name,file_path,file_type,created_at&lead_id=in.(${encodeURIComponent(inList)})&order=created_at.desc`);
+    ATTACHES=(Array.isArray(d)?d:[]).map(i=>({...i,public_url:toPublicUrl(i.file_path)}));
+  }catch(e){ATTACHES=[];console.warn(e);}
   refreshAttMap();
 }
 function refreshAttMap(){ATTACHES_BY_LEAD=ATTACHES.reduce((a,i)=>{(a[i.lead_id]||=[]).push(i);return a;},{});}
@@ -3085,6 +3356,7 @@ async function upsertLead(payload,{silent=false}={}){
   payload.visita=normVisita(payload.visita);
   if(payload.etapa!=='PERDIDO')payload.motivo_perda='';
   else if(!payload.motivo_perda){alert('Motivo de perda obrigatório.');return false;}
+  payload.access_user_id=ACCESS_USER?.id||payload.access_user_id||null;
   payload.atualizado_em=nowISO();
   payload.ordem=Number(payload.ordem)||Date.now();
   const exists=ALL.some(x=>x.id===payload.id);
@@ -3297,13 +3569,13 @@ function wireDnD(){
 /* ══════════════════════════════════════
    HISTÓRICO DE MOVIMENTAÇÃO
 ══════════════════════════════════════ */
-function getHistory(id){try{return JSON.parse(localStorage.getItem(`crm_hist_${id}`)||'[]');}catch{return[];}}
+function getHistory(id){try{return JSON.parse(lsGet(`crm_hist_${id}`)||'[]');}catch{return[];}}
 function addHistory(id,action){
   const h=getHistory(id);
   h.push({date:nowISO(),action});
   // manter últimas 20 entradas
   if(h.length>20)h.shift();
-  localStorage.setItem(`crm_hist_${id}`,JSON.stringify(h));
+  lsSet(`crm_hist_${id}`,JSON.stringify(h));
 }
 function renderHistory(id){
   const el=document.getElementById('historyLog');if(!el)return;
@@ -3514,18 +3786,18 @@ function renderDashboard(){
 /* ══════════════════════════════════════
    API KEY
 ══════════════════════════════════════ */
-function getApiKey(){return localStorage.getItem('crm_anthropic_key')||'';}
+function getApiKey(){return lsGet('crm_anthropic_key')||'';}
 function saveApiKey(){
   const v=(document.getElementById('apiKeyInput').value||'').trim();
   if(!v){alert('Cole a chave antes de salvar.');return;}
   if(!v.startsWith('sk-ant-')&&!confirm('Chave não começa com "sk-ant-". Continuar?'))return;
-  localStorage.setItem('crm_anthropic_key',v);
+  lsSet('crm_anthropic_key',v);
   showApiKeyStatus('✅ Chave salva! A IA está funcionando.','#16A34A');
   showToast('Chave da API salva ✓');
 }
 function clearApiKey(){
   if(!confirm('Remover a chave? A IA vai parar.'))return;
-  localStorage.removeItem('crm_anthropic_key');
+  lsRemove('crm_anthropic_key');
   document.getElementById('apiKeyInput').value='';
   showApiKeyStatus('🗑️ Chave removida.','#EF4444');
 }
@@ -3716,9 +3988,9 @@ async function openAgenda(){
   await agLoad();
   agYear=new Date().getFullYear();agMonth=new Date().getMonth();
   const n=new Date();agSelDay=agKey(agYear,agMonth,n.getDate());
-  const notifAsked=localStorage.getItem('crm_notif_asked')==='1';
+  const notifAsked=lsGet('crm_notif_asked')==='1';
   if('Notification' in window&&Notification.permission==='default'&&!notifAsked){
-    localStorage.setItem('crm_notif_asked','1');
+    lsSet('crm_notif_asked','1');
     Notification.requestPermission();
   }
   setAgendaDefaultTime();
@@ -3886,13 +4158,14 @@ function renderAdmin(tab){
       return`<div class="adm-item"><div class="adm-item-name">📍 ${escH(it)}</div><div class="adm-item-detail">${c} leads</div><button class="adm-del" onclick="removeOrig(${i})">✕</button></div>`;
     }).join(''):'<div style="font-size:12px;color:var(--muted);padding:8px">Nenhuma cadastrada.</div>';
   }
+  if(tab==='access'){loadAccessAdmin();}
 }
-function addResp(){const n=(document.getElementById('newRespNome').value||'').trim();if(!n){alert('Informe o nome.');return;}const f=(document.getElementById('newRespFone').value||'').trim();const c=(document.getElementById('newRespCreci').value||'').trim();const items=getAdminResp();if(items.some(x=>(x.nome||x)===n)){alert('Já existe.');return;}items.push({id:cid(),nome:n,fone:f,creci:c});localStorage.setItem('crm_resp',JSON.stringify(items));LISTS.responsavel=items.map(x=>x.nome||x);document.getElementById('newRespNome').value='';document.getElementById('newRespFone').value='';document.getElementById('newRespCreci').value='';renderAdmin('responsaveis');syncFilterSelects();showToast('Corretor adicionado.');}
-function removeResp(i){const items=getAdminResp();if(!confirm(`Remover "${items[i].nome||items[i]}"?`))return;items.splice(i,1);localStorage.setItem('crm_resp',JSON.stringify(items));LISTS.responsavel=items.map(x=>x.nome||x);renderAdmin('responsaveis');syncFilterSelects();showToast('Removido.');}
-function addEmp(){const n=(document.getElementById('newEmpNome').value||'').trim();if(!n){alert('Informe o nome.');return;}const t=document.getElementById('newEmpTipo').value;const v=(document.getElementById('newEmpValor').value||'').trim();const s=document.getElementById('newEmpStatus').value;const items=getAdminEmps();if(items.some(x=>(x.nome||x)===n)){alert('Já existe.');return;}items.push({id:cid(),nome:n,tipo:t,valor:v,status:s});localStorage.setItem('crm_emp',JSON.stringify(items));LISTS.empreendimento=items.map(x=>x.nome||x);document.getElementById('newEmpNome').value='';renderAdmin('imoveis');syncFilterSelects();showToast('Imóvel adicionado.');}
-function removeEmp(i){const items=getAdminEmps();if(!confirm(`Remover "${items[i].nome||items[i]}"?`))return;items.splice(i,1);localStorage.setItem('crm_emp',JSON.stringify(items));LISTS.empreendimento=items.map(x=>x.nome||x);renderAdmin('imoveis');syncFilterSelects();showToast('Removido.');}
-function addOrig(){const n=(document.getElementById('newOrigNome').value||'').trim();if(!n){alert('Informe a origem.');return;}const items=getAdminOrigs();if(items.includes(n)){alert('Já existe.');return;}items.push(n);localStorage.setItem('crm_orig',JSON.stringify(items));LISTS.origem=items;document.getElementById('newOrigNome').value='';renderAdmin('origens');syncFilterSelects();showToast('Origem adicionada.');}
-function removeOrig(i){const items=getAdminOrigs();if(!confirm(`Remover "${items[i]}"?`))return;items.splice(i,1);localStorage.setItem('crm_orig',JSON.stringify(items));LISTS.origem=items;renderAdmin('origens');syncFilterSelects();showToast('Removido.');}
+function addResp(){const n=(document.getElementById('newRespNome').value||'').trim();if(!n){alert('Informe o nome.');return;}const f=(document.getElementById('newRespFone').value||'').trim();const c=(document.getElementById('newRespCreci').value||'').trim();const items=getAdminResp();if(items.some(x=>(x.nome||x)===n)){alert('Já existe.');return;}items.push({id:cid(),nome:n,fone:f,creci:c});lsSet('crm_resp',JSON.stringify(items));LISTS.responsavel=items.map(x=>x.nome||x);document.getElementById('newRespNome').value='';document.getElementById('newRespFone').value='';document.getElementById('newRespCreci').value='';renderAdmin('responsaveis');syncFilterSelects();showToast('Corretor adicionado.');}
+function removeResp(i){const items=getAdminResp();if(!confirm(`Remover "${items[i].nome||items[i]}"?`))return;items.splice(i,1);lsSet('crm_resp',JSON.stringify(items));LISTS.responsavel=items.map(x=>x.nome||x);renderAdmin('responsaveis');syncFilterSelects();showToast('Removido.');}
+function addEmp(){const n=(document.getElementById('newEmpNome').value||'').trim();if(!n){alert('Informe o nome.');return;}const t=document.getElementById('newEmpTipo').value;const v=(document.getElementById('newEmpValor').value||'').trim();const s=document.getElementById('newEmpStatus').value;const items=getAdminEmps();if(items.some(x=>(x.nome||x)===n)){alert('Já existe.');return;}items.push({id:cid(),nome:n,tipo:t,valor:v,status:s});lsSet('crm_emp',JSON.stringify(items));LISTS.empreendimento=items.map(x=>x.nome||x);document.getElementById('newEmpNome').value='';renderAdmin('imoveis');syncFilterSelects();showToast('Imóvel adicionado.');}
+function removeEmp(i){const items=getAdminEmps();if(!confirm(`Remover "${items[i].nome||items[i]}"?`))return;items.splice(i,1);lsSet('crm_emp',JSON.stringify(items));LISTS.empreendimento=items.map(x=>x.nome||x);renderAdmin('imoveis');syncFilterSelects();showToast('Removido.');}
+function addOrig(){const n=(document.getElementById('newOrigNome').value||'').trim();if(!n){alert('Informe a origem.');return;}const items=getAdminOrigs();if(items.includes(n)){alert('Já existe.');return;}items.push(n);lsSet('crm_orig',JSON.stringify(items));LISTS.origem=items;document.getElementById('newOrigNome').value='';renderAdmin('origens');syncFilterSelects();showToast('Origem adicionada.');}
+function removeOrig(i){const items=getAdminOrigs();if(!confirm(`Remover "${items[i]}"?`))return;items.splice(i,1);lsSet('crm_orig',JSON.stringify(items));LISTS.origem=items;renderAdmin('origens');syncFilterSelects();showToast('Removido.');}
 
 /* ══════════════════════════════════════
    NAVIGATION
@@ -3906,7 +4179,7 @@ function switchView(name){
   const bar=document.getElementById('kanbanBar');if(bar)bar.style.display=name==='kanban'?'flex':'none';
   const mob=document.getElementById('mobileActions');if(mob)mob.style.display=name==='kanban'&&window.innerWidth<=640?'grid':'none';
   if(name==='dashboard')renderDashboard();
-  if(name==='admin'){renderAdmin('responsaveis');renderAdmin('imoveis');renderAdmin('origens');}
+  if(name==='admin'){renderAdmin('responsaveis');renderAdmin('imoveis');renderAdmin('origens');if(ACCESS_USER?.is_admin)loadAccessAdmin();}
   if(name==='kanban'){render();syncMobileFiltersFromDesktop();refreshFilterButtonLabels();}
 }
 
@@ -3955,7 +4228,7 @@ function applyTheme(t){
   document.querySelectorAll('.theme-opt').forEach(o=>o.classList.toggle('active',o.dataset.theme===theme));
   const lbl={'t-navy':'Azul','t-light':'Claro','t-dark':'Escuro'};
   document.getElementById('themeToggle').textContent=(lbl[theme]||'Tema')+' ▾';
-  localStorage.setItem('crm_theme',theme);
+  lsSet('crm_theme',theme);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='t-light'?'#F5F7FA':theme==='t-dark'?'#08090C':'#0D1B2E');
   setupPWA();
 }
@@ -4190,28 +4463,41 @@ document.querySelectorAll('.adm-tab').forEach(t=>t.addEventListener('click',()=>
   document.querySelectorAll('.adm-sec').forEach(x=>x.classList.remove('active'));
   const s=document.getElementById(`adm-${t.dataset.tab}`);if(s)s.classList.add('active');
   if(t.dataset.tab==='apikey')loadApiKeyIntoField();
+  else if(t.dataset.tab==='access')loadAccessAdmin();
   else renderAdmin(t.dataset.tab);
 }));
 
 // Contadores caixas
 document.getElementById('boxPerdidos').addEventListener('click',()=>{SHOW_LOST=!SHOW_LOST;render();});
+const btnSalvarAcesso=document.getElementById('btnSalvarAcesso'); if(btnSalvarAcesso) btnSalvarAcesso.addEventListener('click',saveAccessUser);
 
 /* ══════════════════════════════════════
    INIT
 ══════════════════════════════════════ */
-loadAdminData();
-syncFilterSelects();
-syncMobileFiltersFromDesktop();
-refreshFilterButtonLabels();
-setupPaste();
-setupPWA();
-registerSW();
-applyTheme('t-light');
-updateInstallBtn();
-setInterval(()=>{document.querySelectorAll('.card').forEach(c=>{const id=c.dataset.id;const l=ALL.find(x=>x.id===id);if(!l)return;const nc=nextContact(l);const ncEl=c.querySelector('.chip-nc-neutral,.chip-nc-green,.chip-nc-red');if(ncEl&&nc){ncEl.className=`chip ${nc.cls}`;ncEl.textContent=nc.text;}});},60000);
-setInterval(updateAgendaBadge,60000);
-agLoad().then(()=>{rescheduleAllNotifs();updateAgendaBadge();});
-loadAll().then(()=>{refreshFilterButtonLabels();syncMobileFiltersFromDesktop();const mob=document.getElementById('mobileActions');if(mob)mob.style.display=currentView==='kanban'&&window.innerWidth<=640?'grid':'none';});
+function initApp(){
+  if(appBooted)return;
+  appBooted=true;
+  loadAdminData();
+  syncFilterSelects();
+  syncMobileFiltersFromDesktop();
+  refreshFilterButtonLabels();
+  setupPaste();
+  setupPWA();
+  registerSW();
+  applyTheme('t-light');
+  updateInstallBtn();
+  setInterval(()=>{document.querySelectorAll('.card').forEach(c=>{const id=c.dataset.id;const l=ALL.find(x=>x.id===id);if(!l)return;const nc=nextContact(l);const ncEl=c.querySelector('.chip-nc-neutral,.chip-nc-green,.chip-nc-red');if(ncEl&&nc){ncEl.className=`chip ${nc.cls}`;ncEl.textContent=nc.text;}});},60000);
+  setInterval(updateAgendaBadge,60000);
+  agLoad().then(()=>{rescheduleAllNotifs();updateAgendaBadge();});
+  loadAll().then(()=>{refreshFilterButtonLabels();syncMobileFiltersFromDesktop();const mob=document.getElementById('mobileActions');if(mob)mob.style.display=currentView==='kanban'&&window.innerWidth<=640?'grid':'none';});
+}
+
+document.getElementById('gateEntrar').addEventListener('click',accessLogin);
+document.getElementById('gateLimpar').addEventListener('click',()=>{document.getElementById('gateUsuario').value='';document.getElementById('gateSenha').value='';clearAccessMessages();});
+document.getElementById('btnLogoutAccess').addEventListener('click',logoutAccess);
+document.getElementById('gateSenha').addEventListener('keydown',e=>{if(e.key==='Enter')accessLogin();});
+document.getElementById('gateUsuario').addEventListener('keydown',e=>{if(e.key==='Enter')accessLogin();});
+accessResumeSession();
 </script>
 </body>
 </html>
