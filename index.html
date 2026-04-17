@@ -1128,7 +1128,7 @@ body.access-locked{overflow:hidden}
 /* ═══════════════════════════════════════
    CHAVE DE API (não exibida ao usuário)
 ═══════════════════════════════════════ */
-const _k = &quot;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&quot;;
+const _k = &quot;&quot;;
 
 /* ═══════════════════════════════════════
    BIBLIOTECA DE CONDUÇÃO
@@ -1274,6 +1274,36 @@ let currentTab = libraryData[0].id;
 let lastBestResponse = &quot;&quot;;
 let historyPrintTexts = [];
 let lastPrintText = &quot;&quot;;
+
+function cleanOcrText(raw) {
+  let t = (raw || &quot;&quot;).replace(/\r/g, &quot;\n&quot;);
+  t = t.replace(/\b\d{1,2}[:.]\d{2}\b/g, &quot; &quot;);
+  t = t.replace(/\b(?:Encaminhada|Encaminhado|Mensagem|Editada|Hoje|ontem|AM|PM)\b/gi, &quot; &quot;);
+  t = t.replace(/[^\S\n]+/g, &quot; &quot;);
+  t = t.replace(/[^\wÀ-ÿ.,!?;:()\-/\n ]+/g, &quot; &quot;);
+  t = t.replace(/^[ \t]+|[ \t]+$/gm, &quot;&quot;);
+  t = t.split(/\n/).map(l =&gt; l.trim()).filter(l =&gt; {
+    if (!l) return false;
+    if (/^(?:[0-9.:]+|[A-Z]{1,4}|[><'"“”‘’=+*#_~`-]+)$/.test(l)) return false;
+    if (l.length &lt;= 2) return false;
+    return true;
+  }).join(&quot;\n&quot;);
+  t = t.replace(/\n{3,}/g, &quot;\n\n&quot;).trim();
+  return t;
+}
+
+function applyCommercialPositioning(text, raw) {
+  let t = normalizeSuggestionText(text || &quot;&quot;);
+  const asksPrice = /(pre[cç]o|valor|quanto|parcela|entrada|condi[cç][aã]o|financiamento)/i.test(raw || &quot;&quot;);
+  if (!asksPrice) return t;
+  const hasValueLead = /(localiza[cç][aã]o|conforto|qualidade|padr[aã]o|empreendimento|diferenciais|valoriz)/i.test(t);
+  const hasQualification = /(\?|morar|investir|perfil|o que faz mais sentido|qual se encaixa)/i.test(t);
+  const intro = &quot;Antes de falar em valores soltos, o ponto principal é te direcionar na opção certa, porque isso muda bastante conforme perfil, planta e momento de compra.&quot;;
+  const qual = &quot;Me confirma uma coisa: hoje você está buscando mais para morar ou investir?&quot;;
+  if (!hasValueLead) t = intro + &quot;\n\n&quot; + t;
+  if (!hasQualification) t = t + &quot;\n\n&quot; + qual;
+  return normalizeSuggestionText(t);
+}
 
 /* ═══════════════════════════════════════
    EXTRAIR NOME DO CLIENTE AUTOMATICAMENTE
@@ -1481,7 +1511,7 @@ function analyzeMessage() {
 
   const greeting = buildGreeting(primary, raw);
   const intro = buildContextIntro(primary, raw);
-  const responses = combined.map(r =&gt; ({...r, fullText: normalizeSuggestionText(greeting + &quot;\n\n&quot; + intro + &quot;\n\n&quot; + r.text)}));
+  const responses = combined.map(r =&gt; ({...r, fullText: applyCommercialPositioning(greeting + &quot;\n\n&quot; + intro + &quot;\n\n&quot; + r.text, raw)}));
   if (primary.id === &quot;cold_silent&quot;) responses.forEach(r =&gt; { r.fullText = r.fullText.replace(/\nPerfeito[.,]/g, &quot;&quot;); });
   lastBestResponse = responses[0] ? responses[0].fullText : &quot;&quot;;
   renderResponses(responses);
@@ -1506,6 +1536,8 @@ function renderResponses(responses) {
 async function analyzeWithAI() {
   const raw = (document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;).trim();
   if (!raw) { showToast(&quot;Cole a mensagem do cliente antes de analisar.&quot;); return; }
+  const apiKey = (localStorage.getItem(&quot;crm_anthropic_key&quot;) || _k || &quot;&quot;).trim();
+  if (!apiKey) { showToast(&quot;Configure a chave da IA em Configurações → API Key.&quot;); return; }
 
   showLoading(&quot;Analisando com IA&quot;, &quot;Claude está lendo o contexto e montando a análise completa...&quot;);
 
@@ -1533,7 +1565,7 @@ ${raw}`;
       method: &quot;POST&quot;,
       headers: {
         &quot;Content-Type&quot;: &quot;application/json&quot;,
-        &quot;x-api-key&quot;: _k,
+        &quot;x-api-key&quot;: apiKey,
         &quot;anthropic-version&quot;: &quot;2023-06-01&quot;,
         &quot;anthropic-dangerous-direct-browser-access&quot;: &quot;true&quot;
       },
@@ -1583,7 +1615,7 @@ function renderAIAnalysis(parsed) {
   const avoidEl = document.getElementById(&quot;analysisAvoid&quot;);
   if (parsed.evitar) { avoidEl.style.display = &quot;block&quot;; avoidEl.textContent = &quot;⚠ Erro a evitar: &quot; + parsed.evitar; }
   else { avoidEl.style.display = &quot;none&quot;; }
-  const respostas = parsed.respostas || [];
+  const respostas = (parsed.respostas || []).map(r =&gt; ({...r, texto: applyCommercialPositioning((r.texto || &quot;&quot;).replace(/\\n/g, &quot;\n&quot;), document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;)}));
   lastBestResponse = respostas[0] ? respostas[0].texto : &quot;&quot;;
   document.getElementById(&quot;analysisResponses&quot;).innerHTML = respostas.map((r, i) =&gt; `
     &lt;div class=&quot;response ${i===0?&quot;best&quot;:&quot;&quot;}&quot;&gt;
@@ -1633,7 +1665,7 @@ async function handlePrintUpload(files, type) {
       for (const file of fileList) {
         const result = await Tesseract.recognize(file, &quot;por&quot;);
         const extracted = result?.data?.text?.trim() || &quot;&quot;;
-        if (extracted) { historyPrintTexts.push(extracted); lidos++; }
+        if (extracted) { historyPrintTexts.push(cleanOcrText(extracted)); lidos++; }
       }
       if (!lidos) { hideLoading(); showToast(&quot;Não consegui ler os prints do histórico.&quot;); return; }
     } else {
@@ -1641,10 +1673,10 @@ async function handlePrintUpload(files, type) {
       const result = await Tesseract.recognize(file, &quot;por&quot;);
       const extracted = result?.data?.text?.trim() || &quot;&quot;;
       if (!extracted) { hideLoading(); showToast(&quot;Não consegui ler o último print.&quot;); return; }
-      lastPrintText = extracted;
+      lastPrintText = cleanOcrText(extracted);
     }
     rebuildMessageFromPrints();
-    showLoading(&quot;Analisando conversa&quot;, &quot;Os prints foram lidos. Montando a leitura e as respostas sugeridas.&quot;);
+    showLoading(&quot;Analisando conversa&quot;, &quot;Os prints foram lidos. Limpando o texto e montando as respostas sugeridas.&quot;);
     setTimeout(() =&gt; {
       try { analyzeMessage(); showToast(isHistory ? &quot;Histórico lido e analisado.&quot; : &quot;Última conversa lida e analisada.&quot;); }
       catch(err) { console.error(err); showToast(&quot;Erro ao analisar a conversa.&quot;); }
@@ -4497,5 +4529,171 @@ document.getElementById('gateSenha').addEventListener('keydown',e=>{if(e.key==='
 document.getElementById('gateUsuario').addEventListener('keydown',e=>{if(e.key==='Enter')accessLogin();});
 accessResumeSession();
 </script>
+
+
+<style>
+#licenseOverlay{
+  position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;
+  background:rgba(4,10,20,.72);backdrop-filter:blur(6px);padding:18px;
+}
+#licenseOverlay.show{display:flex}
+.license-modal{
+  width:min(460px,100%);background:linear-gradient(180deg,#0E2E5F,#0A2144);
+  border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:24px;
+  box-shadow:0 24px 60px rgba(0,0,0,.35);color:#EDF3FB;text-align:center;
+}
+.license-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);padding:7px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;margin-bottom:14px}
+.license-title{font-size:28px;font-weight:800;line-height:1.05;margin-bottom:10px}
+.license-text{font-size:14px;line-height:1.55;color:#D7E2F2;margin-bottom:18px}
+.license-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px;text-align:left;margin-bottom:14px}
+.license-label{font-size:11px;font-weight:800;color:#D7E2F2;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.license-input{width:100%;padding:14px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#F7FAFF;color:#0F274B;font:inherit;font-size:14px;outline:none}
+.license-actions{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.license-btn{width:100%;min-height:46px;border:0;border-radius:14px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:.15s}
+.license-btn:hover{filter:brightness(1.04)}
+.license-btn.primary{background:linear-gradient(180deg,#D7AF42,#B78A1F);color:#fff}
+.license-btn.wa{background:linear-gradient(180deg,#25D366,#159947);color:#fff}
+.license-note{font-size:12px;color:#BFD0E6;margin-top:12px;line-height:1.45}
+.license-error,.license-ok{display:none;margin-top:10px;padding:10px 12px;border-radius:12px;font-size:12px;font-weight:700}
+.license-error{background:rgba(214,69,69,.14);border:1px solid rgba(214,69,69,.35);color:#FFD7D7}
+.license-ok{background:rgba(22,163,74,.14);border:1px solid rgba(22,163,74,.35);color:#D9FFE6}
+body.license-locked{overflow:hidden!important}
+@media(max-width:640px){
+ .license-modal{padding:20px 16px;border-radius:18px}
+ .license-title{font-size:24px}
+}
+</style>
+
+<div id="licenseOverlay" aria-hidden="true">
+  <div class="license-modal" role="dialog" aria-modal="true" aria-labelledby="licenseTitle">
+    <div class="license-badge">LeveCRM • acesso necessário</div>
+    <div class="license-title" id="licenseTitle">Seu período de teste expirou</div>
+    <div class="license-text">Para continuar usando o CRM, solicite sua liberação e insira a chave de acesso recebida.</div>
+
+    <div class="license-box">
+      <div class="license-label">Digite sua chave</div>
+      <input id="licenseInput" class="license-input" type="text" placeholder="Ex.: CRM-TESTE-30DIAS" autocomplete="off"/>
+      <div id="licenseError" class="license-error">Chave inválida. Confira o código e tente novamente.</div>
+      <div id="licenseOk" class="license-ok">Licença ativada com sucesso. Recarregando…</div>
+    </div>
+
+    <div class="license-actions">
+      <button class="license-btn primary" id="licenseActivateBtn" type="button">Ativar chave</button>
+      <button class="license-btn wa" id="licenseWhatsappBtn" type="button">Solicitar acesso pelo WhatsApp</button>
+    </div>
+
+    <div class="license-note">Teste grátis de 7 dias. Nesta versão inicial, a licença está gravada no navegador. Depois a gente conecta isso no Supabase para bloquear por usuário de forma definitiva.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const TRIAL_DAYS = 7;
+  const TEST_KEYS = {
+    'CRM-TESTE-30DIAS': 30,
+    'LEVECRM-30DIAS': 30,
+    'LEVECRM-ANUAL': 365
+  };
+
+  function storageKey(base){
+    return 'levecrm_license_' + base;
+  }
+  function getISODatePlus(days){
+    const d = new Date();
+    d.setHours(0,0,0,0);
+    d.setDate(d.getDate() + days);
+    return d.toISOString();
+  }
+  function parseDate(v){
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+  function getTrialStart(){
+    let v = localStorage.getItem(storageKey('trial_start'));
+    if(!v){
+      v = new Date().toISOString();
+      localStorage.setItem(storageKey('trial_start'), v);
+    }
+    return parseDate(v);
+  }
+  function getLicenseEnd(){
+    return parseDate(localStorage.getItem(storageKey('license_end')));
+  }
+  function isLicenseValid(){
+    const end = getLicenseEnd();
+    if(!end) return false;
+    return new Date() <= end;
+  }
+  function isTrialValid(){
+    const start = getTrialStart();
+    if(!start) return false;
+    const end = new Date(start);
+    end.setDate(end.getDate() + TRIAL_DAYS);
+    return new Date() <= end;
+  }
+  function showLicenseOverlay(){
+    const overlay = document.getElementById('licenseOverlay');
+    if(!overlay) return;
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden','false');
+    document.body.classList.add('license-locked');
+  }
+  function hideLicenseOverlay(){
+    const overlay = document.getElementById('licenseOverlay');
+    if(!overlay) return;
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden','true');
+    document.body.classList.remove('license-locked');
+  }
+  function clearLicenseMessages(){
+    const err = document.getElementById('licenseError');
+    const ok = document.getElementById('licenseOk');
+    if(err) err.style.display = 'none';
+    if(ok) ok.style.display = 'none';
+  }
+  function openWhatsForLicense(){
+    const text = 'Olá, meu teste do LeveCRM expirou e quero ativar meu acesso.';
+    window.open('https://wa.me/5554999013331?text=' + encodeURIComponent(text), '_blank');
+  }
+  function activateLicense(){
+    clearLicenseMessages();
+    const input = document.getElementById('licenseInput');
+    const code = (input?.value || '').trim().toUpperCase();
+    if(!TEST_KEYS[code]){
+      const err = document.getElementById('licenseError');
+      if(err) err.style.display = 'block';
+      return;
+    }
+    const end = new Date();
+    end.setDate(end.getDate() + TEST_KEYS[code]);
+    localStorage.setItem(storageKey('license_end'), end.toISOString());
+    localStorage.setItem(storageKey('license_code'), code);
+    const ok = document.getElementById('licenseOk');
+    if(ok) ok.style.display = 'block';
+    setTimeout(()=>window.location.reload(), 700);
+  }
+  function bindLicenseUI(){
+    document.getElementById('licenseActivateBtn')?.addEventListener('click', activateLicense);
+    document.getElementById('licenseWhatsappBtn')?.addEventListener('click', openWhatsForLicense);
+    document.getElementById('licenseInput')?.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter') activateLicense();
+    });
+  }
+  function enforceLicense(){
+    bindLicenseUI();
+    if(isLicenseValid() || isTrialValid()){
+      hideLicenseOverlay();
+      return;
+    }
+    showLicenseOverlay();
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', enforceLicense);
+  } else {
+    enforceLicense();
+  }
+})();
+</script>
+
 </body>
 </html>
