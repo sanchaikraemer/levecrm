@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeveCRM — Painel Administrativo de Usuários</title>
+  <style>
+    :root{
+      --bg:#eef3f9;
+      --card:#ffffff;
+      --line:#d9e3ef;
+      --text:#18324d;
+      --muted:#6d8197;
+      --primary:#2f6fb3;
+      --primary-2:#1f5d9f;
+      --success:#1f9d55;
+      --danger:#d64545;
+      --warn:#b7791f;
+      --shadow:0 14px 36px rgba(17,40,66,.08);
+      --radius:18px;
+      --radius-sm:12px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      background:linear-gradient(180deg,#eef3f9 0%, #e7eef7 100%);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:1380px;
+      margin:0 auto;
+      padding:24px 18px 40px;
+    }
+    .topbar{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .eyebrow{
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:var(--muted);
+      font-weight:700;
+    }
+    h1{
+      margin:0;
+      font-size:28px;
+      line-height:1;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:14px;
+      max-width:760px;
+    }
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:700;
+      cursor:pointer;
+      min-height:44px;
+    }
+    .btn:hover{filter:brightness(.98)}
+    .btn.primary{
+      background:linear-gradient(180deg,var(--primary),var(--primary-2));
+      color:#fff;
+      border-color:transparent;
+    }
+    .btn.success{
+      background:linear-gradient(180deg,#28ad64,#1f8f52);
+      color:#fff;
+      border-color:transparent;
+    }
+    .btn.danger{
+      background:linear-gradient(180deg,#e25757,#cb3f3f);
+      color:#fff;
+      border-color:transparent;
+    }
+    .btn.ghost{
+      background:#f7fbff;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:380px 1fr;
+      gap:18px;
+      align-items:start;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panel-head{
+      padding:18px 20px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .panel-head h2{
+      margin:0;
+      font-size:18px;
+    }
+    .panel-body{
+      padding:18px 20px 20px;
+    }
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .field.full{grid-column:1 / -1}
+    label{
+      font-size:12px;
+      font-weight:800;
+      color:var(--muted);
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+    input, select, textarea{
+      width:100%;
+      min-height:46px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px 13px;
+      font:inherit;
+      color:var(--text);
+      background:#fff;
+      outline:none;
+    }
+    textarea{
+      min-height:92px;
+      resize:vertical;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color:#8fb5df;
+      box-shadow:0 0 0 3px rgba(47,111,179,.12);
+    }
+    .helper{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .inline-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+    .message{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:12px;
+      font-size:13px;
+      display:none;
+      white-space:pre-wrap;
+    }
+    .message.show{display:block}
+    .message.ok{background:#ecfbf2;color:#0d7d3f;border:1px solid #bde9cd}
+    .message.err{background:#fff1f1;color:#b22d2d;border:1px solid #f0c5c5}
+    .message.info{background:#f0f7ff;color:#225b9a;border:1px solid #c9dff6}
+    .toolbar{
+      display:grid;
+      grid-template-columns:1.2fr .9fr .9fr .9fr;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .stat{
+      background:#f8fbff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+    .stat .k{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .stat .v{
+      font-size:28px;
+      font-weight:800;
+      line-height:1;
+    }
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:calc(100vh - 265px);
+      overflow:auto;
+      padding-right:4px;
+    }
+    .user-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      cursor:pointer;
+      transition:.14s ease;
+    }
+    .user-card:hover{
+      transform:translateY(-1px);
+      box-shadow:0 8px 24px rgba(17,40,66,.08);
+    }
+    .user-card.active{
+      border-color:#8fb5df;
+      box-shadow:0 0 0 3px rgba(47,111,179,.10);
+      background:#f8fbff;
+    }
+    .uc-main{
+      min-width:0;
+    }
+    .uc-name{
+      font-size:17px;
+      font-weight:800;
+      margin-bottom:5px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .uc-line{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:3px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      margin-top:10px;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      min-height:24px;
+      padding:4px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:800;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+    .chip.ok{background:#ecfbf2;color:#0d7d3f;border-color:#bde9cd}
+    .chip.warn{background:#fff6e8;color:#9a6700;border-color:#f0d49c}
+    .chip.bad{background:#fff1f1;color:#b22d2d;border-color:#f0c5c5}
+    .chip.blue{background:#eef6ff;color:#225b9a;border-color:#c9dff6}
+    .uc-actions{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:flex-end;
+    }
+    .mini{
+      padding:8px 10px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .mini:hover{background:#f8fbff}
+    .mini.danger{color:var(--danger); border-color:#efc3c3}
+    .empty{
+      text-align:center;
+      color:var(--muted);
+      padding:28px 12px;
+      border:1px dashed var(--line);
+      border-radius:16px;
+      background:#fbfdff;
+    }
+    .quick-row{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-top:12px;
+    }
+    .quick-card{
+      border:1px solid var(--line);
+      background:#f8fbff;
+      border-radius:14px;
+      padding:12px;
+    }
+    .quick-card h3{
+      margin:0 0 6px;
+      font-size:13px;
+    }
+    .quick-card p{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+    .footer-note{
+      margin-top:14px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    @media (max-width:1120px){
+      .grid{grid-template-columns:1fr}
+      .list{max-height:none}
+    }
+    @media (max-width:760px){
+      .form-grid,.toolbar,.stats,.quick-row{grid-template-columns:1fr}
+      h1{font-size:24px}
+      .panel-head,.panel-body{padding:16px}
+      .wrap{padding:16px 12px 28px}
+      .user-card{grid-template-columns:1fr}
+      .uc-actions{align-items:stretch}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="eyebrow">LeveCRM • painel administrativo</div>
+        <h1>Controle de usuários</h1>
+        <div class="sub">Crie, edite, salve, exclua, ative, pause e controle a validade dos acessos do sistema.</div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="btnReloadTop">Atualizar lista</button>
+        <button class="btn primary" id="btnNewTop">Novo usuário</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Cadastro / edição</h2>
+          <span id="modeBadge" class="chip blue">Novo cadastro</span>
+        </div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="nome">Nome</label>
+              <input id="nome" placeholder="Nome do usuário" />
+            </div>
+            <div class="field">
+              <label for="usuario">Usuário / e-mail</label>
+              <input id="usuario" placeholder="usuario@exemplo.com" />
+            </div>
+            <div class="field">
+              <label for="senha">Senha</label>
+              <input id="senha" type="text" placeholder="Senha de acesso" />
+            </div>
+            <div class="field">
+              <label for="chave">Chave de acesso</label>
+              <input id="chave" placeholder="LEVE-CLIENTE-001" />
+            </div>
+            <div class="field">
+              <label for="status">Status</label>
+              <select id="status">
+                <option value="ativo">Ativo</option>
+                <option value="pausado">Pausado</option>
+                <option value="inativo">Inativo</option>
+                <option value="bloqueado">Bloqueado</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="vencimento">Data de validação</label>
+              <input id="vencimento" type="datetime-local" />
+            </div>
+            <div class="field">
+              <label for="diasAdicionar">Adicionar dias</label>
+              <input id="diasAdicionar" type="number" min="0" value="30" />
+            </div>
+            <div class="field">
+              <label for="isAdmin">Perfil</label>
+              <select id="isAdmin">
+                <option value="false">Usuário comum</option>
+                <option value="true">Administrador</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="observacao">Observação</label>
+              <textarea id="observacao" placeholder="Observações internas sobre este acesso"></textarea>
+            </div>
+          </div>
+
+          <div class="inline-actions">
+            <button class="btn primary" id="btnSave">Salvar</button>
+            <button class="btn success" id="btnSaveNew">Salvar como novo</button>
+            <button class="btn" id="btnExtend">Somar dias</button>
+            <button class="btn danger" id="btnDelete">Excluir</button>
+            <button class="btn" id="btnClear">Limpar</button>
+          </div>
+
+          <div id="msg" class="message"></div>
+
+          <div class="quick-row">
+            <div class="quick-card">
+              <h3>Validade rápida</h3>
+              <p>Soma os dias digitados no campo “Adicionar dias” à data atual do cadastro.</p>
+              <button class="btn" id="btnApplyDays">Aplicar no formulário</button>
+            </div>
+            <div class="quick-card">
+              <h3>Ativar acesso</h3>
+              <p>Troca o status para ativo sem alterar os demais campos.</p>
+              <button class="btn" id="btnActivate">Marcar ativo</button>
+            </div>
+            <div class="quick-card">
+              <h3>Pausar acesso</h3>
+              <p>Deixa o cadastro pausado para impedir o uso temporariamente.</p>
+              <button class="btn" id="btnPause">Marcar pausado</button>
+            </div>
+            <div class="quick-card">
+              <h3>Gerar chave</h3>
+              <p>Cria uma chave padrão pronta para você entregar ao usuário.</p>
+              <button class="btn" id="btnGenerateKey">Gerar chave</button>
+            </div>
+          </div>
+
+          <div class="footer-note">
+            Arquivo pronto para subir no GitHub como <b>admin-usuarios.html</b>.
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Usuários cadastrados</h2>
+          <span id="listCount" class="chip blue">0 usuários</span>
+        </div>
+        <div class="panel-body">
+          <div class="stats">
+            <div class="stat">
+              <div class="k">Total</div>
+              <div class="v" id="statTotal">0</div>
+            </div>
+            <div class="stat">
+              <div class="k">Ativos</div>
+              <div class="v" id="statAtivos">0</div>
+            </div>
+            <div class="stat">
+              <div class="k">Vencidos</div>
+              <div class="v" id="statVencidos">0</div>
+            </div>
+            <div class="stat">
+              <div class="k">Admins</div>
+              <div class="v" id="statAdmins">0</div>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <input id="search" placeholder="Buscar por nome, usuário, chave..." />
+            <select id="filterStatus">
+              <option value="">Todos os status</option>
+              <option value="ativo">Ativo</option>
+              <option value="pausado">Pausado</option>
+              <option value="inativo">Inativo</option>
+              <option value="bloqueado">Bloqueado</option>
+            </select>
+            <select id="filterAdmin">
+              <option value="">Todos os perfis</option>
+              <option value="true">Somente admin</option>
+              <option value="false">Somente comum</option>
+            </select>
+            <button class="btn" id="btnReload">Atualizar</button>
+          </div>
+
+          <div id="list" class="list"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://lnrbpiklzymblpyrobwx.supabase.co/rest/v1/crm_access_users";
+    const API_KEY = "sb_publishable_KXVbF3c7RGFXVTtfYmrzzg_dMK04Q9q";
+
+    let users = [];
+    let selectedId = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    function headers(extra = {}) {
+      return Object.assign({
+        apikey: API_KEY,
+        Authorization: "Bearer " + API_KEY,
+        "Content-Type": "application/json"
+      }, extra);
+    }
+
+    function showMsg(text, type = "info") {
+      const el = $("msg");
+      el.className = "message show " + type;
+      el.textContent = text;
+    }
+
+    function clearMsg() {
+      const el = $("msg");
+      el.className = "message";
+      el.textContent = "";
+    }
+
+    function toLocalInputValue(date) {
+      if (!date) return "";
+      const d = new Date(date);
+      if (Number.isNaN(d.getTime())) return "";
+      const pad = n => String(n).padStart(2, "0");
+      return d.getFullYear() + "-" +
+        pad(d.getMonth() + 1) + "-" +
+        pad(d.getDate()) + "T" +
+        pad(d.getHours()) + ":" +
+        pad(d.getMinutes());
+    }
+
+    function fromLocalInputValue(value) {
+      if (!value) return null;
+      const d = new Date(value);
+      return Number.isNaN(d.getTime()) ? null : d.toISOString();
+    }
+
+    function addDaysToISO(baseIso, days) {
+      const base = baseIso ? new Date(baseIso) : new Date();
+      base.setDate(base.getDate() + Number(days || 0));
+      return base.toISOString();
+    }
+
+    function isExpired(vencimento) {
+      if (!vencimento) return false;
+      const t = new Date(vencimento).getTime();
+      return !Number.isNaN(t) && t < Date.now();
+    }
+
+    function formatDate(value) {
+      if (!value) return "Sem data";
+      const d = new Date(value);
+      if (Number.isNaN(d.getTime())) return "Sem data";
+      return d.toLocaleString("pt-BR");
+    }
+
+    function currentPayload() {
+      return {
+        nome: $("nome").value.trim(),
+        usuario: $("usuario").value.trim(),
+        senha: $("senha").value.trim(),
+        chave: $("chave").value.trim(),
+        status: $("status").value,
+        vencimento_em: fromLocalInputValue($("vencimento").value),
+        is_admin: $("isAdmin").value === "true",
+        observacao: $("observacao").value.trim()
+      };
+    }
+
+    function validatePayload(payload, requireSenha = true) {
+      if (!payload.nome) return "Preencha o nome.";
+      if (!payload.usuario) return "Preencha o usuário / e-mail.";
+      if (requireSenha && !payload.senha) return "Preencha a senha.";
+      if (!payload.chave) return "Preencha a chave.";
+      return "";
+    }
+
+    function resetForm() {
+      selectedId = null;
+      $("modeBadge").textContent = "Novo cadastro";
+      $("nome").value = "";
+      $("usuario").value = "";
+      $("senha").value = "";
+      $("chave").value = "";
+      $("status").value = "ativo";
+      $("vencimento").value = toLocalInputValue(addDaysToISO(null, 30));
+      $("diasAdicionar").value = 30;
+      $("isAdmin").value = "false";
+      $("observacao").value = "";
+      clearMsg();
+      renderList();
+    }
+
+    function fillForm(user) {
+      selectedId = user.id;
+      $("modeBadge").textContent = "Editando ID " + user.id;
+      $("nome").value = user.nome || "";
+      $("usuario").value = user.usuario || "";
+      $("senha").value = user.senha || "";
+      $("chave").value = user.chave || "";
+      $("status").value = user.status || "ativo";
+      $("vencimento").value = toLocalInputValue(user.vencimento_em);
+      $("isAdmin").value = String(Boolean(user.is_admin));
+      $("observacao").value = user.observacao || "";
+      clearMsg();
+      renderList();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function generateKey() {
+      const base = ($("nome").value || $("usuario").value || "CLIENTE")
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^A-Za-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .toUpperCase()
+        .slice(0, 12) || "CLIENTE";
+      const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+      $("chave").value = "LEVE-" + base + "-" + rand;
+    }
+
+    function applyDays() {
+      const days = Number($("diasAdicionar").value || 0);
+      $("vencimento").value = toLocalInputValue(addDaysToISO(fromLocalInputValue($("vencimento").value), days));
+    }
+
+    function filteredUsers() {
+      const q = $("search").value.trim().toLowerCase();
+      const fs = $("filterStatus").value;
+      const fa = $("filterAdmin").value;
+
+      return users.filter(u => {
+        const text = [u.nome, u.usuario, u.chave, u.observacao].join(" ").toLowerCase();
+        const okQ = !q || text.includes(q);
+        const okS = !fs || (u.status || "") === fs;
+        const okA = !fa || String(Boolean(u.is_admin)) === fa;
+        return okQ && okS && okA;
+      });
+    }
+
+    function renderStats() {
+      $("statTotal").textContent = users.length;
+      $("statAtivos").textContent = users.filter(u => (u.status || "") === "ativo").length;
+      $("statVencidos").textContent = users.filter(u => isExpired(u.vencimento_em)).length;
+      $("statAdmins").textContent = users.filter(u => !!u.is_admin).length;
+    }
+
+    function renderList() {
+      const data = filteredUsers();
+      $("listCount").textContent = data.length + (data.length === 1 ? " usuário" : " usuários");
+      const list = $("list");
+      if (!data.length) {
+        list.innerHTML = '<div class="empty">Nenhum usuário encontrado com esse filtro.</div>';
+        return;
+      }
+
+      list.innerHTML = data.map(u => {
+        const statusClass = (u.status || "") === "ativo" ? "ok" : ((u.status || "") === "pausado" ? "warn" : "bad");
+        const vencido = isExpired(u.vencimento_em);
+        return `
+          <div class="user-card ${selectedId === u.id ? "active" : ""}" data-id="${u.id}">
+            <div class="uc-main">
+              <div class="uc-name">${escapeHtml(u.nome || "(sem nome)")}</div>
+              <div class="uc-line">${escapeHtml(u.usuario || "-")}</div>
+              <div class="uc-line">Chave: ${escapeHtml(u.chave || "-")}</div>
+              <div class="uc-line">Validade: ${escapeHtml(formatDate(u.vencimento_em))}</div>
+              <div class="chips">
+                <span class="chip ${statusClass}">${escapeHtml(u.status || "sem status")}</span>
+                <span class="chip blue">${u.is_admin ? "Administrador" : "Usuário comum"}</span>
+                ${vencido ? '<span class="chip bad">Vencido</span>' : '<span class="chip ok">Dentro do prazo</span>'}
+              </div>
+            </div>
+            <div class="uc-actions">
+              <button class="mini" data-act="edit" data-id="${u.id}">Editar</button>
+              <button class="mini" data-act="days" data-id="${u.id}">+ dias</button>
+              <button class="mini danger" data-act="delete" data-id="${u.id}">Excluir</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    async function loadUsers() {
+      clearMsg();
+      showMsg("Carregando usuários...", "info");
+      try {
+        const res = await fetch(API_URL + "?select=id,nome,usuario,senha,chave,status,vencimento_em,is_admin,observacao,criado_em&order=criado_em.desc", {
+          headers: headers()
+        });
+        const text = await res.text();
+        let data = [];
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          throw new Error("Resposta inválida ao listar usuários.");
+        }
+        if (!Array.isArray(data)) throw new Error("A listagem não retornou uma lista válida.");
+        users = data;
+        renderStats();
+        renderList();
+        clearMsg();
+      } catch (err) {
+        showMsg("Erro ao carregar usuários: " + err.message, "err");
+      }
+    }
+
+    async function saveUser(forceNew = false) {
+      const payload = currentPayload();
+      const error = validatePayload(payload, true);
+      if (error) {
+        showMsg(error, "err");
+        return;
+      }
+
+      try {
+        showMsg(forceNew || !selectedId ? "Criando usuário..." : "Salvando alterações...", "info");
+
+        if (forceNew || !selectedId) {
+          const res = await fetch(API_URL, {
+            method: "POST",
+            headers: headers({ Prefer: "return=representation" }),
+            body: JSON.stringify([payload])
+          });
+          const txt = await res.text();
+          if (!res.ok) throw new Error(txt || "Falha ao criar usuário.");
+          showMsg("Usuário criado com sucesso.", "ok");
+          await loadUsers();
+          resetForm();
+          return;
+        }
+
+        const res = await fetch(API_URL + "?id=eq." + encodeURIComponent(selectedId), {
+          method: "PATCH",
+          headers: headers({ Prefer: "return=representation" }),
+          body: JSON.stringify(payload)
+        });
+        const txt = await res.text();
+        if (!res.ok) throw new Error(txt || "Falha ao salvar usuário.");
+        showMsg("Usuário atualizado com sucesso.", "ok");
+        await loadUsers();
+        const saved = users.find(u => String(u.id) === String(selectedId));
+        if (saved) fillForm(saved);
+      } catch (err) {
+        showMsg("Erro ao salvar: " + err.message, "err");
+      }
+    }
+
+    async function deleteSelected(idFromButton = null) {
+      const id = idFromButton || selectedId;
+      if (!id) {
+        showMsg("Selecione um usuário para excluir.", "err");
+        return;
+      }
+      const target = users.find(u => String(u.id) === String(id));
+      const label = target?.nome || target?.usuario || ("ID " + id);
+      if (!confirm("Excluir o usuário " + label + "?")) return;
+
+      try {
+        showMsg("Excluindo usuário...", "info");
+        const res = await fetch(API_URL + "?id=eq." + encodeURIComponent(id), {
+          method: "DELETE",
+          headers: headers()
+        });
+        const txt = await res.text();
+        if (!res.ok) throw new Error(txt || "Falha ao excluir usuário.");
+        showMsg("Usuário excluído com sucesso.", "ok");
+        if (String(selectedId) === String(id)) resetForm();
+        await loadUsers();
+      } catch (err) {
+        showMsg("Erro ao excluir: " + err.message, "err");
+      }
+    }
+
+    async function addDaysToUser(idFromButton = null) {
+      const id = idFromButton || selectedId;
+      if (!id) {
+        showMsg("Selecione um usuário.", "err");
+        return;
+      }
+      const target = users.find(u => String(u.id) === String(id));
+      if (!target) {
+        showMsg("Usuário não encontrado.", "err");
+        return;
+      }
+
+      const days = Number($("diasAdicionar").value || 0);
+      if (!days) {
+        showMsg("Digite quantos dias deseja somar.", "err");
+        return;
+      }
+
+      const newDate = addDaysToISO(target.vencimento_em, days);
+
+      try {
+        showMsg("Somando dias na validade...", "info");
+        const res = await fetch(API_URL + "?id=eq." + encodeURIComponent(id), {
+          method: "PATCH",
+          headers: headers({ Prefer: "return=representation" }),
+          body: JSON.stringify({ vencimento_em: newDate })
+        });
+        const txt = await res.text();
+        if (!res.ok) throw new Error(txt || "Falha ao atualizar validade.");
+        showMsg("Validade atualizada com sucesso.", "ok");
+        await loadUsers();
+        const saved = users.find(u => String(u.id) === String(id));
+        if (saved) fillForm(saved);
+      } catch (err) {
+        showMsg("Erro ao atualizar validade: " + err.message, "err");
+      }
+    }
+
+    document.addEventListener("click", (e) => {
+      const card = e.target.closest(".user-card");
+      if (card && !e.target.closest("[data-act]")) {
+        const user = users.find(u => String(u.id) === String(card.dataset.id));
+        if (user) fillForm(user);
+      }
+
+      const act = e.target.closest("[data-act]");
+      if (!act) return;
+      const id = act.dataset.id;
+      if (act.dataset.act === "edit") {
+        const user = users.find(u => String(u.id) === String(id));
+        if (user) fillForm(user);
+      } else if (act.dataset.act === "delete") {
+        deleteSelected(id);
+      } else if (act.dataset.act === "days") {
+        addDaysToUser(id);
+      }
+    });
+
+    $("btnSave").addEventListener("click", () => saveUser(false));
+    $("btnSaveNew").addEventListener("click", () => saveUser(true));
+    $("btnDelete").addEventListener("click", () => deleteSelected());
+    $("btnExtend").addEventListener("click", () => addDaysToUser());
+    $("btnClear").addEventListener("click", resetForm);
+    $("btnApplyDays").addEventListener("click", applyDays);
+    $("btnGenerateKey").addEventListener("click", generateKey);
+    $("btnActivate").addEventListener("click", () => $("status").value = "ativo");
+    $("btnPause").addEventListener("click", () => $("status").value = "pausado");
+    $("btnReload").addEventListener("click", loadUsers);
+    $("btnReloadTop").addEventListener("click", loadUsers);
+    $("btnNewTop").addEventListener("click", resetForm);
+    $("search").addEventListener("input", renderList);
+    $("filterStatus").addEventListener("change", renderList);
+    $("filterAdmin").addEventListener("change", renderList);
+
+    resetForm();
+    loadUsers();
+  </script>
+</body>
+</html>
