@@ -3472,11 +3472,11 @@ function cardHTML(l){
    FILTER + SORT
 ══════════════════════════════════════ */
 function filtered(){
-  const term=(document.getElementById('searchQ').value||'').toLowerCase().trim();
-  const fE=document.getElementById('fEmp').value;
-  const fO=document.getElementById('fOrig').value;
-  const fR=document.getElementById('fResp').value;
-  const fP=document.getElementById('fPri').value;
+  const term=(document.getElementById('searchQ')?.value||'').toLowerCase().trim();
+  const fE=document.getElementById('fEmp')?.value||'';
+  const fO=document.getElementById('fOrig')?.value||'';
+  const fR=document.getElementById('fResp')?.value||'';
+  const fP=document.getElementById('fPri')?.value||'';
   return ALL.filter(l=>{
     if(term&&!`${l.nome||''} ${l.telefone||''}`.toLowerCase().includes(term))return false;
     if(fE&&l.empreendimento!==fE)return false;
@@ -4481,7 +4481,7 @@ function initApp(){
   refreshFilterButtonLabels();
   setupPaste();
   setupPWA();
-  registerSW();
+  // registerSW();
   applyTheme('t-light');
   updateInstallBtn();
   setInterval(()=>{document.querySelectorAll('.card').forEach(c=>{const id=c.dataset.id;const l=ALL.find(x=>x.id===id);if(!l)return;const nc=nextContact(l);const ncEl=c.querySelector('.chip-nc-neutral,.chip-nc-green,.chip-nc-red');if(ncEl&&nc){ncEl.className=`chip ${nc.cls}`;ncEl.textContent=nc.text;}});},60000);
