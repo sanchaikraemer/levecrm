@@ -4758,7 +4758,7 @@ async function agAdd(){
   const key=agSelDay||agKey(new Date().getFullYear(),new Date().getMonth(),new Date().getDate());
   const notify=Number(document.getElementById('agNotify').value||0);
   try{
-    const ins=await sbFetch(AG_TBL,{method:'POST',body:{data:key,hora:time,descricao:desc,notify}});
+    const ins=await sbFetch(AG_TBL,{method:'POST',body:{data:key,hora:time,descricao:desc,notify,access_user_id:ACCESS_USER.id}});
     const row=Array.isArray(ins)?ins[0]:ins;
     if(row)AG_CACHE=[...agAll(),agMapRow(row)].sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
     setAgendaDefaultTime();document.getElementById('agDesc').value='';
