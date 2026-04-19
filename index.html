@@ -1648,7 +1648,7 @@ if (document.readyState === &quot;loading&quot;) {
     &lt;p&gt;Ferramenta de apoio para corretor de imóveis de alto desempenho. Organiza, interpreta e sugere a melhor direção.&lt;/p&gt;
     &lt;div class=&quot;hero-pills&quot;&gt;
       &lt;span class=&quot;hero-pill&quot;&gt;✦ Análise local instantânea&lt;/span&gt;
-      &lt;span class=&quot;hero-pill&quot;&gt;✦ Análise com IA (Claude)&lt;/span&gt;
+      &lt;span class=&quot;hero-pill&quot;&gt;✦ Análise com inteligência artificial&lt;/span&gt;
     &lt;/div&gt;
   &lt;/section&gt;
 
@@ -1658,7 +1658,7 @@ if (document.readyState === &quot;loading&quot;) {
     &lt;p class=&quot;sub&quot;&gt;Cole a resposta do cliente, anexe prints ou use os dois juntos para receber leitura da situação e respostas sugeridas.&lt;/p&gt;
     &lt;label class=&quot;label&quot; for=&quot;clientMessage&quot;&gt;Mensagem do cliente&lt;/label&gt;
     &lt;textarea id=&quot;clientMessage&quot; placeholder=&quot;Ex.: Gostei bastante, mas achei o valor alto e vou conversar com minha esposa antes de decidir.&quot;&gt;&lt;/textarea&gt;
-    &lt;p class=&quot;hint&quot;&gt;No computador, cole um print com &lt;strong&gt;Ctrl+V&lt;/strong&gt; no campo acima.&lt;/p&gt;
+    &lt;p class=&quot;hint&quot;&gt;No computador, cole um print com &lt;strong&gt;Ctrl+V&lt;/strong&gt; no campo acima ou use &lt;strong&gt;Anexar&lt;/strong&gt;.&lt;/p&gt;
 
     &lt;!-- inputs de arquivo sem display:none para funcionar em mobile --&gt;
     &lt;input type=&quot;file&quot; id=&quot;historyPrintInput&quot; accept=&quot;image/*&quot; multiple
@@ -1667,31 +1667,14 @@ if (document.readyState === &quot;loading&quot;) {
       style=&quot;position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;&quot;&gt;
 
     &lt;div class=&quot;actions&quot;&gt;
-      &lt;button class=&quot;btn primary&quot; id=&quot;btnAnalyzeNow&quot; type=&quot;button&quot;&gt;Analisar agora&lt;/button&gt;
-      &lt;label for=&quot;historyPrintInput&quot; class=&quot;btn soft&quot;&gt;📎 Prints do histórico&lt;/label&gt;
-      &lt;label for=&quot;lastPrintInput&quot; class=&quot;btn soft&quot;&gt;🖼 Último print&lt;/label&gt;
+      &lt;button class=&quot;btn soft&quot; id=&quot;btnAttachPrint&quot; type=&quot;button&quot;&gt;Anexar&lt;/button&gt;
+      &lt;button class=&quot;btn accent&quot; onclick=&quot;analyzeWithAI()&quot; type=&quot;button&quot;&gt;Inteligência artificial&lt;/button&gt;
+      &lt;button class=&quot;btn primary&quot; id=&quot;btnAnalyzeNow&quot; type=&quot;button&quot;&gt;Memória interna&lt;/button&gt;
       &lt;button class=&quot;btn outline&quot; id=&quot;btnClearAnalyzer&quot; type=&quot;button&quot;&gt;Limpar tudo&lt;/button&gt;
     &lt;/div&gt;
-    &lt;div id=&quot;printStatus&quot; class=&quot;hint&quot; style=&quot;margin-top:10px;&quot;&gt;
-      Histórico: &lt;strong id=&quot;historyCount&quot;&gt;0&lt;/strong&gt; print(s) · Última conversa: &lt;strong id=&quot;lastCount&quot;&gt;0&lt;/strong&gt;
-    &lt;/div&gt;
+    &lt;div id=&quot;printStatus&quot; class=&quot;hint&quot; style=&quot;margin-top:10px;&quot;&gt;Prints anexados para análise de IA: &lt;strong id=&quot;historyCount&quot;&gt;0&lt;/strong&gt; arquivo(s).&lt;br&gt;Clique na opção de análise desejada:&lt;/div&gt;
 
-    &lt;!-- PAINEL IA --&gt;
-    &lt;div class=&quot;ai-panel&quot;&gt;
-      &lt;div class=&quot;ai-panel-header&quot;&gt;
-        &lt;div class=&quot;ai-icon&quot;&gt;🤖&lt;/div&gt;
-        &lt;div&gt;
-          &lt;strong&gt;Análise com IA (Claude)&lt;/strong&gt;
-          &lt;span&gt;Leitura contextual profunda com respostas personalizadas para o cliente.&lt;/span&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;button class=&quot;btn accent&quot; onclick=&quot;analyzeWithAI()&quot;&gt;Analisar com IA agora&lt;/button&gt;
-    &lt;/div&gt;
-
-    &lt;div class=&quot;uploadInfo&quot;&gt;
-      &lt;strong&gt;Modo print da conversa&lt;/strong&gt;
-      Anexe vários prints do histórico para contexto geral e 1 print da última conversa para o momento atual. O sistema usa o histórico para diagnóstico e a última conversa para definir a retomada. O nome do cliente é detectado automaticamente.
-    &lt;/div&gt;
+    
   &lt;/div&gt;&lt;/section&gt;
 
   &lt;!-- LEITURA RÁPIDA --&gt;
@@ -1715,7 +1698,7 @@ if (document.readyState === &quot;loading&quot;) {
   &lt;section class=&quot;card&quot;&gt;&lt;div class=&quot;section&quot;&gt;
     &lt;h2&gt;Respostas sugeridas&lt;/h2&gt;
     &lt;p class=&quot;sub&quot;&gt;Escolha a linha mais adequada, copie e ajuste com seu toque pessoal.&lt;/p&gt;
-    &lt;div id=&quot;analysisResponses&quot;&gt;&lt;div class=&quot;empty&quot;&gt;Cole a mensagem do cliente ou anexe os prints e toque em &lt;strong&gt;Analisar agora&lt;/strong&gt;.&lt;/div&gt;&lt;/div&gt;
+    &lt;div id=&quot;analysisResponses&quot;&gt;&lt;div class=&quot;empty&quot;&gt;Cole a mensagem do cliente ou anexe os prints e escolha a análise desejada.&lt;/div&gt;&lt;/div&gt;
   &lt;/div&gt;&lt;/section&gt;
 
   &lt;!-- BIBLIOTECA --&gt;
@@ -1904,6 +1887,8 @@ let currentTab = libraryData[0].id;
 let lastBestResponse = &quot;&quot;;
 let historyPrintTexts = [];
 let lastPrintText = &quot;&quot;;
+let historyPrintFiles = [];
+let lastPrintFile = null;
 
 function cleanOcrText(raw) {
   let t = (raw || &quot;&quot;).replace(/\r/g, &quot;\n&quot;);
@@ -2016,13 +2001,50 @@ function extractNameFromText(raw) {
 function escapeHtml(s){return String(s).replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/&lt;/g,&quot;&amp;lt;&quot;).replace(/&gt;/g,&quot;&amp;gt;&quot;).replace(/&quot;/g,&quot;&amp;quot;&quot;).replace(/&#x27;/g,&quot;&amp;#39;&quot;);}
 function showToast(t){const el=document.getElementById(&quot;toast&quot;);el.textContent=t;el.classList.add(&quot;show&quot;);setTimeout(()=&gt;el.classList.remove(&quot;show&quot;),2200);}
 function showLoading(title,text){document.getElementById(&quot;loadingTitle&quot;).textContent=title||&quot;Processando&quot;;document.getElementById(&quot;loadingText&quot;).textContent=text||&quot;Aguarde...&quot;;document.getElementById(&quot;loadingOverlay&quot;).classList.add(&quot;show&quot;);}
+function hasUploadedPrints(){return historyPrintFiles.length &gt; 0 || !!lastPrintFile;}
+function normalizeImageMime(type){return /^image\/(jpeg|png|gif|webp)$/i.test(type||&quot;&quot;) ? type.toLowerCase() : &quot;image/jpeg&quot;;}
+function readFileAsDataURL(file){return new Promise((resolve,reject)=&gt;{const reader=new FileReader();reader.onload=()=&gt;resolve(reader.result||&quot;&quot;);reader.onerror=()=&gt;reject(reader.error||new Error(&quot;Falha ao ler imagem.&quot;));reader.readAsDataURL(file);});}
+async function fileToImageBlock(file){const dataUrl = await readFileAsDataURL(file);const parts = String(dataUrl).split(&quot;,&quot;);if (parts.length &lt; 2) throw new Error(&quot;Imagem inválida para análise.&quot;);return {type:&quot;image&quot;,source:{type:&quot;base64&quot;,media_type:normalizeImageMime(file.type),data:parts[1]}};}
+async function buildVisionContent(raw){
+  const content=[];
+  const instruction = `Você é um especialista em vendas de imóveis de alto padrão e condução comercial no WhatsApp.
+Analise os prints da conversa em ordem cronológica, junto com qualquer texto complementar enviado pelo corretor.
+Não invente dados. Se algo estiver ambíguo, assuma a menor interpretação possível e sinalize isso com cautela.
+Observe não apenas o texto, mas também o ritmo da conversa, pausas longas, retornadas, dúvidas recorrentes, sinais de interesse, travas e maturação do lead.
+Retorne APENAS um JSON válido, sem markdown e sem texto extra, com exatamente esta estrutura:
+{&quot;situacao&quot;:&quot;frase curta&quot;,&quot;temperatura&quot;:&quot;Frio|Morno|Quente&quot;,&quot;perfil&quot;:&quot;frase curta&quot;,&quot;risco&quot;:&quot;Baixo|Médio|Alto&quot;,&quot;objetivo&quot;:&quot;frase curta&quot;,&quot;proximo_passo&quot;:&quot;ação concreta&quot;,&quot;evitar&quot;:&quot;principal erro a evitar&quot;,&quot;chips&quot;:[&quot;chip1&quot;,&quot;chip2&quot;,&quot;chip3&quot;],&quot;respostas&quot;:[{&quot;label&quot;:&quot;Direta&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},{&quot;label&quot;:&quot;Consultiva&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},{&quot;label&quot;:&quot;Premium&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;}],&quot;nome_cliente&quot;:&quot;nome ou vazio&quot;,&quot;demora_resposta&quot;:&quot;baixa|média|alta|incerta&quot;}
+Regras:
+- português brasileiro natural
+- não atribua cidade, profissão ou contexto não explícito
+- se houver demora grande entre respostas, reflita isso na análise
+- as respostas sugeridas devem ser curtas, elegantes e conduzir o próximo passo
+- não faça textão
+- quando houver dúvida do lead, responda e conduza
+- se existir nome do cliente claramente identificável, use na saudação; se não existir, use saudação neutra
+- quebre o texto das respostas com \n\n quando fizer sentido.`;
+  content.push({type:&quot;text&quot;,text:instruction});
+  if (raw) content.push({type:&quot;text&quot;,text:`Contexto digitado pelo corretor: ${raw}`});
+  const historyFiles = historyPrintFiles.slice(0,6);
+  if (historyFiles.length) {
+    content.push({type:&quot;text&quot;,text:&quot;A seguir estão os prints do histórico da conversa, em ordem cronológica.&quot;});
+    for (let i=0;i&lt;historyFiles.length;i++) {
+      content.push({type:&quot;text&quot;,text:`Print do histórico ${i+1}:`});
+      content.push(await fileToImageBlock(historyFiles[i]));
+    }
+  }
+  if (lastPrintFile) {
+    content.push({type:&quot;text&quot;,text:&quot;Agora vem o print mais recente da conversa. Dê mais peso a ele na definição do próximo passo.&quot;});
+    content.push(await fileToImageBlock(lastPrintFile));
+  }
+  return content;
+}
 function hideLoading(){document.getElementById(&quot;loadingOverlay&quot;).classList.remove(&quot;show&quot;);}
 function openCopyFallback(text){const o=document.getElementById(&quot;copyOverlay&quot;),f=document.getElementById(&quot;copyFallbackText&quot;);f.value=text;o.classList.add(&quot;show&quot;);setTimeout(()=&gt;{f.focus();f.select();},80);}
 function closeCopyFallback(){document.getElementById(&quot;copyOverlay&quot;).classList.remove(&quot;show&quot;);}
 function legacyCopy(text){const t=document.createElement(&quot;textarea&quot;);t.value=text;t.setAttribute(&quot;readonly&quot;,&quot;&quot;);t.style.cssText=&quot;position:fixed;opacity:0;&quot;;document.body.appendChild(t);t.focus();t.select();let ok=false;try{ok=document.execCommand(&quot;copy&quot;);}catch(e){}document.body.removeChild(t);return ok;}
 async function forceCopyFallback(){const text=document.getElementById(&quot;copyFallbackText&quot;).value||&quot;&quot;;if(!text){showToast(&quot;Nada para copiar.&quot;);return;}try{await navigator.clipboard.writeText(text);closeCopyFallback();showToast(&quot;Texto copiado.&quot;);return;}catch(e){}if(legacyCopy(text)){closeCopyFallback();showToast(&quot;Texto copiado.&quot;);}else{document.getElementById(&quot;copyFallbackText&quot;).select();showToast(&quot;Toque e segure o texto para copiar.&quot;);}}
 async function copyText(text){try{await navigator.clipboard.writeText(text);showToast(&quot;Texto copiado.&quot;);return;}catch(e){}if(legacyCopy(text)){showToast(&quot;Texto copiado.&quot;);return;}openCopyFallback(text);}
-function updatePrintCounters(){document.getElementById(&quot;historyCount&quot;).textContent=String(historyPrintTexts.length);document.getElementById(&quot;lastCount&quot;).textContent=lastPrintText?&quot;1&quot;:&quot;0&quot;;}
+function updatePrintCounters(){const historyEl=document.getElementById(&quot;historyCount&quot;);const lastEl=document.getElementById(&quot;lastCount&quot;);const statusEl=document.getElementById(&quot;printStatus&quot;);const total=historyPrintFiles.length+(lastPrintFile?1:0)||(historyPrintTexts.length+(lastPrintText?1:0));if(historyEl) historyEl.textContent=String(total);if(lastEl) lastEl.textContent=(lastPrintFile||lastPrintText)?&quot;1&quot;:&quot;0&quot;;if(statusEl){statusEl.innerHTML=`Prints anexados para análise de IA: <strong id=&quot;historyCount&quot;>${total}</strong> arquivo(s).<br>Clique na opção de análise desejada:`;}}
 
 /* ═══════════════════════════════════════
    SAUDAÇÃO E INTRO
@@ -2166,32 +2188,23 @@ function renderResponses(responses) {
 ═══════════════════════════════════════ */
 async function analyzeWithAI() {
   const raw = (document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;).trim();
-  if (!raw) { showToast(&quot;Cole a mensagem do cliente antes de analisar.&quot;); return; }
+  if (!raw &amp;&amp; !hasUploadedPrints()) { showToast(&quot;Cole a mensagem do cliente ou anexe os prints antes de analisar.&quot;); return; }
   const apiKey = (localStorage.getItem(&quot;crm_anthropic_key&quot;) || _k || &quot;&quot;).trim();
   if (!apiKey) { showToast(&quot;Configure a chave da IA em Configurações → API Key.&quot;); return; }
 
-  showLoading(&quot;Analisando com IA&quot;, &quot;Claude está lendo o contexto e montando a análise completa...&quot;);
-
-  const detectedName = extractNameFromText(raw);
-  const greetingInstruction = detectedName
-    ? `Inclua a saudação &quot;Olá, ${detectedName}. Tudo bem?&quot; no início de cada resposta.`
-    : `Inclua a saudação &quot;Olá! Tudo bem?&quot; no início de cada resposta.`;
-
-  const prompt = `Você é um especialista em vendas de imóveis de alto padrão, com foco em condução de atendimento consultivo. Analise a mensagem abaixo de um cliente para um corretor de imóveis e retorne APENAS um JSON válido (sem markdown, sem texto extra) com exatamente esta estrutura:
-
-{&quot;situacao&quot;:&quot;frase curta&quot;,&quot;temperatura&quot;:&quot;Frio|Morno|Quente&quot;,&quot;perfil&quot;:&quot;frase curta&quot;,&quot;risco&quot;:&quot;Baixo|Médio|Alto&quot;,&quot;objetivo&quot;:&quot;frase curta&quot;,&quot;proximo_passo&quot;:&quot;ação concreta&quot;,&quot;evitar&quot;:&quot;principal erro a evitar&quot;,&quot;chips&quot;:[&quot;chip1&quot;,&quot;chip2&quot;,&quot;chip3&quot;],&quot;respostas&quot;:[{&quot;label&quot;:&quot;nome da linha&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},{&quot;label&quot;:&quot;nome da linha&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},{&quot;label&quot;:&quot;nome da linha&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;}]}
-
-Regras para as respostas:
-- Português brasileiro natural, sem formalidade excessiva
-- ${greetingInstruction}
-- Cada resposta deve ter estratégia diferente (direta, consultiva, premium)
-- As respostas devem conduzir a conversa, nunca apenas responder o dado técnico
-- Quebre o texto em parágrafos com \\n\\n onde fizer sentido
-
-Mensagem do cliente:
-${raw}`;
+  showLoading(
+    hasUploadedPrints() ? &quot;Lendo prints para análise de IA&quot; : &quot;Analisando com IA&quot;,
+    hasUploadedPrints() ? &quot;A inteligência artificial está lendo os prints da conversa e montando a orientação comercial.&quot; : &quot;A inteligência artificial está lendo o contexto e montando a análise completa...&quot;
+  );
 
   try {
+    const content = hasUploadedPrints()
+      ? await buildVisionContent(raw)
+      : [{type:&quot;text&quot;,text:`Você é um especialista em vendas de imóveis de alto padrão, com foco em condução de atendimento consultivo. Analise a mensagem abaixo de um cliente para um corretor de imóveis e retorne APENAS um JSON válido, sem markdown, com esta estrutura: {&quot;situacao&quot;:&quot;frase curta&quot;,&quot;temperatura&quot;:&quot;Frio|Morno|Quente&quot;,&quot;perfil&quot;:&quot;frase curta&quot;,&quot;risco&quot;:&quot;Baixo|Médio|Alto&quot;,&quot;objetivo&quot;:&quot;frase curta&quot;,&quot;proximo_passo&quot;:&quot;ação concreta&quot;,&quot;evitar&quot;:&quot;principal erro a evitar&quot;,&quot;chips&quot;:[&quot;chip1&quot;,&quot;chip2&quot;,&quot;chip3&quot;],&quot;respostas&quot;:[{&quot;label&quot;:&quot;Direta&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},{&quot;label&quot;:&quot;Consultiva&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},{&quot;label&quot;:&quot;Premium&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;}],&quot;nome_cliente&quot;:&quot;nome ou vazio&quot;,&quot;demora_resposta&quot;:&quot;baixa|média|alta|incerta&quot;}. Regras: português brasileiro natural; não invente dados; respostas curtas, elegantes e com condução; não faça textão; use o nome só se ele estiver claramente presente na mensagem.
+
+Mensagem do cliente:
+${raw}`}];
+
     const response = await fetch(&quot;https://api.anthropic.com/v1/messages&quot;, {
       method: &quot;POST&quot;,
       headers: {
@@ -2202,8 +2215,8 @@ ${raw}`;
       },
       body: JSON.stringify({
         model: &quot;claude-sonnet-4-5&quot;,
-        max_tokens: 2000,
-        messages: [{role:&quot;user&quot;, content: prompt}]
+        max_tokens: 2200,
+        messages: [{role:&quot;user&quot;, content}]
       })
     });
     if (!response.ok) {
@@ -2214,17 +2227,20 @@ ${raw}`;
       return;
     }
     const data = await response.json();
-    const text = data.content.map(i =&gt; i.text || &quot;&quot;).join(&quot;&quot;);
-    // Extrai JSON mesmo que venha com markdown ou texto extra
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    const joinedText = data.content.map(i =&gt; i.text || &quot;&quot;).join(&quot;&quot;);
+    const jsonMatch = joinedText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       hideLoading();
       showToast(&quot;IA não retornou formato esperado. Tente novamente.&quot;);
       return;
     }
     const parsed = JSON.parse(jsonMatch[0]);
+    if (parsed?.nome_cliente &amp;&amp; !raw) {
+      const nome = String(parsed.nome_cliente).trim();
+      if (nome) document.getElementById(&quot;clientMessage&quot;).value = `Nome detectado: ${nome}`;
+    }
     renderAIAnalysis(parsed);
-    showToast(&quot;Análise com IA concluída.&quot;);
+    showToast(hasUploadedPrints() ? &quot;Prints analisados com inteligência artificial.&quot; : &quot;Análise com IA concluída.&quot;);
   } catch(err) {
     console.error(err);
     hideLoading();
@@ -2236,13 +2252,17 @@ ${raw}`;
 
 function renderAIAnalysis(parsed) {
   document.getElementById(&quot;aiResultBadge&quot;).style.display = &quot;inline-flex&quot;;
+  const detectedName = String(parsed?.nome_cliente || &quot;&quot;).trim();
   document.getElementById(&quot;analysisSituation&quot;).textContent = parsed.situacao || &quot;—&quot;;
   document.getElementById(&quot;analysisHeat&quot;).textContent = parsed.temperatura || &quot;—&quot;;
   document.getElementById(&quot;analysisProfile&quot;).textContent = parsed.perfil || &quot;—&quot;;
   document.getElementById(&quot;analysisRisk&quot;).textContent = parsed.risco || &quot;—&quot;;
   document.getElementById(&quot;analysisGoal&quot;).textContent = parsed.objetivo || &quot;—&quot;;
   document.getElementById(&quot;analysisNext&quot;).textContent = parsed.proximo_passo || &quot;—&quot;;
-  document.getElementById(&quot;analysisChips&quot;).innerHTML = (parsed.chips || []).map((chip, i) =&gt; `&lt;span class=&quot;chip ${i===0?&quot;warn&quot;:&quot;&quot;}&quot;&gt;${escapeHtml(chip)}&lt;/span&gt;`).join(&quot;&quot;);
+  const chips = [...(parsed.chips || [])];
+  if (parsed?.demora_resposta) chips.push(`ritmo: ${parsed.demora_resposta}`);
+  if (detectedName) chips.unshift(`nome detectado: ${detectedName}`);
+  document.getElementById(&quot;analysisChips&quot;).innerHTML = chips.map((chip, i) =&gt; `&lt;span class=&quot;chip ${i===0?&quot;warn&quot;:&quot;&quot;}&quot;&gt;${escapeHtml(chip)}&lt;/span&gt;`).join(&quot;&quot;);
   const avoidEl = document.getElementById(&quot;analysisAvoid&quot;);
   if (parsed.evitar) { avoidEl.style.display = &quot;block&quot;; avoidEl.textContent = &quot;⚠ Erro a evitar: &quot; + parsed.evitar; }
   else { avoidEl.style.display = &quot;none&quot;; }
@@ -2270,8 +2290,8 @@ window.clearAnalyzer = function clearAnalyzer() {
   document.getElementById(&quot;analysisChips&quot;).innerHTML = &quot;&quot;;
   document.getElementById(&quot;analysisAvoid&quot;).style.display = &quot;none&quot;;
   document.getElementById(&quot;aiResultBadge&quot;).style.display = &quot;none&quot;;
-  document.getElementById(&quot;analysisResponses&quot;).innerHTML = &#x27;&lt;div class=&quot;empty&quot;&gt;Cole a mensagem do cliente ou anexe os prints e toque em &lt;strong&gt;Analisar agora&lt;/strong&gt;.&lt;/div&gt;&#x27;;
-  lastBestResponse = &quot;&quot;; historyPrintTexts = []; lastPrintText = &quot;&quot;; updatePrintCounters();
+  document.getElementById(&quot;analysisResponses&quot;).innerHTML = &#x27;&lt;div class=&quot;empty&quot;&gt;Cole a mensagem do cliente ou anexe os prints e escolha a análise desejada.&lt;/div&gt;&#x27;;
+  lastBestResponse = &quot;&quot;; historyPrintTexts = []; lastPrintText = &quot;&quot;; historyPrintFiles = []; lastPrintFile = null; updatePrintCounters();
 }
 
 window.analyzeWithAI = analyzeWithAI;
@@ -2288,34 +2308,22 @@ function rebuildMessageFromPrints() {
 }
 
 async function handlePrintUpload(files, type) {
-  const fileList = Array.from(files || []);
+  const fileList = Array.from(files || []).filter(Boolean);
   if (!fileList.length) return;
   const isHistory = type === &quot;history&quot;;
-  showLoading(isHistory ? &quot;Lendo histórico da conversa&quot; : &quot;Lendo última conversa&quot;, isHistory ? &quot;Aguarde enquanto o sistema extrai o contexto geral do atendimento.&quot; : &quot;Aguarde enquanto o sistema extrai a parte mais recente da conversa.&quot;);
   try {
-    if (isHistory) {
-      let lidos = 0;
-      for (const file of fileList) {
-        const result = await Tesseract.recognize(file, &quot;por&quot;);
-        const extracted = result?.data?.text?.trim() || &quot;&quot;;
-        if (extracted) { historyPrintTexts.push(cleanOcrText(extracted)); lidos++; }
-      }
-      if (!lidos) { hideLoading(); showToast(&quot;Não consegui ler os prints do histórico.&quot;); return; }
-    } else {
-      const file = fileList[fileList.length - 1];
-      const result = await Tesseract.recognize(file, &quot;por&quot;);
-      const extracted = result?.data?.text?.trim() || &quot;&quot;;
-      if (!extracted) { hideLoading(); showToast(&quot;Não consegui ler o último print.&quot;); return; }
-      lastPrintText = cleanOcrText(extracted);
+    if (isHistory) historyPrintFiles.push(...fileList);
+    else lastPrintFile = fileList[fileList.length - 1];
+    historyPrintTexts = [];
+    lastPrintText = &quot;&quot;;
+    updatePrintCounters();
+    const total = historyPrintFiles.length + (lastPrintFile ? 1 : 0);
+    showToast(`${fileList.length} print(s) anexado(s).`);
+    if (!document.getElementById(&quot;clientMessage&quot;).value.trim()) {
+      document.getElementById(&quot;clientMessage&quot;).value = `Prints anexados para análise de IA: ${total} arquivo(s).
+Clique na opção de análise desejada:`;
     }
-    rebuildMessageFromPrints();
-    showLoading(&quot;Analisando conversa&quot;, &quot;Os prints foram lidos. Limpando o texto e montando as respostas sugeridas.&quot;);
-    setTimeout(() =&gt; {
-      try { analyzeMessage(); showToast(isHistory ? &quot;Histórico lido e analisado.&quot; : &quot;Última conversa lida e analisada.&quot;); }
-      catch(err) { console.error(err); showToast(&quot;Erro ao analisar a conversa.&quot;); }
-      finally { hideLoading(); }
-    }, 180);
-  } catch(err) { console.error(err); hideLoading(); showToast(&quot;Erro ao ler o print.&quot;); }
+  } catch(err) { console.error(err); hideLoading(); showToast(&quot;Erro ao anexar o print.&quot;); }
 }
 
 /* ═══════════════════════════════════════
@@ -2362,13 +2370,28 @@ function toggleTopic(btn) { btn.closest(&quot;.topic&quot;).classList.toggle(&qu
 ═══════════════════════════════════════ */
 document.getElementById(&quot;historyPrintInput&quot;).addEventListener(&quot;change&quot;, async e =&gt; { await handlePrintUpload(e.target.files, &quot;history&quot;); e.target.value = &quot;&quot;; });
 document.getElementById(&quot;lastPrintInput&quot;).addEventListener(&quot;change&quot;, async e =&gt; { await handlePrintUpload(e.target.files, &quot;last&quot;); e.target.value = &quot;&quot;; });
-document.getElementById(&quot;clientMessage&quot;).addEventListener(&quot;paste&quot;, async e =&gt; {
+document.getElementById(&quot;btnAttachPrint&quot;).addEventListener(&quot;click&quot;, () =&gt; document.getElementById(&quot;historyPrintInput&quot;).click());
+
+async function handlePastedImages(e) {
   const items = Array.from((e.clipboardData?.items) || []);
   const imageItems = items.filter(i =&gt; i.type?.startsWith(&quot;image/&quot;));
-  if (!imageItems.length) return;
+  if (!imageItems.length) return false;
   e.preventDefault();
   const files = imageItems.map(i =&gt; i.getAsFile()).filter(Boolean);
-  if (files.length) await handlePrintUpload(files, &quot;history&quot;);
+  if (files.length) {
+    await handlePrintUpload(files, &quot;history&quot;);
+    return true;
+  }
+  return false;
+}
+
+document.getElementById(&quot;clientMessage&quot;).addEventListener(&quot;paste&quot;, handlePastedImages);
+document.addEventListener(&quot;paste&quot;, async e =&gt; {
+  const active = document.activeElement;
+  const typingInField = active &amp;&amp; (active.tagName === &quot;INPUT&quot; || active.tagName === &quot;TEXTAREA&quot; || active.isContentEditable);
+  if (typingInField &amp;&amp; active.id !== &quot;clientMessage&quot;) return;
+  const used = await handlePastedImages(e);
+  if (used) document.getElementById(&quot;clientMessage&quot;).focus();
 });
 document.getElementById(&quot;search&quot;).addEventListener(&quot;input&quot;, renderLibrary);
 
@@ -4498,7 +4521,7 @@ function renderDashboard(){
 
     <div class="dpanel">
       <div class="dpanel-head">💡 Insight Semanal (IA)<span class="dpanel-badge" onclick="aiInsight()" style="cursor:pointer">✨ Gerar</span></div>
-      <div class="insight-box" id="insightBox">Clique em "✨ Gerar" para o Claude analisar seus dados e sugerir ações práticas.</div>
+      <div class="insight-box" id="insightBox">Clique em "✨ Gerar" para a inteligência artificial analisar seus dados e sugerir ações práticas.</div>
     </div>
 
     <div class="dpanel">
