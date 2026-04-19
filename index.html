@@ -2122,6 +2122,8 @@ function analyzeMessage() {
   renderResponses(responses);
 }
 
+window.analyzeMessage = analyzeMessage;
+
 function renderResponses(responses) {
   document.getElementById(&quot;analysisResponses&quot;).innerHTML = responses.map((r, i) =&gt; `
     &lt;div class=&quot;response ${i===0?&quot;best&quot;:&quot;&quot;}&quot;&gt;
@@ -2247,6 +2249,8 @@ function clearAnalyzer() {
   document.getElementById(&quot;analysisResponses&quot;).innerHTML = &#x27;&lt;div class=&quot;empty&quot;&gt;Cole a mensagem do cliente ou anexe os prints e toque em &lt;strong&gt;Analisar agora&lt;/strong&gt;.&lt;/div&gt;&#x27;;
   lastBestResponse = &quot;&quot;; historyPrintTexts = []; lastPrintText = &quot;&quot;; updatePrintCounters();
 }
+
+window.analyzeWithAI = analyzeWithAI;
 
 /* ═══════════════════════════════════════
    PRINTS / OCR
@@ -4248,6 +4252,7 @@ function render(){
 /* ══════════════════════════════════════
    DnD
 ══════════════════════════════════════ */
+let isDragging = false;
 function wireDnD(){
   document.querySelectorAll('.card').forEach(c=>{
     c.addEventListener('dragstart',()=>{isDragging=true;c.classList.add('dragging');});
