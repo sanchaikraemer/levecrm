@@ -1480,7 +1480,8 @@ body{
   &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
   &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
   &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
-  &lt;script src=&quot;https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js&quot;&gt;
+  &lt;script src=&quot;https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
 const __bindDirecionaActions = () =&gt; {
   const btnAnalyze = document.getElementById(&quot;btnAnalyzeNow&quot;);
   if (btnAnalyze &amp;&amp; !btnAnalyze.dataset.bound) {
@@ -1669,8 +1670,8 @@ if (document.readyState === &quot;loading&quot;) {
     &lt;div class=&quot;actions&quot;&gt;
       &lt;button class=&quot;btn soft&quot; id=&quot;btnAttachPrint&quot; type=&quot;button&quot;&gt;Anexar&lt;/button&gt;
       &lt;button class=&quot;btn accent&quot; onclick=&quot;analyzeWithAI()&quot; type=&quot;button&quot;&gt;Inteligência artificial&lt;/button&gt;
-      &lt;button class=&quot;btn primary&quot; id=&quot;btnAnalyzeNow&quot; type=&quot;button&quot;&gt;Memória interna&lt;/button&gt;
-      &lt;button class=&quot;btn outline&quot; id=&quot;btnClearAnalyzer&quot; type=&quot;button&quot;&gt;Limpar tudo&lt;/button&gt;
+      &lt;button class=&quot;btn primary&quot; id=&quot;btnAnalyzeNow&quot; onclick=&quot;analyzeMessage()&quot; type=&quot;button&quot;&gt;Memória interna&lt;/button&gt;
+      &lt;button class=&quot;btn outline&quot; id=&quot;btnClearAnalyzer&quot; onclick=&quot;clearAnalyzer()&quot; type=&quot;button&quot;&gt;Limpar tudo&lt;/button&gt;
     &lt;/div&gt;
     &lt;div id=&quot;printStatus&quot; class=&quot;hint&quot; style=&quot;margin-top:10px;&quot;&gt;Prints anexados para análise de IA: &lt;strong id=&quot;historyCount&quot;&gt;0&lt;/strong&gt; arquivo(s).&lt;br&gt;Clique na opção de análise desejada:&lt;/div&gt;
 
@@ -2044,7 +2045,7 @@ function closeCopyFallback(){document.getElementById(&quot;copyOverlay&quot;).cl
 function legacyCopy(text){const t=document.createElement(&quot;textarea&quot;);t.value=text;t.setAttribute(&quot;readonly&quot;,&quot;&quot;);t.style.cssText=&quot;position:fixed;opacity:0;&quot;;document.body.appendChild(t);t.focus();t.select();let ok=false;try{ok=document.execCommand(&quot;copy&quot;);}catch(e){}document.body.removeChild(t);return ok;}
 async function forceCopyFallback(){const text=document.getElementById(&quot;copyFallbackText&quot;).value||&quot;&quot;;if(!text){showToast(&quot;Nada para copiar.&quot;);return;}try{await navigator.clipboard.writeText(text);closeCopyFallback();showToast(&quot;Texto copiado.&quot;);return;}catch(e){}if(legacyCopy(text)){closeCopyFallback();showToast(&quot;Texto copiado.&quot;);}else{document.getElementById(&quot;copyFallbackText&quot;).select();showToast(&quot;Toque e segure o texto para copiar.&quot;);}}
 async function copyText(text){try{await navigator.clipboard.writeText(text);showToast(&quot;Texto copiado.&quot;);return;}catch(e){}if(legacyCopy(text)){showToast(&quot;Texto copiado.&quot;);return;}openCopyFallback(text);}
-function updatePrintCounters(){const historyEl=document.getElementById(&quot;historyCount&quot;);const lastEl=document.getElementById(&quot;lastCount&quot;);const statusEl=document.getElementById(&quot;printStatus&quot;);const total=historyPrintFiles.length+(lastPrintFile?1:0)||(historyPrintTexts.length+(lastPrintText?1:0));if(historyEl) historyEl.textContent=String(total);if(lastEl) lastEl.textContent=(lastPrintFile||lastPrintText)?&quot;1&quot;:&quot;0&quot;;if(statusEl){statusEl.innerHTML=`Prints anexados para análise de IA: <strong id=&quot;historyCount&quot;>${total}</strong> arquivo(s).<br>Clique na opção de análise desejada:`;}}
+function updatePrintCounters(){const historyEl=document.getElementById(&quot;historyCount&quot;);const lastEl=document.getElementById(&quot;lastCount&quot;);const statusEl=document.getElementById(&quot;printStatus&quot;);const total=historyPrintFiles.length+(lastPrintFile?1:0)||(historyPrintTexts.length+(lastPrintText?1:0));if(historyEl) historyEl.textContent=String(total);if(lastEl) lastEl.textContent=(lastPrintFile||lastPrintText)?&quot;1&quot;:&quot;0&quot;;if(statusEl){statusEl.innerHTML=`Prints anexados para análise de IA: &lt;strong id=&quot;historyCount&quot;&gt;${total}&lt;/strong&gt; arquivo(s).&lt;br&gt;Clique na opção de análise desejada:`;}}
 
 /* ═══════════════════════════════════════
    SAUDAÇÃO E INTRO
@@ -2166,6 +2167,7 @@ window.analyzeMessage = function analyzeMessage() {
   const responses = combined.map(r =&gt; ({...r, fullText: applyCommercialPositioning(greeting + &quot;\n\n&quot; + intro + &quot;\n\n&quot; + r.text, raw)}));
   if (primary.id === &quot;cold_silent&quot;) responses.forEach(r =&gt; { r.fullText = r.fullText.replace(/\nPerfeito[.,]/g, &quot;&quot;); });
   lastBestResponse = responses[0] ? responses[0].fullText : &quot;&quot;;
+  renderStatusMessage(&quot;Análise concluída pela memória interna.&quot;);
   renderResponses(responses);
 }
 
@@ -2186,12 +2188,21 @@ function renderResponses(responses) {
 /* ═══════════════════════════════════════
    ANÁLISE COM IA
 ═══════════════════════════════════════ */
+function renderStatusMessage(msg) {
+  const area = document.getElementById(&quot;analysisResponses&quot;);
+  if (area) area.innerHTML = `&lt;div class=&quot;empty&quot;&gt;${escapeHtml(msg)}&lt;/div&gt;`;
+  const avoidEl = document.getElementById(&quot;analysisAvoid&quot;);
+  if (avoidEl) { avoidEl.style.display = &quot;none&quot;; avoidEl.textContent = &quot;&quot;; }
+  document.getElementById(&quot;analysisSituation&quot;).textContent = msg;
+}
+
 async function analyzeWithAI() {
   const raw = (document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;).trim();
   if (!raw &amp;&amp; !hasUploadedPrints()) { showToast(&quot;Cole a mensagem do cliente ou anexe os prints antes de analisar.&quot;); return; }
   const apiKey = (localStorage.getItem(&quot;crm_anthropic_key&quot;) || _k || &quot;&quot;).trim();
-  if (!apiKey) { showToast(&quot;Configure a chave da IA em Configurações → API Key.&quot;); return; }
+  if (!apiKey) { renderStatusMessage(&quot;Configure a chave da IA em Configurações para usar Inteligência artificial.&quot;); showToast(&quot;Configure a chave da IA em Configurações → API Key.&quot;); return; }
 
+  renderStatusMessage(hasUploadedPrints() ? &quot;Lendo prints para análise de IA...&quot; : &quot;Analisando com Inteligência artificial...&quot;);
   showLoading(
     hasUploadedPrints() ? &quot;Lendo prints para análise de IA&quot; : &quot;Analisando com IA&quot;,
     hasUploadedPrints() ? &quot;A inteligência artificial está lendo os prints da conversa e montando a orientação comercial.&quot; : &quot;A inteligência artificial está lendo o contexto e montando a análise completa...&quot;
@@ -2223,6 +2234,7 @@ ${raw}`}];
       const err = await response.json().catch(() =&gt; ({}));
       const msg = err?.error?.message || `HTTP ${response.status}`;
       hideLoading();
+      renderStatusMessage(&quot;Falha na análise com IA: &quot; + msg);
       showToast(&quot;Erro API: &quot; + msg);
       return;
     }
@@ -2231,6 +2243,7 @@ ${raw}`}];
     const jsonMatch = joinedText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       hideLoading();
+      renderStatusMessage(&quot;A IA não retornou um formato válido. Tente novamente.&quot;);
       showToast(&quot;IA não retornou formato esperado. Tente novamente.&quot;);
       return;
     }
@@ -2240,10 +2253,12 @@ ${raw}`}];
       if (nome) document.getElementById(&quot;clientMessage&quot;).value = `Nome detectado: ${nome}`;
     }
     renderAIAnalysis(parsed);
+    document.getElementById(&quot;analysisSituation&quot;).textContent = parsed.situacao || &quot;Análise concluída com Inteligência artificial.&quot;;
     showToast(hasUploadedPrints() ? &quot;Prints analisados com inteligência artificial.&quot; : &quot;Análise com IA concluída.&quot;);
   } catch(err) {
     console.error(err);
     hideLoading();
+    renderStatusMessage(&quot;Erro na análise com IA: &quot; + (err.message || &quot;falha desconhecida&quot;));
     showToast(&quot;Erro: &quot; + (err.message || &quot;falha desconhecida&quot;));
     return;
   }
