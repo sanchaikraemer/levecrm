@@ -2088,9 +2088,16 @@ function normalizeSuggestionText(text) {
 ═══════════════════════════════════════ */
 function scoreRule(text, rule) { let s=0; for(const t of rule.match){if(text.includes(t)) s++;} return s; }
 
+function isAttachmentStatusText(raw) {
+  const t = (raw || &quot;&quot;).trim().toLowerCase();
+  return t.startsWith(&quot;prints anexados para análise de ia:&quot;) || t.startsWith(&quot;prints anexados para analise de ia:&quot;);
+}
+
 function getPriorityText(raw) {
+  const typed = (raw || &quot;&quot;).trim();
+  if (typed &amp;&amp; !isAttachmentStatusText(typed)) return typed.toLowerCase();
   if (lastPrintText &amp;&amp; lastPrintText.trim()) return lastPrintText.toLowerCase();
-  return (raw || &quot;&quot;).toLowerCase().slice(-900);
+  return typed.toLowerCase().slice(-900);
 }
 
 function detectLastIntent(raw) {
@@ -2132,15 +2139,16 @@ window.analyzeMessage = function analyzeMessage() {
   document.getElementById(&quot;aiResultBadge&quot;).style.display = &quot;none&quot;;
   const raw = (document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;).trim();
   if (!raw) { showToast(&quot;Adicione pelo menos uma mensagem ou print.&quot;); return; }
-  const text = raw.toLowerCase();
+  const analysisRaw = (isAttachmentStatusText(raw) &amp;&amp; lastPrintText &amp;&amp; lastPrintText.trim()) ? lastPrintText.trim() : raw;
+  const text = analysisRaw.toLowerCase();
   const scored = analyzerRules.map(rule =&gt; ({rule, score: scoreRule(text, rule)})).sort((a,b) =&gt; b.score - a.score);
   let selected = scored.filter(x =&gt; x.score &gt; 0).slice(0, 2).map(x =&gt; x.rule);
-  if (detectVisitStalled(raw)) selected = [buildVisitStalledRule()];
-  else if (detectUnansweredLead(raw)) selected = [buildColdLeadRule()];
+  if (detectVisitStalled(analysisRaw)) selected = [buildVisitStalledRule()];
+  else if (detectUnansweredLead(analysisRaw)) selected = [buildColdLeadRule()];
   else if (!selected.length) selected = [{id:&quot;default&quot;, situation:&quot;Situação geral de atendimento&quot;, heat:&quot;Morno&quot;, profile:&quot;A definir&quot;, risk:&quot;Médio&quot;, goal:&quot;Entender o ponto real antes de responder no impulso.&quot;, next:&quot;Fazer uma pergunta curta que direcione a conversa.&quot;, avoid:&quot;Evite responder rápido demais sem identificar se o cliente está comparando, travado ou pronto para avançar.&quot;, chips:[&quot;leitura geral&quot;,&quot;condução&quot;,&quot;qualificação&quot;], responses:[{label:&quot;Pergunta de direção&quot;, text:&quot;Perfeito. Para eu te direcionar da forma mais adequada, me confirma uma coisa: hoje o que mais pesa para você nessa análise é condição de pagamento, perfil do imóvel ou momento da compra?&quot;, tip:&quot;Boa quando a mensagem não cai num padrão claro.&quot;},{label:&quot;Condução consultiva&quot;, text:&quot;Entendi. Se você quiser, eu posso te direcionar de forma mais objetiva, conforme o que faz mais sentido para o seu perfil hoje.&quot;, tip:&quot;Mantém elegância e controle.&quot;}]}];
 
   const primary = selected[0], secondary = selected[1] || null;
-  const lastIntent = detectLastIntent(raw);
+  const lastIntent = detectLastIntent(analysisRaw);
 
   document.getElementById(&quot;analysisSituation&quot;).textContent = secondary ? primary.situation + &quot; + &quot; + secondary.situation.toLowerCase() : primary.situation;
   document.getElementById(&quot;analysisHeat&quot;).textContent = primary.heat;
@@ -2162,8 +2170,8 @@ window.analyzeMessage = function analyzeMessage() {
     ? [...lastIntent.responses, ...(primary.responses||[]), ...(((secondary||{}).responses)||[])].slice(0,4)
     : [...(primary.responses||[]), ...(((secondary||{}).responses)||[])].slice(0,4);
 
-  const greeting = buildGreeting(primary, raw);
-  const intro = buildContextIntro(primary, raw);
+  const greeting = buildGreeting(primary, analysisRaw);
+  const intro = buildContextIntro(primary, analysisRaw);
   const responses = combined.map(r =&gt; ({...r, fullText: applyCommercialPositioning(greeting + &quot;\n\n&quot; + intro + &quot;\n\n&quot; + r.text, raw)}));
   if (primary.id === &quot;cold_silent&quot;) responses.forEach(r =&gt; { r.fullText = r.fullText.replace(/\nPerfeito[.,]/g, &quot;&quot;); });
   lastBestResponse = responses[0] ? responses[0].fullText : &quot;&quot;;
