@@ -1480,7 +1480,32 @@ body{
   &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
   &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
   &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
-  &lt;script src=&quot;https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js&quot;&gt;
+const __bindDirecionaActions = () =&gt; {
+  const btnAnalyze = document.getElementById(&quot;btnAnalyzeNow&quot;);
+  if (btnAnalyze &amp;&amp; !btnAnalyze.dataset.bound) {
+    btnAnalyze.dataset.bound = &quot;1&quot;;
+    btnAnalyze.addEventListener(&quot;click&quot;, () =&gt; {
+      try { window.analyzeMessage(); }
+      catch (err) { console.error(err); showToast(&quot;Erro ao analisar a mensagem.&quot;); }
+    });
+  }
+  const btnClear = document.getElementById(&quot;btnClearAnalyzer&quot;);
+  if (btnClear &amp;&amp; !btnClear.dataset.bound) {
+    btnClear.dataset.bound = &quot;1&quot;;
+    btnClear.addEventListener(&quot;click&quot;, () =&gt; {
+      try { window.clearAnalyzer(); }
+      catch (err) { console.error(err); showToast(&quot;Erro ao limpar a análise.&quot;); }
+    });
+  }
+};
+if (document.readyState === &quot;loading&quot;) {
+  document.addEventListener(&quot;DOMContentLoaded&quot;, __bindDirecionaActions);
+} else {
+  __bindDirecionaActions();
+}
+
+&lt;/script&gt;
   &lt;style&gt;
     :root {
       --bg: #f5f2ec;
@@ -1642,10 +1667,10 @@ body{
       style=&quot;position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;&quot;&gt;
 
     &lt;div class=&quot;actions&quot;&gt;
-      &lt;button class=&quot;btn primary&quot; onclick=&quot;analyzeMessage()&quot;&gt;Analisar agora&lt;/button&gt;
+      &lt;button class=&quot;btn primary&quot; id=&quot;btnAnalyzeNow&quot; type=&quot;button&quot;&gt;Analisar agora&lt;/button&gt;
       &lt;label for=&quot;historyPrintInput&quot; class=&quot;btn soft&quot;&gt;📎 Prints do histórico&lt;/label&gt;
       &lt;label for=&quot;lastPrintInput&quot; class=&quot;btn soft&quot;&gt;🖼 Último print&lt;/label&gt;
-      &lt;button class=&quot;btn outline&quot; onclick=&quot;clearAnalyzer()&quot;&gt;Limpar tudo&lt;/button&gt;
+      &lt;button class=&quot;btn outline&quot; id=&quot;btnClearAnalyzer&quot; type=&quot;button&quot;&gt;Limpar tudo&lt;/button&gt;
     &lt;/div&gt;
     &lt;div id=&quot;printStatus&quot; class=&quot;hint&quot; style=&quot;margin-top:10px;&quot;&gt;
       Histórico: &lt;strong id=&quot;historyCount&quot;&gt;0&lt;/strong&gt; print(s) · Última conversa: &lt;strong id=&quot;lastCount&quot;&gt;0&lt;/strong&gt;
@@ -1889,7 +1914,7 @@ function cleanOcrText(raw) {
   t = t.replace(/^[ \t]+|[ \t]+$/gm, &quot;&quot;);
   t = t.split(/\n/).map(l =&gt; l.trim()).filter(l =&gt; {
     if (!l) return false;
-    if (/^(?:[0-9.:]+|[A-Z]{1,4}|[><'"“”‘’=+*#_~`-]+)$/.test(l)) return false;
+    if (/^(?:[0-9.:]+|[A-Z]{1,4}|[&gt;&lt;&#x27;&quot;“”‘’=+*#_~`-]+)$/.test(l)) return false;
     if (l.length &lt;= 2) return false;
     return true;
   }).join(&quot;\n&quot;);
@@ -2080,7 +2105,7 @@ function buildColdLeadRule() {
   return {id:&quot;cold_silent&quot;, situation:&quot;Lead de anúncio sem resposta após abordagem&quot;, heat:&quot;Frio&quot;, profile:&quot;Ainda não qualificado&quot;, risk:&quot;Alto&quot;, goal:&quot;Reengajar com leveza para descobrir se ainda existe interesse real.&quot;, next:&quot;Fazer uma retomada curta e elegante para reabrir a conversa.&quot;, avoid:&quot;Evite tratar como lead quente ou empurrar produto sem antes reconquistar a atenção.&quot;, chips:[&quot;lead frio&quot;,&quot;sem resposta&quot;,&quot;reativação&quot;], responses:[{label:&quot;Retomada elegante&quot;, text:&quot;Fiquei na dúvida se você conseguiu olhar com calma o que eu te enviei.&quot;, tip:&quot;Boa para reabrir sem pressão.&quot;},{label:&quot;Reengajar com direção&quot;, text:&quot;Se fizer sentido para você, posso te sugerir uma alternativa mais alinhada com o seu perfil hoje.&quot;, tip:&quot;Boa para puxar resposta sem insistência.&quot;}]};
 }
 
-function analyzeMessage() {
+window.analyzeMessage = function analyzeMessage() {
   document.getElementById(&quot;aiResultBadge&quot;).style.display = &quot;none&quot;;
   const raw = (document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;).trim();
   if (!raw) { showToast(&quot;Adicione pelo menos uma mensagem ou print.&quot;); return; }
@@ -2122,7 +2147,6 @@ function analyzeMessage() {
   renderResponses(responses);
 }
 
-window.analyzeMessage = analyzeMessage;
 
 function renderResponses(responses) {
   document.getElementById(&quot;analysisResponses&quot;).innerHTML = responses.map((r, i) =&gt; `
@@ -2239,7 +2263,7 @@ function renderAIAnalysis(parsed) {
 /* ═══════════════════════════════════════
    LIMPAR
 ═══════════════════════════════════════ */
-function clearAnalyzer() {
+window.clearAnalyzer = function clearAnalyzer() {
   document.getElementById(&quot;clientMessage&quot;).value = &quot;&quot;;
   document.getElementById(&quot;analysisSituation&quot;).textContent = &quot;Cole uma mensagem para analisar.&quot;;
   [&quot;analysisHeat&quot;,&quot;analysisProfile&quot;,&quot;analysisRisk&quot;,&quot;analysisGoal&quot;,&quot;analysisNext&quot;].forEach(id =&gt; document.getElementById(id).textContent = &quot;—&quot;);
