@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>LeveCRM — Ecossistema Imobiliário</title>
+<title>LeveCRM</title>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="theme-color" content="#0D1B2E"/>
+<meta name="apple-mobile-web-app-title" content="LeveCRM"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
@@ -2064,7 +2065,7 @@ function buildContextIntro(rule, raw) {
   if (/planta|metragem|m²|m2|dormit|suíte|suite/.test(text)) return &quot;Estava retomando as conversas e vi que falamos sobre a planta e o perfil do imóvel.&quot;;
   if (/invest|valorização|valorizacao|renda futura|alugar/.test(text)) return &quot;Estava retomando as conversas e vi que falamos sobre o potencial de investimento.&quot;;
   if (/esposa|marido|família|familia|filho|filha/.test(text)) return &quot;Estava retomando as conversas e vi que falamos sobre analisar isso em conjunto.&quot;;
-  return &quot;Estava retomando as conversas e vi que falamos sobre essa oportunidade.&quot;;
+  return &quot;Perfeito. Para eu te direcionar da forma mais adequada, me confirma uma coisa:&quot;;
 }
 
 function normalizeSuggestionText(text) {
@@ -2088,16 +2089,9 @@ function normalizeSuggestionText(text) {
 ═══════════════════════════════════════ */
 function scoreRule(text, rule) { let s=0; for(const t of rule.match){if(text.includes(t)) s++;} return s; }
 
-function isAttachmentStatusText(raw) {
-  const t = (raw || &quot;&quot;).trim().toLowerCase();
-  return t.startsWith(&quot;prints anexados para análise de ia:&quot;) || t.startsWith(&quot;prints anexados para analise de ia:&quot;);
-}
-
 function getPriorityText(raw) {
-  const typed = (raw || &quot;&quot;).trim();
-  if (typed &amp;&amp; !isAttachmentStatusText(typed)) return typed.toLowerCase();
   if (lastPrintText &amp;&amp; lastPrintText.trim()) return lastPrintText.toLowerCase();
-  return typed.toLowerCase().slice(-900);
+  return (raw || &quot;&quot;).toLowerCase().slice(-900);
 }
 
 function detectLastIntent(raw) {
@@ -2107,6 +2101,9 @@ function detectLastIntent(raw) {
   }
   if (/qual\s+valor|valor|preço|preco|quanto/.test(text)) {
     return {id:&quot;valor&quot;, next:&quot;Responder valor e conduzir para condição, entrada ou encaixe da proposta.&quot;, responses:[{label:&quot;Conduzir após valor&quot;, text:&quot;Perfeito. Além do valor, o que realmente define a melhor escolha é como essa condição se encaixa para você. O que pesa mais hoje: entrada, parcela ou valor total?&quot;, tip:&quot;Evita morrer no preço seco.&quot;},{label:&quot;Valor com direção&quot;, text:&quot;Perfeito. Posso te passar o valor, mas o mais importante aqui é te direcionar para a opção que faça mais sentido no teu momento. Você está olhando mais pela melhor condição ou pelo melhor produto?&quot;, tip:&quot;Boa quando o cliente está comparando.&quot;}]};
+  }
+  if (/quais?\s+s[aã]o?\s+as?\s+op[cç][oõ]es|quais?\s+op[cç][oõ]es|op[cç][oõ]es\??|op[cç][oõ]es\s+tem|quais?\s+as\s+unidades|quais?\s+as\s+plantas/.test(text)) {
+    return {id:&quot;opcoes&quot;, next:&quot;Responder as opções disponíveis e conduzir para o critério de escolha do cliente.&quot;, responses:[{label:&quot;Responder e direcionar&quot;, text:&quot;Claro. Eu posso te passar as opções disponíveis, mas para te indicar a melhor linha, me diz só uma coisa: você quer analisar mais por valor, planta ou posição da unidade?&quot;, tip:&quot;Boa quando o cliente pergunta de forma ampla.&quot;},{label:&quot;Mais objetivo&quot;, text:&quot;Tenho sim algumas opções, e para não te passar informação solta, eu posso já te separar o que faz mais sentido para você. Hoje você quer ver mais condição, metragem ou perfil da unidade?&quot;, tip:&quot;Boa para manter controle comercial.&quot;}]};
   }
   if (/planta|metragem|m²|m2|metros|tamanho|su[ií]te|dormit[oó]rios/.test(text)) {
     return {id:&quot;planta&quot;, next:&quot;Responder planta ou metragem e conduzir pela prioridade do cliente.&quot;, responses:[{label:&quot;Conduzir após planta&quot;, text:&quot;Perfeito. Posso te direcionar pela planta que mais encaixa no teu objetivo. Você está olhando mais metragem, divisão dos ambientes ou condição de pagamento?&quot;, tip:&quot;Transforma curiosidade em qualificação.&quot;},{label:&quot;Mais consultiva&quot;, text:&quot;Perfeito. Entre essas opções, a melhor escolha depende do que você prioriza no uso do imóvel. Se você quiser, eu já te indico qual planta costuma fazer mais sentido no teu perfil.&quot;, tip:&quot;Boa para levar à escolha.&quot;}]};
@@ -2135,124 +2132,49 @@ function buildColdLeadRule() {
   return {id:&quot;cold_silent&quot;, situation:&quot;Lead de anúncio sem resposta após abordagem&quot;, heat:&quot;Frio&quot;, profile:&quot;Ainda não qualificado&quot;, risk:&quot;Alto&quot;, goal:&quot;Reengajar com leveza para descobrir se ainda existe interesse real.&quot;, next:&quot;Fazer uma retomada curta e elegante para reabrir a conversa.&quot;, avoid:&quot;Evite tratar como lead quente ou empurrar produto sem antes reconquistar a atenção.&quot;, chips:[&quot;lead frio&quot;,&quot;sem resposta&quot;,&quot;reativação&quot;], responses:[{label:&quot;Retomada elegante&quot;, text:&quot;Fiquei na dúvida se você conseguiu olhar com calma o que eu te enviei.&quot;, tip:&quot;Boa para reabrir sem pressão.&quot;},{label:&quot;Reengajar com direção&quot;, text:&quot;Se fizer sentido para você, posso te sugerir uma alternativa mais alinhada com o seu perfil hoje.&quot;, tip:&quot;Boa para puxar resposta sem insistência.&quot;}]};
 }
 
-function detectSemanticIntent(raw) {
-  const text = String(raw || &quot;&quot;).toLowerCase();
-  const categories = [
-    {
-      id:&quot;opcoes_disponiveis&quot;,
-      patterns:[/quais.*op[cç](?:õ|o)?es/,/que op[cç](?:õ|o)?es/,/tem op[cç](?:õ|o)?es/,/op[cç](?:õ|o)?es/,/quais unidades/,/quais apartamentos/,/tem dispon[ií]veis/],
-      situation:&quot;Cliente quer entender quais alternativas existem.&quot;, heat:&quot;Morno&quot;, profile:&quot;Cliente em fase de comparação&quot;, risk:&quot;Médio&quot;, goal:&quot;Apresentar opções com clareza e puxar critério de escolha.&quot;, next:&quot;Listar poucas opções e perguntar o que pesa mais: valor, planta, posição ou prazo.&quot;, avoid:&quot;Evite despejar todas as opções sem antes filtrar o que realmente importa para o cliente.&quot;, chips:[&quot;opções&quot;,&quot;comparação&quot;,&quot;direção&quot;],
-      responses:[
-        {label:&quot;Resposta direta&quot;, text:&quot;Tenho sim. Posso te organizar isso de forma objetiva. Hoje faz mais sentido para você olhar por valor, planta, posição ou condição de pagamento?&quot;, tip:&quot;Boa para abrir opções sem poluir.&quot;},
-        {label:&quot;Resposta consultiva&quot;, text:&quot;Tenho algumas opções e, para não te mandar coisa solta, prefiro te direcionar pelas que realmente fazem sentido no teu perfil. O que pesa mais para você nessa escolha?&quot;, tip:&quot;Boa para qualificar antes de listar.&quot;},
-        {label:&quot;Resposta prática&quot;, text:&quot;Consigo te passar as principais opções agora. Me confirma só um ponto: você quer filtrar isso mais por investimento, moradia ou condição de pagamento?&quot;, tip:&quot;Boa quando quer afunilar rápido.&quot;}
-      ]
-    },
-    {
-      id:&quot;condicao_pagamento&quot;,
-      patterns:[/condi[cç][aã]o de pagamento/,/forma de pagamento/,/como (?:é|e) o pagamento/,/entrada/,/parcelas?/,/financiamento/,/fluxo de pagamento/,/negocia[cç][aã]o/,/desconto/],
-      situation:&quot;Cliente quer entender como pode pagar.&quot;, heat:&quot;Morno para quente&quot;, profile:&quot;Cliente avaliando viabilidade&quot;, risk:&quot;Médio&quot;, goal:&quot;Explicar a lógica de pagamento e puxar capacidade real ou formato ideal.&quot;, next:&quot;Responder a condição e conduzir para entrada, prazo ou faixa que ele imagina.&quot;, avoid:&quot;Evite fugir da pergunta ou responder com uma direção genérica que não trate de pagamento.&quot;, chips:[&quot;pagamento&quot;,&quot;viabilidade&quot;,&quot;qualificação&quot;],
-      responses:[
-        {label:&quot;Resposta direta&quot;, text:&quot;Consigo te explicar sim. A condição varia conforme entrada, prazo e unidade. Se você quiser, eu te passo a estrutura mais comum e já te direciono para a opção que encaixa melhor no teu cenário.&quot;, tip:&quot;Responde e abre espaço para qualificar.&quot;},
-        {label:&quot;Resposta consultiva&quot;, text:&quot;Temos condição de pagamento, sim, mas o ideal é eu te alinhar isso conforme a entrada que você pretende fazer e o prazo que imagina trabalhar. A partir daí eu te passo a linha mais adequada.&quot;, tip:&quot;Boa para não falar solto.&quot;},
-        {label:&quot;Resposta objetiva&quot;, text:&quot;Posso te passar isso agora. Para te direcionar com precisão, você quer entender mais a entrada, o parcelamento ou o financiamento final?&quot;, tip:&quot;Boa para organizar a resposta.&quot;}
-      ]
-    },
-    {
-      id:&quot;valor_preco&quot;,
-      patterns:[/valor/,/pre[cç]o/,/quanto (?:é|e)/,/faixa de valor/,/custa quanto/,/quanto fica/],
-      situation:&quot;Cliente quer saber faixa de valor.&quot;, heat:&quot;Morno&quot;, profile:&quot;Cliente comparando custo e percepção de valor&quot;, risk:&quot;Médio&quot;, goal:&quot;Responder sem perder posicionamento e conduzir para contexto da escolha.&quot;, next:&quot;Dar referência de valor e puxar o que ele busca dentro dessa faixa.&quot;, avoid:&quot;Evite tratar preço isolado sem conectar com perfil e unidade.&quot;, chips:[&quot;valor&quot;,&quot;comparação&quot;,&quot;posicionamento&quot;],
-      responses:[
-        {label:&quot;Resposta direta&quot;, text:&quot;Consigo te passar o valor sim. Como ele muda conforme planta, posição e condição, eu posso te indicar a faixa correta e já te mostrar o que entrega mais dentro dela.&quot;, tip:&quot;Boa para responder sem banalizar.&quot;},
-        {label:&quot;Resposta consultiva&quot;, text:&quot;Tem valor definido, sim, mas o ponto principal é te mostrar qual opção faz mais sentido dentro do que você quer colocar. Se me der a referência de faixa que você imagina, eu te direciono melhor.&quot;, tip:&quot;Boa para abrir orçamento.&quot;}
-      ]
-    },
-    {
-      id:&quot;metragem_planta&quot;,
-      patterns:[/metragem/,/planta/,/m2/,/m²/,/dormit/,/su[ií]te/,/terra[cç]o/,/layout/,/distribui[cç][aã]o/],
-      situation:&quot;Cliente está focado na configuração do imóvel.&quot;, heat:&quot;Morno&quot;, profile:&quot;Cliente avaliando encaixe de uso&quot;, risk:&quot;Baixo&quot;, goal:&quot;Explicar a planta e descobrir qual composição atende melhor.&quot;, next:&quot;Conectar a planta ao uso real do cliente.&quot;, avoid:&quot;Evite responder só com metragem sem entender necessidade.&quot;, chips:[&quot;planta&quot;,&quot;metragem&quot;,&quot;perfil de uso&quot;],
-      responses:[
-        {label:&quot;Resposta direta&quot;, text:&quot;Tenho essa informação sim. O ideal é te mostrar a planta que mais encaixa no teu uso. Você está pensando mais em quantos dormitórios e que tipo de rotina?&quot;, tip:&quot;Boa para trazer contexto.&quot;},
-        {label:&quot;Resposta consultiva&quot;, text:&quot;A planta muda bastante a experiência do imóvel. Se você quiser, eu te separo as opções que mais combinam com o teu perfil e te explico a diferença entre elas de forma objetiva.&quot;, tip:&quot;Boa para conduzir escolha.&quot;}
-      ]
-    },
-    {
-      id:&quot;localizacao&quot;,
-      patterns:[/onde fica/,/localiza[cç][aã]o/,/bairro/,/regi[aã]o/,/endere[cç]o/,/perto de/,/fica onde/],
-      situation:&quot;Cliente quer situar o imóvel na região.&quot;, heat:&quot;Morno&quot;, profile:&quot;Cliente validando conveniência&quot;, risk:&quot;Baixo&quot;, goal:&quot;Responder a localização e conectar com rotina ou valorização.&quot;, next:&quot;Explicar o ponto e puxar o que mais importa na localização para ele.&quot;, avoid:&quot;Evite resposta seca demais, sem contextualizar o entorno.&quot;, chips:[&quot;localização&quot;,&quot;rotina&quot;,&quot;conveniência&quot;],
-      responses:[
-        {label:&quot;Resposta direta&quot;, text:&quot;Fica em uma localização bem definida e eu posso te explicar isso de forma objetiva. O que pesa mais para você aí: deslocamento, praticidade do dia a dia ou potencial de valorização?&quot;, tip:&quot;Boa para aprofundar.&quot;},
-        {label:&quot;Resposta consultiva&quot;, text:&quot;Posso te passar a localização certinha sim. Me diz só uma coisa: você está olhando esse ponto mais pela rotina ou pela valorização do imóvel?&quot;, tip:&quot;Boa para qualificar contexto.&quot;}
-      ]
-    },
-    {
-      id:&quot;visita_agendamento&quot;,
-      patterns:[/visita/,/visitar/,/conhecer/,/agendar/,/quando pode/,/hor[aá]rio/,/semana ou s[aá]bado/],
-      situation:&quot;Cliente está perto de avançar para visita.&quot;, heat:&quot;Quente&quot;, profile:&quot;Cliente com interesse ativo&quot;, risk:&quot;Baixo&quot;, goal:&quot;Facilitar o agendamento sem fricção.&quot;, next:&quot;Oferecer opções simples de dia ou período.&quot;, avoid:&quot;Evite deixar a conversa aberta demais sem fechar um próximo passo concreto.&quot;, chips:[&quot;visita&quot;,&quot;avanço&quot;,&quot;agenda&quot;],
-      responses:[
-        {label:&quot;Resposta direta&quot;, text:&quot;Consigo te organizar isso sem problema. Para ficar mais simples, te encaixa melhor durante a semana ou no sábado?&quot;, tip:&quot;Boa para fechar agenda.&quot;},
-        {label:&quot;Resposta consultiva&quot;, text:&quot;Perfeito. Posso te sugerir um horário que costuma funcionar bem e a gente já deixa isso alinhado. Você prefere manhã, tarde ou fim do dia?&quot;, tip:&quot;Boa para facilitar resposta.&quot;}
-      ]
-    },
-    {
-      id:&quot;disponibilidade&quot;,
-      patterns:[/dispon[ií]vel/,/tem ainda/,/ainda est[aá]/,/ainda tem/,/restam/,/sobrou/,/livre/],
-      situation:&quot;Cliente quer saber se a unidade ainda está disponível.&quot;, heat:&quot;Morno para quente&quot;, profile:&quot;Cliente validando possibilidade real&quot;, risk:&quot;Médio&quot;, goal:&quot;Confirmar disponibilidade e puxar avanço.&quot;, next:&quot;Responder disponibilidade e conduzir para a melhor alternativa atual.&quot;, avoid:&quot;Evite responder só sim ou não e encerrar a conversa.&quot;, chips:[&quot;disponibilidade&quot;,&quot;urgência&quot;,&quot;direção&quot;],
-      responses:[
-        {label:&quot;Resposta direta&quot;, text:&quot;Consigo te confirmar isso sim. E, se essa opção já não fizer mais sentido, eu te indico a alternativa mais próxima do que você procura hoje.&quot;, tip:&quot;Boa para manter a condução.&quot;},
-        {label:&quot;Resposta consultiva&quot;, text:&quot;Posso te alinhar a disponibilidade agora. Se quiser, já aproveito e te mostro a opção que mais se aproxima do que você busca, para não perdermos tempo com comparação solta.&quot;, tip:&quot;Boa para manter controle.&quot;}
-      ]
-    }
-  ];
-
-  const scored = categories.map(cat =&gt; ({cat, score: cat.patterns.reduce((n, re) =&gt; n + (re.test(text) ? 1 : 0), 0)})).sort((a,b) =&gt; b.score - a.score);
-  return scored[0].score &gt; 0 ? scored[0].cat : null;
-}
-
 window.analyzeMessage = function analyzeMessage() {
   document.getElementById(&quot;aiResultBadge&quot;).style.display = &quot;none&quot;;
   const raw = (document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;).trim();
   if (!raw) { showToast(&quot;Adicione pelo menos uma mensagem ou print.&quot;); return; }
-  const analysisRaw = (isAttachmentStatusText(raw) &amp;&amp; lastPrintText &amp;&amp; lastPrintText.trim()) ? lastPrintText.trim() : raw;
-  const semanticIntent = detectSemanticIntent(analysisRaw);
-  const text = analysisRaw.toLowerCase();
+  const text = raw.toLowerCase();
   const scored = analyzerRules.map(rule =&gt; ({rule, score: scoreRule(text, rule)})).sort((a,b) =&gt; b.score - a.score);
-  let selected = semanticIntent ? [semanticIntent] : scored.filter(x =&gt; x.score &gt; 0).slice(0, 2).map(x =&gt; x.rule);
-  if (detectVisitStalled(analysisRaw)) selected = [buildVisitStalledRule()];
-  else if (detectUnansweredLead(analysisRaw)) selected = [buildColdLeadRule()];
-  else if (!selected.length) selected = [{id:&quot;default&quot;, situation:&quot;Situação geral de atendimento&quot;, heat:&quot;Morno&quot;, profile:&quot;A definir&quot;, risk:&quot;Médio&quot;, goal:&quot;Entender o ponto real antes de responder no impulso.&quot;, next:&quot;Fazer uma pergunta curta que direcione a conversa.&quot;, avoid:&quot;Evite responder rápido demais sem identificar se o cliente está comparando, travado ou pronto para avançar.&quot;, chips:[&quot;leitura geral&quot;,&quot;condução&quot;,&quot;qualificação&quot;], responses:[{label:&quot;Pergunta de direção&quot;, text:&quot;Perfeito. Para eu te direcionar da forma mais adequada, me confirma uma coisa: hoje o que mais pesa para você nessa análise é condição de pagamento, perfil do imóvel ou momento da compra?&quot;, tip:&quot;Boa quando a mensagem não cai num padrão claro.&quot;},{label:&quot;Condução consultiva&quot;, text:&quot;Entendi. Posso te direcionar com mais objetividade se você me disser qual ponto quer priorizar agora: valor, produto, pagamento, localização ou visita.&quot;, tip:&quot;Mantém elegância e organiza a conversa.&quot;}]}];
+  let selected = scored.filter(x =&gt; x.score &gt; 0).slice(0, 2).map(x =&gt; x.rule);
+  if (detectVisitStalled(raw)) selected = [buildVisitStalledRule()];
+  else if (detectUnansweredLead(raw)) selected = [buildColdLeadRule()];
+  else if (!selected.length) selected = [{id:&quot;default&quot;, situation:&quot;Situação geral de atendimento&quot;, heat:&quot;Morno&quot;, profile:&quot;A definir&quot;, risk:&quot;Médio&quot;, goal:&quot;Entender o ponto real antes de responder no impulso.&quot;, next:&quot;Fazer uma pergunta curta que direcione a conversa.&quot;, avoid:&quot;Evite responder rápido demais sem identificar se o cliente está comparando, travado ou pronto para avançar.&quot;, chips:[&quot;leitura geral&quot;,&quot;condução&quot;,&quot;qualificação&quot;], responses:[{label:&quot;Pergunta de direção&quot;, text:&quot;Perfeito. Para eu te direcionar da forma mais adequada, me confirma uma coisa: hoje o que mais pesa para você nessa análise é condição de pagamento, perfil do imóvel ou momento da compra?&quot;, tip:&quot;Boa quando a mensagem não cai num padrão claro.&quot;},{label:&quot;Condução consultiva&quot;, text:&quot;Entendi. Se você quiser, eu posso te direcionar de forma mais objetiva, conforme o que faz mais sentido para o seu perfil hoje.&quot;, tip:&quot;Mantém elegância e controle.&quot;}]}];
 
   const primary = selected[0], secondary = selected[1] || null;
+  const lastIntent = detectLastIntent(raw);
 
   document.getElementById(&quot;analysisSituation&quot;).textContent = secondary ? primary.situation + &quot; + &quot; + secondary.situation.toLowerCase() : primary.situation;
   document.getElementById(&quot;analysisHeat&quot;).textContent = primary.heat;
   document.getElementById(&quot;analysisProfile&quot;).textContent = primary.profile;
   document.getElementById(&quot;analysisRisk&quot;).textContent = primary.risk;
-  document.getElementById(&quot;analysisGoal&quot;).textContent = primary.goal;
-  document.getElementById(&quot;analysisNext&quot;).textContent = primary.next;
+  document.getElementById(&quot;analysisGoal&quot;).textContent = lastIntent ? &quot;Responder a última pergunta ou afirmação do cliente e, em seguida, conduzir a conversa.&quot; : primary.goal;
+  document.getElementById(&quot;analysisNext&quot;).textContent = lastIntent ? lastIntent.next : primary.next;
 
   const baseChips = [...(primary.chips || []), ...(((secondary || {}).chips) || [])];
+  const intentChipMap = {andar:&quot;última pergunta: andar&quot;, valor:&quot;última pergunta: valor&quot;, planta:&quot;última pergunta: planta&quot;, disponibilidade:&quot;última pergunta: disponibilidade&quot;, gostou:&quot;último movimento: gostou&quot;};
+  if (lastIntent &amp;&amp; intentChipMap[lastIntent.id]) baseChips.unshift(intentChipMap[lastIntent.id]);
   document.getElementById(&quot;analysisChips&quot;).innerHTML = [...new Set(baseChips)].map((chip, i) =&gt; `&lt;span class=&quot;chip ${i===0?&quot;warn&quot;:&quot;&quot;} ${chip.toLowerCase().includes(&quot;quente&quot;)?&quot;ok&quot;:&quot;&quot;}&quot;&gt;${escapeHtml(chip)}&lt;/span&gt;`).join(&quot;&quot;);
 
   const avoidEl = document.getElementById(&quot;analysisAvoid&quot;);
   avoidEl.style.display = &quot;block&quot;;
-  avoidEl.textContent = &quot;⚠ Erro a evitar: &quot; + primary.avoid;
+  avoidEl.textContent = &quot;⚠ Erro a evitar: &quot; + (lastIntent ? &quot;Responder só o dado técnico e deixar a conversa morrer sem condução.&quot; : primary.avoid);
 
-  const combined = [...(primary.responses||[]), ...(((secondary||{}).responses)||[])].slice(0,4);
+  const combined = lastIntent
+    ? [...lastIntent.responses, ...(primary.responses||[]), ...(((secondary||{}).responses)||[])].slice(0,4)
+    : [...(primary.responses||[]), ...(((secondary||{}).responses)||[])].slice(0,4);
 
-  const greeting = buildGreeting(primary, analysisRaw);
-  const intro = buildContextIntro(primary, analysisRaw);
-  const responses = combined.map(r =&gt; ({...r, fullText: applyCommercialPositioning(greeting + &quot;
-
-&quot; + intro + &quot;
-
-&quot; + r.text, raw)}));
-  if (primary.id === &quot;cold_silent&quot;) responses.forEach(r =&gt; { r.fullText = r.fullText.replace(/
-Perfeito[.,]/g, &quot;&quot;); });
+  const greeting = buildGreeting(primary, raw);
+  const intro = buildContextIntro(primary, raw);
+  const responses = combined.map(r =&gt; ({...r, fullText: applyCommercialPositioning(greeting + &quot;\n\n&quot; + intro + &quot;\n\n&quot; + r.text, raw)}));
+  if (primary.id === &quot;cold_silent&quot;) responses.forEach(r =&gt; { r.fullText = r.fullText.replace(/\nPerfeito[.,]/g, &quot;&quot;); });
   lastBestResponse = responses[0] ? responses[0].fullText : &quot;&quot;;
   renderStatusMessage(&quot;Análise concluída pela memória interna.&quot;);
   renderResponses(responses);
 }
+
 
 function renderResponses(responses) {
   document.getElementById(&quot;analysisResponses&quot;).innerHTML = responses.map((r, i) =&gt; `
@@ -2272,31 +2194,73 @@ function renderResponses(responses) {
 ═══════════════════════════════════════ */
 function renderStatusMessage(msg) {
   const area = document.getElementById(&quot;analysisResponses&quot;);
-  if (area) area.innerHTML = `&lt;div class=&quot;empty&quot;&gt;${escapeHtml(msg)}&lt;/div&gt;`;
+  if (area) area.innerHTML = `&lt;div class=&quot;empty&quot;&gt;${escapeHtml(String(msg || &quot;&quot;))}&lt;/div&gt;`;
   const avoidEl = document.getElementById(&quot;analysisAvoid&quot;);
-  if (avoidEl) { avoidEl.style.display = &quot;none&quot;; avoidEl.textContent = &quot;&quot;; }
-  document.getElementById(&quot;analysisSituation&quot;).textContent = msg;
+  if (avoidEl) {
+    avoidEl.style.display = &quot;none&quot;;
+    avoidEl.textContent = &quot;&quot;;
+  }
+  const situationEl = document.getElementById(&quot;analysisSituation&quot;);
+  if (situationEl) situationEl.textContent = msg || &quot;Cole uma mensagem para analisar.&quot;;
 }
 
 async function analyzeWithAI() {
   const raw = (document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;).trim();
-  if (!raw &amp;&amp; !hasUploadedPrints()) { showToast(&quot;Cole a mensagem do cliente ou anexe os prints antes de analisar.&quot;); return; }
-  const apiKey = (localStorage.getItem(&quot;crm_anthropic_key&quot;) || _k || &quot;&quot;).trim();
-  if (!apiKey) { renderStatusMessage(&quot;Configure a chave da IA em Configurações para usar Inteligência artificial.&quot;); showToast(&quot;Configure a chave da IA em Configurações → API Key.&quot;); return; }
+  const hasPrints = hasUploadedPrints();
+  if (!raw &amp;&amp; !hasPrints) {
+    showToast(&quot;Cole a mensagem do cliente ou anexe os prints antes de analisar.&quot;);
+    return;
+  }
 
-  renderStatusMessage(hasUploadedPrints() ? &quot;Lendo prints para análise de IA...&quot; : &quot;Analisando com Inteligência artificial...&quot;);
+  const apiKey = (localStorage.getItem(&quot;crm_anthropic_key&quot;) || _k || &quot;&quot;).trim();
+  if (!apiKey) {
+    renderStatusMessage(&quot;Configure a chave da IA em Configurações para usar Inteligência artificial.&quot;);
+    showToast(&quot;Configure a chave da IA em Configurações → API Key.&quot;);
+    return;
+  }
+
+  renderStatusMessage(hasPrints ? &quot;Lendo prints para análise de IA...&quot; : &quot;Analisando com Inteligência artificial...&quot;);
   showLoading(
-    hasUploadedPrints() ? &quot;Lendo prints para análise de IA&quot; : &quot;Analisando com IA&quot;,
-    hasUploadedPrints() ? &quot;A inteligência artificial está lendo os prints da conversa e montando a orientação comercial.&quot; : &quot;A inteligência artificial está lendo o contexto e montando a análise completa...&quot;
+    hasPrints ? &quot;Lendo prints para análise de IA&quot; : &quot;Analisando com IA&quot;,
+    hasPrints
+      ? &quot;A inteligência artificial está lendo os prints da conversa e montando a orientação comercial.&quot;
+      : &quot;A inteligência artificial está lendo o contexto e montando a análise completa...&quot;
   );
 
   try {
-    const content = hasUploadedPrints()
-      ? await buildVisionContent(raw)
-      : [{type:&quot;text&quot;,text:`Você é um especialista em vendas de imóveis de alto padrão, com foco em condução de atendimento consultivo. Analise a mensagem abaixo de um cliente para um corretor de imóveis e retorne APENAS um JSON válido, sem markdown, com esta estrutura: {&quot;situacao&quot;:&quot;frase curta&quot;,&quot;temperatura&quot;:&quot;Frio|Morno|Quente&quot;,&quot;perfil&quot;:&quot;frase curta&quot;,&quot;risco&quot;:&quot;Baixo|Médio|Alto&quot;,&quot;objetivo&quot;:&quot;frase curta&quot;,&quot;proximo_passo&quot;:&quot;ação concreta&quot;,&quot;evitar&quot;:&quot;principal erro a evitar&quot;,&quot;chips&quot;:[&quot;chip1&quot;,&quot;chip2&quot;,&quot;chip3&quot;],&quot;respostas&quot;:[{&quot;label&quot;:&quot;Direta&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},{&quot;label&quot;:&quot;Consultiva&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},{&quot;label&quot;:&quot;Premium&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;}],&quot;nome_cliente&quot;:&quot;nome ou vazio&quot;,&quot;demora_resposta&quot;:&quot;baixa|média|alta|incerta&quot;}. Regras: português brasileiro natural; não invente dados; respostas curtas, elegantes e com condução; não faça textão; use o nome só se ele estiver claramente presente na mensagem.
+    const promptBase = `Você é um especialista em vendas de imóveis de alto padrão, com foco em condução de atendimento consultivo.
+Analise a mensagem abaixo de um cliente para um corretor de imóveis.
+Retorne APENAS um JSON válido, sem markdown e sem comentários, com esta estrutura:
+{
+  &quot;situacao&quot;:&quot;frase curta&quot;,
+  &quot;temperatura&quot;:&quot;Frio|Morno|Quente&quot;,
+  &quot;perfil&quot;:&quot;frase curta&quot;,
+  &quot;risco&quot;:&quot;Baixo|Médio|Alto&quot;,
+  &quot;objetivo&quot;:&quot;frase curta&quot;,
+  &quot;proximo_passo&quot;:&quot;ação concreta&quot;,
+  &quot;evitar&quot;:&quot;principal erro a evitar&quot;,
+  &quot;chips&quot;:[&quot;chip1&quot;,&quot;chip2&quot;,&quot;chip3&quot;],
+  &quot;respostas&quot;:[
+    {&quot;label&quot;:&quot;Direta&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},
+    {&quot;label&quot;:&quot;Consultiva&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;},
+    {&quot;label&quot;:&quot;Premium&quot;,&quot;texto&quot;:&quot;resposta completa&quot;,&quot;dica&quot;:&quot;dica curta&quot;}
+  ],
+  &quot;nome_cliente&quot;:&quot;nome ou vazio&quot;,
+  &quot;demora_resposta&quot;:&quot;baixa|média|alta|incerta&quot;
+}
+Regras:
+- português brasileiro natural
+- não invente dados
+- respostas curtas, elegantes e com condução
+- não faça textão
+- use o nome só se ele estiver claramente presente na mensagem ou nos prints`;
 
-Mensagem do cliente:
-${raw}`}];
+    const content = hasPrints
+      ? await buildVisionContent(`${promptBase}\n\nMensagem do cliente:\n${raw || &quot;Sem texto digitado. Baseie-se nos prints anexados.&quot;}`)
+      : [{
+          type: &quot;text&quot;,
+          text: `${promptBase}\n\nMensagem do cliente:\n${raw}`
+        }];
 
     const response = await fetch(&quot;https://api.anthropic.com/v1/messages&quot;, {
       method: &quot;POST&quot;,
@@ -2309,46 +2273,63 @@ ${raw}`}];
       body: JSON.stringify({
         model: &quot;claude-sonnet-4-5&quot;,
         max_tokens: 2200,
-        messages: [{role:&quot;user&quot;, content}]
+        messages: [{ role: &quot;user&quot;, content }]
       })
     });
+
     if (!response.ok) {
-      const err = await response.json().catch(() =&gt; ({}));
-      const msg = err?.error?.message || `HTTP ${response.status}`;
-      hideLoading();
-      renderStatusMessage(&quot;Falha na análise com IA: &quot; + msg);
-      showToast(&quot;Erro API: &quot; + msg);
-      return;
+      const errText = await response.text().catch(() =&gt; &quot;&quot;);
+      let msg = `HTTP ${response.status}`;
+      try {
+        const errJson = JSON.parse(errText || &quot;{}&quot;);
+        msg = errJson?.error?.message || msg;
+      } catch (_) {
+        if (errText) msg = errText;
+      }
+      throw new Error(msg);
     }
+
     const data = await response.json();
-    const joinedText = data.content.map(i =&gt; i.text || &quot;&quot;).join(&quot;&quot;);
-    const jsonMatch = joinedText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      hideLoading();
-      renderStatusMessage(&quot;A IA não retornou um formato válido. Tente novamente.&quot;);
-      showToast(&quot;IA não retornou formato esperado. Tente novamente.&quot;);
-      return;
+    const joinedText = (data.content || [])
+      .filter(item =&gt; item &amp;&amp; item.type === &quot;text&quot;)
+      .map(item =&gt; item.text || &quot;&quot;)
+      .join(&quot;\n&quot;)
+      .trim();
+
+    let parsed = null;
+    try {
+      parsed = JSON.parse(joinedText);
+    } catch (_) {
+      const jsonMatch = joinedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
     }
-    const parsed = JSON.parse(jsonMatch[0]);
+
+    if (!parsed || typeof parsed !== &quot;object&quot;) {
+      throw new Error(&quot;A IA não retornou um JSON válido.&quot;);
+    }
+
     if (parsed?.nome_cliente &amp;&amp; !raw) {
       const nome = String(parsed.nome_cliente).trim();
       if (nome) document.getElementById(&quot;clientMessage&quot;).value = `Nome detectado: ${nome}`;
     }
+
     renderAIAnalysis(parsed);
-    document.getElementById(&quot;analysisSituation&quot;).textContent = parsed.situacao || &quot;Análise concluída com Inteligência artificial.&quot;;
-    showToast(hasUploadedPrints() ? &quot;Prints analisados com inteligência artificial.&quot; : &quot;Análise com IA concluída.&quot;);
-  } catch(err) {
+    const situationEl = document.getElementById(&quot;analysisSituation&quot;);
+    if (situationEl) situationEl.textContent = parsed.situacao || &quot;Análise concluída com Inteligência artificial.&quot;;
+    showToast(hasPrints ? &quot;Prints analisados com inteligência artificial.&quot; : &quot;Análise com IA concluída.&quot;);
+  } catch (err) {
     console.error(err);
+    renderStatusMessage(&quot;Erro na análise com IA: &quot; + ((err &amp;&amp; err.message) || &quot;falha desconhecida&quot;));
+    showToast(&quot;Erro: &quot; + ((err &amp;&amp; err.message) || &quot;falha desconhecida&quot;));
+  } finally {
     hideLoading();
-    renderStatusMessage(&quot;Erro na análise com IA: &quot; + (err.message || &quot;falha desconhecida&quot;));
-    showToast(&quot;Erro: &quot; + (err.message || &quot;falha desconhecida&quot;));
-    return;
   }
-  hideLoading();
 }
 
 function renderAIAnalysis(parsed) {
-  document.getElementById(&quot;aiResultBadge&quot;).style.display = &quot;inline-flex&quot;;
+  const badge = document.getElementById(&quot;aiResultBadge&quot;);
+  if (badge) badge.style.display = &quot;inline-flex&quot;;
+
   const detectedName = String(parsed?.nome_cliente || &quot;&quot;).trim();
   document.getElementById(&quot;analysisSituation&quot;).textContent = parsed.situacao || &quot;—&quot;;
   document.getElementById(&quot;analysisHeat&quot;).textContent = parsed.temperatura || &quot;—&quot;;
@@ -2356,31 +2337,51 @@ function renderAIAnalysis(parsed) {
   document.getElementById(&quot;analysisRisk&quot;).textContent = parsed.risco || &quot;—&quot;;
   document.getElementById(&quot;analysisGoal&quot;).textContent = parsed.objetivo || &quot;—&quot;;
   document.getElementById(&quot;analysisNext&quot;).textContent = parsed.proximo_passo || &quot;—&quot;;
-  const chips = [...(parsed.chips || [])];
+
+  const chips = Array.isArray(parsed?.chips) ? [...parsed.chips] : [];
   if (parsed?.demora_resposta) chips.push(`ritmo: ${parsed.demora_resposta}`);
   if (detectedName) chips.unshift(`nome detectado: ${detectedName}`);
-  document.getElementById(&quot;analysisChips&quot;).innerHTML = chips.map((chip, i) =&gt; `&lt;span class=&quot;chip ${i===0?&quot;warn&quot;:&quot;&quot;}&quot;&gt;${escapeHtml(chip)}&lt;/span&gt;`).join(&quot;&quot;);
+  document.getElementById(&quot;analysisChips&quot;).innerHTML = chips
+    .filter(Boolean)
+    .map((chip, i) =&gt; `&lt;span class=&quot;chip ${i === 0 ? &quot;warn&quot; : &quot;&quot;}&quot;&gt;${escapeHtml(String(chip))}&lt;/span&gt;`)
+    .join(&quot;&quot;);
+
   const avoidEl = document.getElementById(&quot;analysisAvoid&quot;);
-  if (parsed.evitar) { avoidEl.style.display = &quot;block&quot;; avoidEl.textContent = &quot;⚠ Erro a evitar: &quot; + parsed.evitar; }
-  else { avoidEl.style.display = &quot;none&quot;; }
-  const respostas = (parsed.respostas || []).map(r =&gt; ({...r, texto: applyCommercialPositioning((r.texto || &quot;&quot;).replace(/\\n/g, &quot;\n&quot;), document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;)}));
+  if (parsed.evitar) {
+    avoidEl.style.display = &quot;block&quot;;
+    avoidEl.textContent = &quot;⚠ Erro a evitar: &quot; + parsed.evitar;
+  } else {
+    avoidEl.style.display = &quot;none&quot;;
+    avoidEl.textContent = &quot;&quot;;
+  }
+
+  const respostas = (Array.isArray(parsed?.respostas) ? parsed.respostas : [])
+    .map(r =&gt; ({
+      ...r,
+      texto: applyCommercialPositioning(
+        String(r?.texto || &quot;&quot;).replace(/\\n/g, &quot;\n&quot;),
+        document.getElementById(&quot;clientMessage&quot;).value || &quot;&quot;
+      )
+    }))
+    .filter(r =&gt; r.texto);
+
   lastBestResponse = respostas[0] ? respostas[0].texto : &quot;&quot;;
-  document.getElementById(&quot;analysisResponses&quot;).innerHTML = respostas.map((r, i) =&gt; `
-    &lt;div class=&quot;response ${i===0?&quot;best&quot;:&quot;&quot;}&quot;&gt;
-      &lt;div class=&quot;top&quot;&gt;
-        &lt;span class=&quot;tag ${i===0?&quot;gold&quot;:&quot;&quot;}&quot;&gt;${escapeHtml(r.label || &quot;Resposta &quot; + (i+1))}${i===0?&quot; · melhor linha&quot;:&quot;&quot;}&lt;/span&gt;
-        &lt;button class=&quot;btn dark&quot; style=&quot;padding:9px 13px;min-height:auto;font-size:12.5px;&quot; onclick=&#x27;copyText(${JSON.stringify(r.texto||&quot;&quot;)})&#x27;&gt;Copiar&lt;/button&gt;
-      &lt;/div&gt;
-      &lt;p&gt;${escapeHtml((r.texto || &quot;&quot;).replace(/\\n/g, &quot;\n&quot;))}&lt;/p&gt;
-      &lt;div class=&quot;tip&quot;&gt;${escapeHtml(r.dica || &quot;&quot;)}&lt;/div&gt;
-    &lt;/div&gt;
-  `).join(&quot;&quot;);
+
+  document.getElementById(&quot;analysisResponses&quot;).innerHTML = respostas.length
+    ? respostas.map((r, i) =&gt; `
+        &lt;div class=&quot;response ${i === 0 ? &quot;best&quot; : &quot;&quot;}&quot;&gt;
+          &lt;div class=&quot;top&quot;&gt;
+            &lt;span class=&quot;tag ${i === 0 ? &quot;gold&quot; : &quot;&quot;}&quot;&gt;${escapeHtml(r.label || &quot;Resposta &quot; + (i + 1))}${i === 0 ? &quot; · melhor linha&quot; : &quot;&quot;}&lt;/span&gt;
+            &lt;button class=&quot;btn dark&quot; style=&quot;padding:9px 13px;min-height:auto;font-size:12.5px;&quot; onclick=&#x27;copyText(${JSON.stringify(r.texto || &quot;&quot;)})&#x27;&gt;Copiar&lt;/button&gt;
+          &lt;/div&gt;
+          &lt;p&gt;${escapeHtml(String(r.texto || &quot;&quot;).replace(/\\n/g, &quot;\n&quot;))}&lt;/p&gt;
+          &lt;div class=&quot;tip&quot;&gt;${escapeHtml(r.dica || &quot;&quot;)}&lt;/div&gt;
+        &lt;/div&gt;
+      `).join(&quot;&quot;)
+    : `&lt;div class=&quot;empty&quot;&gt;A IA concluiu a leitura, mas não retornou respostas prontas. Tente novamente.&lt;/div&gt;`;
 }
 
-/* ═══════════════════════════════════════
-   LIMPAR
-═══════════════════════════════════════ */
-window.clearAnalyzer = function clearAnalyzer() {
+function clearAnalyzer() {
   document.getElementById(&quot;clientMessage&quot;).value = &quot;&quot;;
   document.getElementById(&quot;analysisSituation&quot;).textContent = &quot;Cole uma mensagem para analisar.&quot;;
   [&quot;analysisHeat&quot;,&quot;analysisProfile&quot;,&quot;analysisRisk&quot;,&quot;analysisGoal&quot;,&quot;analysisNext&quot;].forEach(id =&gt; document.getElementById(id).textContent = &quot;—&quot;);
@@ -5098,8 +5099,8 @@ function setupPWA(){
   const icon192=new URL('icon-192.png',location.href).href;
   const icon512=new URL('icon-512.png',location.href).href;
   const manifest={
-    name:'levecrm',
-    short_name:'levecrm',
+    name:'LeveCRM',
+    short_name:'LeveCRM',
     start_url:base,
     scope:base,
     display:'standalone',
