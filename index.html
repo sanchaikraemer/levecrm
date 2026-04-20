@@ -1407,6 +1407,202 @@ body.has-sidebar header #moreWrap{display:inline-flex !important}
   body.has-sidebar .h-wrap{padding:12px 10px 8px}
   body.has-sidebar #mainWrap,body.has-sidebar .dash-wrap,body.has-sidebar .adm-wrap,body.has-sidebar .module-wrap{padding:0 8px 16px}
 }
+
+
+/* ===== HOTFIX MOBILE FINAL ===== */
+@media (max-width: 760px){
+  html,body{overflow-x:hidden !important; width:100% !important;}
+  body.has-sidebar,
+  body.has-sidebar.sidebar-collapsed{padding-left:0 !important;}
+
+  body.has-sidebar header,
+  body.has-sidebar #mainWrap,
+  body.has-sidebar .dash-wrap,
+  body.has-sidebar .adm-wrap,
+  body.has-sidebar .module-wrap,
+  body.has-sidebar.sidebar-collapsed header,
+  body.has-sidebar.sidebar-collapsed #mainWrap,
+  body.has-sidebar.sidebar-collapsed .dash-wrap,
+  body.has-sidebar.sidebar-collapsed .adm-wrap,
+  body.has-sidebar.sidebar-collapsed .module-wrap{
+    margin-left:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+  }
+
+  #sideNav{
+    width:min(300px,86vw) !important;
+    transform:translateX(-100%) !important;
+    z-index:50 !important;
+  }
+  body.sidebar-open #sideNav{transform:translateX(0) !important;}
+  body.sidebar-collapsed #sideNav{transform:translateX(-100%) !important;}
+
+  #sideBackdrop{
+    position:fixed !important;
+    inset:0 !important;
+    background:rgba(15,23,42,.42) !important;
+    backdrop-filter:blur(2px) !important;
+    z-index:45 !important;
+    display:none !important;
+  }
+  body.sidebar-open #sideBackdrop{display:block !important;}
+
+  body.has-sidebar .h-wrap{
+    padding:10px 10px 8px !important;
+    overflow:visible !important;
+  }
+  body.has-sidebar .h-row1,
+  body.has-sidebar .h-row2{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:8px !important;
+    align-items:center !important;
+  }
+  body.has-sidebar .search-wrap{
+    order:2 !important;
+    flex:1 1 100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+  }
+  body.has-sidebar .search-wrap input{
+    width:100% !important;
+    height:46px !important;
+    font-size:14px !important;
+  }
+  body.has-sidebar #sideToggleMain{
+    width:44px !important;
+    height:44px !important;
+    border-radius:14px !important;
+  }
+  body.has-sidebar #btnNew,
+  body.has-sidebar #fEmp,
+  body.has-sidebar #fOrig,
+  body.has-sidebar #fPri,
+  body.has-sidebar #moreWrap{
+    flex:1 1 calc(50% - 6px) !important;
+    min-width:0 !important;
+  }
+  body.has-sidebar #btnNew{margin-left:0 !important; min-width:0 !important;}
+  body.has-sidebar .filt-panel select,
+  body.has-sidebar .h-row2 > select,
+  body.has-sidebar #moreWrap > button,
+  body.has-sidebar #btnNew{
+    width:100% !important;
+    height:44px !important;
+  }
+
+  #mainWrap,
+  body.has-sidebar #mainWrap,
+  body.has-sidebar .dash-wrap,
+  body.has-sidebar .adm-wrap,
+  body.has-sidebar .module-wrap{
+    padding:0 8px 14px !important;
+  }
+
+  .board,
+  body.has-sidebar .board{
+    grid-template-columns:minmax(0,1fr) !important;
+    gap:10px !important;
+    min-height:auto !important;
+    height:auto !important;
+  }
+  .col,
+  body.has-sidebar .col{
+    min-width:0 !important;
+    border-radius:14px !important;
+  }
+  .col-head,
+  body.has-sidebar .col-head{
+    padding:10px 12px !important;
+  }
+  .col-head .cname,
+  body.has-sidebar .col-head .cname{
+    font-size:11px !important;
+  }
+  .col-head .cnt,
+  body.has-sidebar .col-head .cnt{
+    font-size:10px !important;
+  }
+  .dropzone,
+  body.has-sidebar .dropzone{
+    padding:8px !important;
+    gap:8px !important;
+  }
+
+  .card,
+  body.has-sidebar .card{
+    padding:10px 10px 9px !important;
+    border-radius:12px !important;
+    min-width:0 !important;
+  }
+  .card-row1{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    gap:6px !important;
+    align-items:start !important;
+  }
+  .card-row2{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    gap:6px !important;
+    align-items:center !important;
+    margin-top:6px !important;
+  }
+  .card-nm,.sb-nm{
+    font-size:13px !important;
+    line-height:1.2 !important;
+    white-space:normal !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    word-break:break-word !important;
+    max-width:none !important;
+  }
+  .card-emp,.sb-emp{
+    font-size:11px !important;
+    line-height:1.15 !important;
+    white-space:normal !important;
+    overflow:visible !important;
+    text-overflow:clip !important;
+    word-break:break-word !important;
+    max-width:none !important;
+  }
+  .card-prio{
+    font-size:10px !important;
+    align-self:start !important;
+  }
+  .card-chips{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    gap:4px !important;
+    min-width:0 !important;
+  }
+  .chip{
+    font-size:9px !important;
+    padding:3px 6px !important;
+  }
+  .wa-btn{
+    width:24px !important;
+    height:24px !important;
+    min-width:24px !important;
+  }
+  .wa-btn svg{
+    width:12px !important;
+    height:12px !important;
+  }
+
+  .modal,
+  .modal-card,
+  .drawer,
+  .panel,
+  [role="dialog"]{
+    width:min(100vw - 16px, 720px) !important;
+    max-width:min(100vw - 16px, 720px) !important;
+  }
+
+  table{display:block; width:100%; overflow-x:auto;}
+}
+
 </style>
 </head>
 <body class="t-navy has-sidebar">
