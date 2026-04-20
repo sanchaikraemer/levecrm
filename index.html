@@ -5775,7 +5775,7 @@ function initApp(){
   refreshFilterButtonLabels();
   setupPaste();
   setupPWA();
-  // registerSW();
+  registerSW();
   applyTheme('t-light');
   updateInstallBtn();
   setInterval(()=>{document.querySelectorAll('.card').forEach(c=>{const id=c.dataset.id;const l=ALL.find(x=>x.id===id);if(!l)return;const nc=nextContact(l);const ncEl=c.querySelector('.chip-nc-neutral,.chip-nc-green,.chip-nc-red');if(ncEl&&nc){ncEl.className=`chip ${nc.cls}`;ncEl.textContent=nc.text;}});},60000);
