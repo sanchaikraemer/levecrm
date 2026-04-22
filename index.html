@@ -345,11 +345,12 @@ body.t-dark .chip-attach{background:#3A311A;color:#F1D27A;border-color:#705C27}
 .chip-nc-neutral{background:#DDE6F0;color:#3A5870;border-color:#C2D2E2}
 .chip-nc-green{background:#16A34A;color:#fff}
 .chip-nc-red{background:#D64545;color:#fff}
+.chip-dt-soft,.chip-dt-blue,.chip-dt-red{order:98;margin-left:auto;min-width:34px;text-align:center}
 .chip-dt-soft{background:#DDE6F0;color:#3A5870;border-color:#C2D2E2}
 .chip-dt-blue{background:#2563EB;color:#fff}
 .chip-dt-red{background:#D64545;color:#fff}
 .chip-attach{background:#FFF3CC;color:#8A6A16;border-color:#E0C880}
-.wa-btn{width:26px;height:26px;min-width:26px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:.13s;flex-shrink:0}
+.wa-btn{width:26px;height:26px;min-width:26px;border-radius:7px;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:.13s;flex-shrink:0;box-shadow:0 2px 4px rgba(37,211,102,.3);order:99}
 .wa-btn:hover{transform:scale(1.08)}
 .wa-btn svg{width:13px;height:13px;fill:currentColor;display:block}
 /* Standby row */
@@ -1333,7 +1334,7 @@ body.sidebar-collapsed #sideNav .side-logo img{width:46px;height:46px}
 #sideNav .nav-tab .side-label{font-size:15px;line-height:1.1}
 #sideNav .side-link .meta{margin-left:auto;font-size:11px;color:#C5D4E9}
 #sideNav .side-link .caret{margin-left:auto;color:#96ACCA}
-#sideNav .nav-badge{position:static;margin-left:auto;background:#FF4D4F;box-shadow:none}
+#sideNav .nav-badge{position:static;margin-left:auto;background:#FFFFFF;color:#0F172A;border:1px solid #E2E8F0;box-shadow:0 1px 3px rgba(15,23,42,.08)}
 #sideNav .side-divider{height:1px;background:rgba(255,255,255,.08);margin:4px 0}
 #sideNav .side-account-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
 #sideNav .side-account-avatar{width:42px;height:42px;border-radius:50%;background:#E8EEF8;color:#0B2345;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0}
@@ -1396,6 +1397,51 @@ body.has-sidebar header #fEmp,
 body.has-sidebar header #fOrig,
 body.has-sidebar header #fPri,
 body.has-sidebar header #moreWrap{display:inline-flex !important}
+
+/* ===== Unificar h-row1 + h-row2 numa linha só (desktop com sidebar) ===== */
+@media(min-width:1241px){
+  body.has-sidebar .h-wrap{
+    display:flex;
+    flex-wrap:nowrap;
+    align-items:center;
+    gap:12px;
+    padding-top:var(--shell-top);
+    padding-bottom:12px;
+  }
+  body.has-sidebar .h-row1{
+    flex:0 0 auto;
+    border:0;
+    padding:0;
+    gap:8px;
+  }
+  body.has-sidebar .h-row2{
+    flex:1 1 auto;
+    border-top:0 !important;
+    padding:0 !important;
+    min-width:0;
+    flex-wrap:nowrap;
+    gap:10px;
+  }
+  /* Busca menor pra caber tudo */
+  body.has-sidebar .h-row2 .search-wrap{
+    flex:1 1 220px;
+    min-width:180px;
+    max-width:320px;
+  }
+  body.has-sidebar .h-row2 > select{
+    flex:0 0 auto;
+    min-width:0;
+  }
+  body.has-sidebar .h-row2 #fEmp,
+  body.has-sidebar .h-row2 #fOrig,
+  body.has-sidebar .h-row2 #fPri{
+    width:auto;
+    padding-right:32px !important;
+  }
+  body.has-sidebar .h-row2 .more-wrap{flex:0 0 auto}
+  body.has-sidebar .h-row2 .kanban-actions{flex:0 0 auto;margin-left:auto}
+  body.has-sidebar .h-row1 .h-spacer{display:none}
+}
 
 @media(max-width:1240px){
   body.has-sidebar{padding-left:var(--sidebar-collapsed)}
@@ -2241,7 +2287,8 @@ body.t-light #btnNew, body.t-light #btnNewMobile{background:linear-gradient(180d
   display:inline-block !important;
   flex:0 0 8px !important;
 }
-.user-status-dot.online{ background:#22c55e !important; }
+.user-status-dot.online{ background:#22c55e !important; box-shadow:0 0 0 2px rgba(34,197,94,.2) !important; }
+.user-status-dot.offline{ background:#ef4444 !important; box-shadow:0 0 0 2px rgba(239,68,68,.2) !important; }
 
 /* badge da agenda branca */
 .agenda-badge, .menu-badge, .badge-agenda{
@@ -2279,10 +2326,9 @@ body.t-light #btnNew, body.t-light #btnNewMobile{background:linear-gradient(180d
     <button id="sideToggleNav" type="button" aria-label="Recolher menu">≡</button>
   </div>
     <div class="side-account-card" id="sideAccountCard">
-      <div class="side-account-avatar" id="sideAccountAvatar">S</div>
+      <span class="user-status-dot online" id="userStatusDot" title="Online"></span>
       <div class="account-text">
-        <div class="name" id="sideAccountName"></div>
-        <div class="role" id="sideAccountRole">Sanchai Kraemer</div>
+        <div class="name" id="sideAccountName">Sanchai Kraemer</div>
       </div>
     </div>
 
@@ -2290,9 +2336,9 @@ body.t-light #btnNew, body.t-light #btnNewMobile{background:linear-gradient(180d
     <div class="side-section">
       <div class="side-section-title">Operação</div>
       <div class="side-list">
-        <button class="nav-tab active" data-view="kanban"><span><svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"/></svg></span><span class="side-label">Leads</span></button>
-        <button class="nav-tab" id="agendaTabBtnSide"><span><svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span><span class="side-label">Agenda</span><span class="nav-badge" id="agBadgeSide">0</span></button>
-        <button class="nav-tab" data-view="direciona"><span><svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><path d="M15.5 8.5 20 4"/></svg></span><span class="side-label">Direciona IA</span></button>
+        <button class="nav-tab active" data-view="kanban"><span><svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span><span class="side-label">Leads</span></button>
+        <button class="nav-tab" id="agendaTabBtnSide"><span><svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/><circle cx="8" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="15" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1" fill="currentColor" stroke="none"/></svg></span><span class="side-label">Agenda</span><span class="nav-badge" id="agBadgeSide">0</span></button>
+        <button class="nav-tab" data-view="direciona"><span><svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.4L18 9l-4.2 1.6L12 15l-1.8-4.4L6 9l4.2-1.6z"/><path d="M19 14l.9 2.2L22 17l-2.1.8L19 20l-.9-2.2L16 17l2.1-.8z"/><path d="M5 17l.6 1.5L7 19l-1.4.5L5 21l-.6-1.5L3 19l1.4-.5z"/></svg></span><span class="side-label">Direciona IA</span></button>
         <button class="nav-tab" data-view="propostas"><span><svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg></span><span class="side-label">Propostas</span></button>
         <button class="nav-tab" data-view="dashboard"><span><svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V7M19 20V4"/></svg></span><span class="side-label">Painel</span></button>
       </div>
@@ -2350,8 +2396,8 @@ body.t-light #btnNew, body.t-light #btnNewMobile{background:linear-gradient(180d
             <button class="theme-opt" data-theme="t-dark">Escuro</button>
           </div>
         </div>
-        <button class="btn" id="btnAiImport">🤖 Importar contato</button>
-        <button class="btn btn-gold" id="btnInstallApp" title="Instalar app" style="display:none">📱 Instalar app</button>
+        <button class="btn" id="btnAiImport"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M12 3l1.8 4.4L18 9l-4.2 1.6L12 15l-1.8-4.4L6 9l4.2-1.6z"/><path d="M19 14l.9 2.2L22 17l-2.1.8L19 20l-.9-2.2L16 17l2.1-.8z"/></svg>Importar contato</button>
+        <button class="btn btn-gold" id="btnInstallApp" title="Instalar app" style="display:none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 6h2M11 18h2"/></svg>Instalar app</button>
         <span class="user-pill" id="whoPill"><span class="dot ok"></span></span>
         <button class="btn" id="btnLogoutAccess" type="button">Sair</button>
       </div>
@@ -2371,8 +2417,8 @@ body.t-light #btnNew, body.t-light #btnNewMobile{background:linear-gradient(180d
         <div class="more-menu" id="moreMenu">
           <button class="btn" id="btnToggleLost">Mostrar perdidos</button>
           <button class="btn" id="btnToggleSb">Mostrar Stand by</button>
-          <button class="btn" id="btnExport">📥 Exportar CSV</button>
-          <button class="btn" id="btnImport">📤 Importar CSV</button>
+          <button class="btn" id="btnExport"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Exportar CSV</button>
+          <button class="btn" id="btnImport"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M12 21V9m0 0l-4 4m4-4l4 4"/><path d="M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2"/></svg>Importar CSV</button>
         </div>
       </div>
       <div class="kanban-actions">
@@ -2383,8 +2429,8 @@ body.t-light #btnNew, body.t-light #btnNewMobile{background:linear-gradient(180d
 
     <div id="mobileActions" class="mobile-only">
       <button class="btn" id="btnNewMobile">+ Novo Lead</button>
-      <button class="btn" id="agendaBtnMobile">📅 Agenda <span class="nav-badge" id="agBadgeMobile">0</span></button>
-      <button class="btn" id="mobileFiltersBtn">⚙️ Filtros</button>
+      <button class="btn" id="agendaBtnMobile"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><rect x="3" y="4" width="18" height="18" rx="2.5"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Agenda <span class="nav-badge" id="agBadgeMobile">0</span></button>
+      <button class="btn" id="mobileFiltersBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M3 5h18M6 12h12M10 19h4"/></svg>Filtros</button>
     </div>
   </div>
 </header>
@@ -2401,9 +2447,9 @@ body.t-light #btnNew, body.t-light #btnNewMobile{background:linear-gradient(180d
     <div class="mf-actions">
       <button class="btn" id="mfToggleLost">Mostrar perdidos</button>
       <button class="btn" id="mfToggleSb">Mostrar Stand by</button>
-      <button class="btn" id="mfExport">📥 Exportar CSV</button>
-      <button class="btn" id="mfImport">📤 Importar CSV</button>
-      <button class="btn" id="mfAiImport" style="grid-column:1/-1;background:linear-gradient(180deg,#1B2E4B,#0D1E32);color:#4A90D9;border-color:rgba(74,144,217,.3)">🤖 Importar contato</button>
+      <button class="btn" id="mfExport"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Exportar CSV</button>
+      <button class="btn" id="mfImport"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M12 21V9m0 0l-4 4m4-4l4 4"/><path d="M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2"/></svg>Importar CSV</button>
+      <button class="btn" id="mfAiImport" style="grid-column:1/-1;background:linear-gradient(180deg,#1B2E4B,#0D1E32);color:#4A90D9;border-color:rgba(74,144,217,.3)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M12 3l1.8 4.4L18 9l-4.2 1.6L12 15l-1.8-4.4L6 9l4.2-1.6z"/><path d="M19 14l.9 2.2L22 17l-2.1.8L19 20l-.9-2.2L16 17l2.1-.8z"/></svg>Importar contato</button>
     </div>
     <button class="btn mf-close" id="mobileFilterClose">Fechar</button>
   </div>
@@ -6280,9 +6326,7 @@ function syncSidebarUtilityState(){
   const who=(ACCESS_USER||{});
   const rawName=(who.nome||who.name||who.displayName||'Sanchai Kraemer').toString().trim();
   const userName=rawName||'Sanchai Kraemer';
-  const nameEl=document.getElementById('sideAccountName'); if(nameEl) nameEl.textContent='Conta';
-  const roleEl=document.getElementById('sideAccountRole'); if(roleEl) roleEl.textContent=userName;
-  const avatarEl=document.getElementById('sideAccountAvatar'); if(avatarEl) avatarEl.textContent=(userName[0]||'S').toUpperCase();
+  const nameEl=document.getElementById('sideAccountName'); if(nameEl) nameEl.textContent=userName;
   const installBtn=document.getElementById('sideInstallApp');
   if(installBtn) installBtn.style.display=document.body.classList.contains('app-installed')?'none':'flex';
 }
@@ -6492,6 +6536,18 @@ document.getElementById('tabCadastro').addEventListener('click',()=>{clearAccess
 document.getElementById('tabLicenca').addEventListener('click',()=>{clearAccessMessages();setAccessMode('licenca');});
 setAccessMode('login');
 accessResumeSession();
+/* Status online/offline */
+(function(){
+  function setStatus(){
+    const dot=document.getElementById('userStatusDot');
+    if(!dot) return;
+    if(navigator.onLine){ dot.classList.add('online'); dot.classList.remove('offline'); dot.title='Online'; }
+    else { dot.classList.add('offline'); dot.classList.remove('online'); dot.title='Offline'; }
+  }
+  window.addEventListener('online',setStatus);
+  window.addEventListener('offline',setStatus);
+  setStatus();
+})();
 </script>
 </body>
 </html>
