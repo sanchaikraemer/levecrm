@@ -201,7 +201,7 @@ async function adminLogin(){
   msg.textContent='';
 
   if(!login||!pass){
-    msg.textContent='Preencha usuário/email e senha.';
+    msg.textContent='Preencha usuário e senha.';
     return;
   }
 
@@ -209,7 +209,7 @@ async function adminLogin(){
     const {data,error}=await sb
       .from('crm_access_users')
       .select('*')
-      .or(`usuario.eq.${login},email.eq.${login}`)
+      .eq('usuario',login)
       .limit(1);
 
     if(error){
@@ -509,7 +509,7 @@ function showGlobalMsg(text,type){
 }
 
 document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
-document.getElementById('loginEmail').placeholder='Usuário ou email';
+document.getElementById('loginEmail').placeholder='Usuário';
 init();
 </script>
 </body>
